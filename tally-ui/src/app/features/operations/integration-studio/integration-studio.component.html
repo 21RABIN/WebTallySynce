@@ -1,0 +1,161 @@
+<section class="workspace-page">
+  <article class="surface-hero">
+    <div class="surface-hero__header">
+      <div class="surface-hero__content">
+        <div class="surface-hero__meta">Integration Studio</div>
+        <h3>Routing, XML, sync, sync logs, and ledger mappings are now available in the UI.</h3>
+        <p>Use this control center to run connector routing tools, XML tools, sync controllers, validation, preview, sync-log actions, bulk sync, and ledger mapping APIs that were previously backend-only.</p>
+      </div>
+      <button type="button" (click)="execute()" [disabled]="isSubmitting">
+        {{ isSubmitting ? 'Running...' : 'Run API' }}
+      </button>
+    </div>
+
+    <div class="surface-hero__stats">
+      <div class="surface-hero__panel">
+        <span>Modes</span>
+        <strong>{{ modes.length }}</strong>
+        <small>Grouped integration actions available from one workspace.</small>
+      </div>
+      <div class="surface-hero__panel">
+        <span>Selected Mode</span>
+        <strong>{{ selectedModeLabel }}</strong>
+        <small>{{ selectedModeDescription }}</small>
+      </div>
+      <div class="surface-hero__panel">
+        <span>Coverage</span>
+        <strong>Sync + XML</strong>
+        <small>Includes routing, xml tools, sync logs, bulk sync, and mappings.</small>
+      </div>
+    </div>
+  </article>
+
+  <div class="feedback feedback--error" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+  <div class="workspace-grid">
+    <div class="workspace-stack">
+      <article class="workspace-card">
+        <h3>Integration Controls</h3>
+        <p>Select the backend integration area you want to run.</p>
+        <div class="workspace-divider"></div>
+
+        <form [formGroup]="form" class="workspace-form">
+          <label>
+            <span>Mode</span>
+            <select formControlName="mode">
+              <option *ngFor="let mode of modes" [value]="mode.key">{{ mode.label }}</option>
+            </select>
+          </label>
+
+          <div class="workspace-fields workspace-fields--two">
+            <label>
+              <span>Connector Id</span>
+              <input formControlName="connector_id" placeholder="primary-connector" />
+            </label>
+
+            <label>
+              <span>Company</span>
+              <input formControlName="company" placeholder="Demo Company" />
+            </label>
+
+            <label>
+              <span>Branch</span>
+              <input formControlName="branch" placeholder="Head Office" />
+            </label>
+
+            <label>
+              <span>Trace File</span>
+              <input formControlName="file_name" placeholder="trace.log" />
+            </label>
+
+            <label>
+              <span>Single Sync Entity</span>
+              <select formControlName="entity_kind">
+                <option *ngFor="let entity of singleSyncEntities" [value]="entity.value">{{ entity.label }}</option>
+              </select>
+            </label>
+
+            <label>
+              <span>Bulk Sync Entity</span>
+              <select formControlName="bulk_kind">
+                <option *ngFor="let entity of bulkSyncEntities" [value]="entity.value">{{ entity.label }}</option>
+              </select>
+            </label>
+
+            <label>
+              <span>Entity Id</span>
+              <input formControlName="entity_id" placeholder="1" />
+            </label>
+
+            <label>
+              <span>Sync Log Id</span>
+              <input formControlName="log_id" placeholder="1" />
+            </label>
+
+            <label>
+              <span>Business Unit Id</span>
+              <input formControlName="business_unit_id" placeholder="1" />
+            </label>
+
+            <label>
+              <span>Entity Type</span>
+              <input formControlName="entity_type" placeholder="customer" />
+            </label>
+          </div>
+
+          <label>
+            <span>
+              <input type="checkbox" formControlName="force_sync" />
+              Force Sync
+            </span>
+          </label>
+
+          <label *ngIf="usesPayload() && !usesXmlBody()">
+            <span>JSON Payload</span>
+            <textarea formControlName="payload"></textarea>
+          </label>
+
+          <label *ngIf="usesXmlBody()">
+            <span>XML Body</span>
+            <textarea formControlName="xml_body"></textarea>
+          </label>
+
+          <div class="workspace-actions">
+            <button type="button" (click)="execute()" [disabled]="isSubmitting">
+              {{ isSubmitting ? 'Running...' : 'Execute' }}
+            </button>
+          </div>
+        </form>
+      </article>
+    </div>
+
+    <div class="workspace-stack">
+      <article class="workspace-card">
+        <h3>Cache Sync Monitor</h3>
+        <p>Review database snapshot sync health and trigger a fresh connector pull.</p>
+        <div class="workspace-actions">
+          <button type="button" (click)="loadSyncStatus()" [disabled]="isRefreshingStatus">
+            {{ isRefreshingStatus ? 'Refreshing...' : 'Refresh Status' }}
+          </button>
+          <button type="button" (click)="runCacheSync()" [disabled]="isSubmitting">
+            {{ isSubmitting ? 'Running...' : 'Run Cache Sync' }}
+          </button>
+        </div>
+        <div class="workspace-divider"></div>
+        <div class="workspace-code">{{ syncStatus ? (syncStatus | json) : 'No cache sync status loaded yet.' }}</div>
+      </article>
+
+      <article class="workspace-card">
+        <h3>Response Summary</h3>
+        <p>{{ responseSummary || 'Run an integration action to inspect the live backend response.' }}</p>
+      </article>
+
+      <article class="workspace-card">
+        <h3>Raw Response</h3>
+        <p>Full backend response for the selected integration mode.</p>
+        <div class="workspace-divider"></div>
+        <div class="workspace-code">{{ responseBody || 'No response loaded yet.' }}</div>
+      </article>
+    </div>
+  </div>
+</section>

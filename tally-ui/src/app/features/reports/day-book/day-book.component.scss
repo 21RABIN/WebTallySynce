@@ -1,0 +1,653 @@
+.daybook-page {
+  display: grid;
+  gap: 14px;
+  padding: 12px;
+  background:
+    radial-gradient(circle at top left, rgba(198, 148, 61, 0.08), transparent 20%),
+    linear-gradient(180deg, #f7fafc 0%, #eef4f8 100%);
+}
+
+.daybook-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.85fr);
+  gap: 16px;
+  padding: 22px;
+  border: 1px solid #d6e1ec;
+  border-radius: 24px;
+  background: linear-gradient(135deg, #113550 0%, #1f5d73 100%);
+  color: #f8fbfd;
+  box-shadow: 0 20px 44px rgba(17, 53, 80, 0.18);
+}
+
+.daybook-hero__content {
+  display: grid;
+  gap: 12px;
+}
+
+.daybook-hero__badge-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.daybook-hero__eyebrow,
+.daybook-hero__source {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 12px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.daybook-hero__eyebrow {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(248, 251, 253, 0.88);
+}
+
+.daybook-hero__source {
+  background: rgba(198, 148, 61, 0.18);
+  color: #fff4de;
+}
+
+.daybook-hero h1 {
+  margin: 0;
+  font-size: 36px;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.daybook-hero p {
+  max-width: 760px;
+  margin: 0;
+  color: rgba(248, 251, 253, 0.82);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.daybook-hero__metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.daybook-hero__metric,
+.daybook-hero__panel {
+  display: grid;
+  gap: 6px;
+  padding: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.daybook-hero__metric span,
+.daybook-hero__panel span {
+  color: rgba(248, 251, 253, 0.68);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.daybook-hero__metric strong,
+.daybook-hero__panel strong {
+  font-size: 18px;
+  line-height: 1.35;
+  word-break: break-word;
+}
+
+.daybook-hero__side {
+  display: grid;
+  gap: 12px;
+}
+
+.daybook-hero__panel--accent {
+  background:
+    radial-gradient(circle at top right, rgba(198, 148, 61, 0.18), transparent 45%),
+    rgba(255, 255, 255, 0.08);
+}
+
+.daybook-hero__panel-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.daybook-filter-card {
+  border-radius: 20px;
+  padding: 16px;
+}
+
+.daybook-toolbar {
+  grid-template-columns: repeat(4, minmax(0, 1fr)) auto;
+}
+
+.report-chip--wide {
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.daybook-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.daybook-summary__card,
+.daybook-register {
+  border: 1px solid #d6e1ec;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 14px 36px rgba(15, 23, 42, 0.05);
+}
+
+.daybook-summary__card {
+  display: grid;
+  gap: 8px;
+  padding: 14px 16px;
+}
+
+.daybook-summary__card span {
+  color: #5f7080;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.daybook-summary__card strong {
+  color: #10253e;
+  font-size: 18px;
+}
+
+.daybook-register {
+  overflow: hidden;
+}
+
+.daybook-register__headerbar,
+.daybook-register__meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 18px;
+}
+
+.daybook-register__headerbar {
+  border-bottom: 1px solid #dce6ef;
+  background:
+    radial-gradient(circle at top right, rgba(198, 148, 61, 0.12), transparent 36%),
+    linear-gradient(180deg, #fbfdff 0%, #f4f8fb 100%);
+}
+
+.daybook-register__eyebrow {
+  display: block;
+  margin-bottom: 6px;
+  color: #6a7f91;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.daybook-register__headerbar h3 {
+  margin: 0;
+  color: #10253e;
+  font-size: 26px;
+}
+
+.daybook-register__header-meta {
+  display: grid;
+  gap: 6px;
+  text-align: right;
+}
+
+.daybook-register__header-meta strong {
+  color: #10253e;
+  font-size: 18px;
+}
+
+.daybook-register__header-meta span,
+.daybook-register__meta-row span {
+  color: #617485;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.daybook-register__meta-row {
+  flex-wrap: wrap;
+  border-bottom: 1px solid #e4ebf2;
+  background: #fff;
+}
+
+.daybook-register .tally-register {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: #fffef9;
+}
+
+.daybook-register .tally-register__header {
+  padding-inline: 18px;
+}
+
+.daybook-register .tally-register__row,
+.daybook-register .tally-register__footer {
+  padding-inline: 18px;
+}
+
+.daybook-register .tally-register__row--action {
+  width: 100%;
+  transition: background-color 140ms ease, transform 140ms ease;
+}
+
+.daybook-register .tally-register__row--action:hover {
+  background: rgba(17, 53, 80, 0.05);
+}
+
+.daybook-register .tally-register__row--selected {
+  background: rgba(198, 148, 61, 0.12);
+}
+
+.tally-register__particular {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  width: 100%;
+  color: #113550;
+  font: inherit;
+  font-weight: 700;
+  text-align: left;
+  cursor: inherit;
+}
+
+.tally-register__particular:hover {
+  text-decoration: none;
+}
+
+.voucher-window-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(10, 24, 38, 0.5);
+  backdrop-filter: blur(3px);
+}
+
+.voucher-window {
+  width: min(1320px, 100%);
+  max-height: calc(100vh - 48px);
+  display: grid;
+  grid-template-rows: auto auto auto minmax(0, 1fr) auto;
+  overflow: hidden;
+  border: 1px solid #2f4b57;
+  border-radius: 16px;
+  background: #edf9d9;
+  box-shadow: 0 28px 60px rgba(8, 21, 33, 0.35);
+}
+
+.voucher-window__topbar,
+.voucher-window__company-strip {
+  display: flex;
+  align-items: center;
+}
+
+.voucher-window__topbar {
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 16px;
+  background: #183238;
+  color: #f7fbff;
+}
+
+.voucher-window__title {
+  font-size: 27px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.voucher-window__close {
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #f7fbff;
+  padding: 10px 16px;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.voucher-window__company-strip {
+  justify-content: center;
+  min-height: 34px;
+  padding: 0 16px;
+  background: #9bc5e6;
+  color: #0c2536;
+  font-weight: 800;
+}
+
+.voucher-window__voucher-strip {
+  display: grid;
+  grid-template-columns: 220px 1fr 180px;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-bottom: 1px solid #bfd7bd;
+}
+
+.voucher-window__voucher-type {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 0 16px;
+  background: #2867b2;
+  color: #fff;
+  font-weight: 800;
+}
+
+.voucher-window__voucher-no,
+.voucher-window__voucher-date {
+  color: #0d2234;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.voucher-window__voucher-date {
+  text-align: right;
+}
+
+.voucher-window__body {
+  display: grid;
+  grid-template-rows: auto auto auto auto;
+  gap: 16px;
+  min-height: 0;
+  padding: 16px;
+  overflow: auto;
+}
+
+.voucher-window__account-strip {
+  display: grid;
+  gap: 6px;
+  padding: 0 2px;
+}
+
+.voucher-window__account-row {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: 8px;
+  align-items: baseline;
+}
+
+.voucher-window__account-row span,
+.voucher-meta__rows span {
+  color: #08192a;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.voucher-window__account-row strong {
+  color: #0d2234;
+  font-size: 18px;
+  word-break: break-word;
+}
+
+.voucher-meta__card {
+  border: 1px solid #cadfc4;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.45);
+}
+
+.voucher-ledger,
+.voucher-stock {
+  border: 1px solid #bdd5b9;
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.voucher-ledger__head,
+.voucher-ledger__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 180px 180px;
+  column-gap: 12px;
+  align-items: center;
+}
+
+.voucher-ledger__head,
+.voucher-stock__head {
+  padding: 10px 14px;
+  border-bottom: 1px solid #bfd7bd;
+  color: #0e2535;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.voucher-ledger__head-label--particulars {
+  text-align: left;
+}
+
+.voucher-ledger__head-label--amount {
+  justify-self: end;
+  width: 100%;
+  text-align: right;
+}
+
+.voucher-ledger__rows,
+.voucher-stock {
+  display: grid;
+}
+
+.voucher-ledger__row,
+.voucher-stock__row {
+  padding: 12px 14px;
+  border-bottom: 1px solid #d7ead4;
+}
+
+.voucher-ledger__row:last-child,
+.voucher-stock__row:last-child {
+  border-bottom: 0;
+}
+
+.voucher-ledger__particular {
+  display: grid;
+  gap: 4px;
+}
+
+.voucher-ledger__particular strong,
+.voucher-stock__row strong {
+  color: #08192a;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.voucher-ledger__particular span {
+  color: #6a7b76;
+  font-size: 12px;
+  font-style: italic;
+}
+
+.voucher-ledger__amount {
+  color: #08192a;
+  font-size: 20px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  justify-self: end;
+  width: 100%;
+}
+
+.voucher-stock__head,
+.voucher-stock__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) 120px 120px 150px 130px;
+  gap: 12px;
+  align-items: center;
+}
+
+.voucher-stock__row {
+  color: #143047;
+  font-size: 14px;
+}
+
+.voucher-stock__head--tally,
+.voucher-stock__row--tally {
+  grid-template-columns: minmax(0, 1.4fr) 130px 110px 80px 140px;
+}
+
+.voucher-stock__head--tally {
+  background: transparent;
+}
+
+.voucher-stock__row--tally span:last-child {
+  text-align: right;
+  font-weight: 700;
+  color: #08192a;
+}
+
+.voucher-meta {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+  gap: 16px;
+}
+
+.voucher-meta__card h4 {
+  margin: 0;
+  padding: 12px 14px;
+  border-bottom: 1px solid #d7ead4;
+  color: #0d2234;
+  font-size: 16px;
+}
+
+.voucher-meta__rows {
+  display: grid;
+}
+
+.voucher-meta__rows div {
+  display: grid;
+  grid-template-columns: 170px minmax(0, 1fr);
+  gap: 12px;
+  padding: 11px 14px;
+  border-top: 1px solid #edf6e7;
+}
+
+.voucher-meta__rows div:first-child {
+  border-top: 0;
+}
+
+.voucher-meta__rows strong {
+  color: #0d2234;
+  font-size: 13px;
+  word-break: break-word;
+}
+
+.voucher-meta__card p {
+  margin: 0;
+  padding: 14px;
+  color: #10253e;
+  font-size: 15px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+.voucher-window__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 16px;
+  border-top: 1px solid #bfd7bd;
+  background: rgba(255, 255, 255, 0.45);
+  color: #3f5862;
+  font-size: 13px;
+}
+
+.voucher-window__footer strong {
+  color: #08192a;
+  font-size: 20px;
+}
+
+.voucher-empty {
+  padding: 18px 16px;
+  color: #6f8394;
+  font-size: 13px;
+}
+
+.voucher-empty--window {
+  color: #4d6463;
+  background: transparent;
+}
+
+@media (max-width: 1180px) {
+  .daybook-hero,
+  .daybook-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .daybook-hero__metrics,
+  .daybook-toolbar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .daybook-page {
+    padding: 10px;
+  }
+
+  .daybook-hero {
+    padding: 18px;
+  }
+
+  .daybook-hero h1 {
+    font-size: 30px;
+  }
+
+  .daybook-hero__metrics,
+  .daybook-toolbar,
+  .daybook-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .daybook-register__headerbar,
+  .daybook-register__meta-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .daybook-register__header-meta {
+    text-align: left;
+  }
+
+  .voucher-window__voucher-strip,
+  .voucher-window__summary,
+  .voucher-meta {
+    grid-template-columns: 1fr;
+  }
+
+  .voucher-window__voucher-date {
+    text-align: left;
+  }
+
+  .voucher-ledger__head,
+  .voucher-ledger__row,
+  .voucher-stock__head,
+  .voucher-stock__row,
+  .voucher-meta__rows div,
+  .voucher-window__footer {
+    grid-template-columns: 1fr;
+    text-align: left;
+  }
+
+  .voucher-ledger__amount {
+    text-align: left;
+  }
+}

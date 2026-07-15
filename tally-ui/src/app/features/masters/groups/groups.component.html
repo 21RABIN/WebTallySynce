@@ -1,0 +1,220 @@
+<section class="master-screen">
+  <article class="master-hero">
+    <div class="master-hero__content">
+      <p class="master-hero__eyebrow">Master data</p>
+      <h1>Groups workspace</h1>
+      <p class="master-hero__description">
+        Browse hierarchy, review parent structure, and create new groups for the selected company in a cleaner Tally-style layout.
+      </p>
+    </div>
+
+    <div class="master-hero__meta">
+      <div class="master-hero__panel">
+        <span>Selected Company</span>
+        <strong>{{ selectedCompany || 'No company selected' }}</strong>
+      </div>
+      <div class="master-hero__panel">
+        <span>Last Sync</span>
+        <strong>{{ lastSyncedAt || 'Not Available' }}</strong>
+      </div>
+    </div>
+  </article>
+
+  <div class="master-screen__toolbar">
+    <div class="master-screen__status">
+      <span>Source {{ responseSource || '-' }}</span>
+      <span>{{ groups.length }} total groups</span>
+    </div>
+
+    <div class="master-screen__actions">
+      <div class="export-actions">
+        <span class="export-actions__label">Download</span>
+        <button type="button" class="export-actions__button" (click)="download('xlsx')">Excel</button>
+        <button type="button" class="export-actions__button" (click)="download('pdf')">PDF</button>
+      </div>
+      <button type="button" class="action-button" (click)="openCreateMode()">Create Group</button>
+      <button type="button" class="action-button action-button--dark" (click)="load()" [disabled]="isLoading">Refresh</button>
+    </div>
+  </div>
+
+  <section class="stat-grid">
+    <article class="stat-card">
+      <span class="stat-card__label">All Groups</span>
+      <strong>{{ groups.length }}</strong>
+      <p>Available from live group sync.</p>
+    </article>
+    <article class="stat-card">
+      <span class="stat-card__label">Primary Level</span>
+      <strong>{{ primaryGroupCount }}</strong>
+      <p>Groups directly under primary hierarchy.</p>
+    </article>
+    <article class="stat-card">
+      <span class="stat-card__label">Custom Groups</span>
+      <strong>{{ customGroupCount }}</strong>
+      <p>Derived groups under custom parents.</p>
+    </article>
+  </section>
+
+  <div class="feedback feedback--error" *ngIf="errorMessage">{{ errorMessage }}</div>
+  <div class="feedback feedback--success" *ngIf="submitMessage">{{ submitMessage }}</div>
+
+  <div class="master-screen__body">
+    <article class="list-panel">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title panel-title--directory">Group Directory</div>
+          <div class="panel-subtitle">
+            <span>{{ selectedCompany || 'No company selected' }}</span>
+            <span>{{ filteredGroups.length }} visible</span>
+          </div>
+        </div>
+        <button type="button" class="action-button action-button--soft" (click)="openCreateMode()">New Group</button>
+      </div>
+
+      <div class="list-panel__search">
+        <input type="text" [(ngModel)]="searchTerm" placeholder="Search groups, parent, reserved name" />
+        <button type="button" class="clear-button" *ngIf="searchTerm" (click)="clearSearch()">Clear</button>
+      </div>
+
+      <div class="list-panel__summary" *ngIf="!isLoading && filteredGroups.length">
+        <div class="list-panel__summary-chip">
+          <span>Primary</span>
+          <strong>{{ primaryGroupCount }}</strong>
+        </div>
+        <div class="list-panel__summary-chip">
+          <span>Custom</span>
+          <strong>{{ customGroupCount }}</strong>
+        </div>
+      </div>
+
+      <div class="list-panel__loading" *ngIf="isLoading">Loading groups...</div>
+
+      <div class="list-panel__empty" *ngIf="!isLoading && !filteredGroups.length">
+        No groups matched the current search or backend response.
+      </div>
+
+      <div class="list-panel__rows" *ngIf="!isLoading && filteredGroups.length">
+        <button
+          type="button"
+          class="list-panel__row"
+          *ngFor="let group of filteredGroups"
+          [class.is-selected]="group.name === selectedGroupName && !createMode"
+          (click)="selectGroup(group.name)">
+          <span class="list-panel__avatar">{{ (group.name || '?').charAt(0) }}</span>
+          <span class="list-panel__row-main">
+            <span class="list-panel__row-name" [title]="group.name">{{ group.name }}</span>
+            <span class="list-panel__row-meta">
+              <span class="list-panel__pill">{{ group.parent || 'Primary' }}</span>
+              <span class="list-panel__reserved" *ngIf="group.reservedName" [title]="group.reservedName">
+                {{ group.reservedName }}
+              </span>
+            </span>
+          </span>
+        </button>
+      </div>
+    </article>
+
+    <article class="detail-panel">
+      <div class="detail-panel__header">
+        <div>
+          <div class="panel-title">{{ detailTitle }}</div>
+          <div class="detail-panel__subtitle">
+            {{ createMode ? 'Create a new group under the correct hierarchy.' : 'Review the selected group and its hierarchy details.' }}
+          </div>
+        </div>
+        <div class="detail-panel__company">{{ selectedCompany || 'Company not selected' }}</div>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="submit()" class="alteration-form">
+        <div class="alteration-form__header">
+          <div class="field-row field-row--name">
+            <label for="group-name">Name</label>
+            <input
+              id="group-name"
+              formControlName="NAME"
+              [readonly]="!createMode"
+              [class.is-readonly]="!createMode"
+              placeholder="Group Name" />
+          </div>
+
+          <div class="summary-box">
+            <div class="summary-box__title">Hierarchy Status</div>
+            <div class="summary-box__value">{{ createMode ? 'Pending' : 'Loaded' }}</div>
+            <div class="summary-box__caption">{{ selectedGroup?.parent || form.get('PARENT')?.value || 'Primary' }}</div>
+          </div>
+        </div>
+
+        <div class="alteration-form__content">
+          <div class="detail-column">
+            <div class="field-row">
+              <label for="group-parent">Under</label>
+              <select id="group-parent" formControlName="PARENT" [disabled]="!createMode">
+                <option value="" disabled>Select parent group</option>
+                <option *ngFor="let parent of parentOptions" [value]="parent">{{ parent }}</option>
+              </select>
+            </div>
+
+            <div class="detail-section">
+              <div class="detail-section__title">Master Details</div>
+
+              <div class="detail-line">
+                <span>Reserved Name</span>
+                <strong>{{ selectedGroup?.reservedName || 'Not Applicable' }}</strong>
+              </div>
+
+              <div class="detail-line">
+                <span>Alias</span>
+                <strong>{{ selectedGroup?.name || form.get('NAME')?.value || 'Not Applicable' }}</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="detail-column">
+            <div class="detail-section">
+              <div class="detail-section__title">Grouping Details</div>
+
+              <div class="detail-line">
+                <span>Name</span>
+                <strong>{{ selectedGroup?.name || form.get('NAME')?.value || 'Pending' }}</strong>
+              </div>
+
+              <div class="detail-line">
+                <span>Parent Group</span>
+                <strong>{{ selectedGroup?.parent || form.get('PARENT')?.value || 'Primary' }}</strong>
+              </div>
+
+              <div class="detail-line">
+                <span>Company</span>
+                <strong>{{ selectedCompany || 'Not Selected' }}</strong>
+              </div>
+            </div>
+
+            <div class="detail-section">
+              <div class="detail-section__title">Notes</div>
+
+              <div class="detail-line">
+                <span>Source</span>
+                <strong>{{ responseSource || 'Unknown' }}</strong>
+              </div>
+
+              <div class="detail-line">
+                <span>Last Sync</span>
+                <strong>{{ lastSyncedAt || 'Not Available' }}</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="alteration-form__footer">
+          <div class="footer-caption">
+            {{ createMode ? 'Create a new group for the selected company.' : 'Group details loaded from the backend database cache.' }}
+          </div>
+
+          <button type="submit" class="accept-button" [disabled]="isSubmitting || !createMode || !parentOptions.length">
+            {{ isSubmitting ? 'Saving...' : 'Accept' }}
+          </button>
+        </div>
+      </form>
+    </article>
+  </div>
+</section>

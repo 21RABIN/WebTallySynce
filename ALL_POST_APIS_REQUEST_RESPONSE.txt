@@ -1,0 +1,2912 @@
+ALL POST APIs - Request Payload and Response
+Generated from live OpenAPI endpoints on 2026-05-15
+
+Sources:
+- Backend OpenAPI: http://127.0.0.1:9090/v3/api-docs
+- Connector OpenAPI: http://127.0.0.1:8082/openapi.json
+
+Notes:
+- This file lists POST endpoints only.
+- If an endpoint has no requestBody in OpenAPI, it likely uses path/query/header parameters instead of JSON body.
+- Response shapes are based on documented schemas, not hand-made examples.
+
+==========================================================================================
+Backend POST APIs
+==========================================================================================
+
+1. POST /api/attendance-types
+   Operation ID: attendanceTypesUpsert
+   Tags: payroll-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+2. POST /api/auth/logout
+   Operation ID: logout
+   Tags: auth-controller
+   Parameters: none documented
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: object
+
+3. POST /api/auth/token
+   Operation ID: token
+   Tags: auth-controller
+   Parameters: none documented
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 OK [*/*]: object
+
+4. POST /api/auth/users
+   Operation ID: upsert
+   Tags: auth-users-controller
+   Parameters: none documented
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 OK [*/*]: object
+
+5. POST /api/boms
+   Operation ID: bomsUpsert
+   Tags: master-data-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+6. POST /api/budgets
+   Operation ID: budgetsUpsert
+   Tags: master-data-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+7. POST /api/companies
+   Operation ID: companiesUpsert
+   Tags: companies-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+8. POST /api/companies/alter
+   Operation ID: alterCompany
+   Tags: companies-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+9. POST /api/companies/create
+   Operation ID: createCompany
+   Tags: companies-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+10. POST /api/companies/open
+   Operation ID: openCompany
+   Tags: companies-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+11. POST /api/companies/update
+   Operation ID: updateCompany
+   Tags: companies-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+12. POST /api/connectors
+   Operation ID: register
+   Tags: connectors-api-controller
+   Parameters: none documented
+   Request Body:
+   - application/json: ConnectorRegistration: object { connectorId (optional): string; baseUrl (optional): string; agentKey (optional): string; company (optional): string; branch (optional): string; description (optional): string; active (optional): boolean; firstSeenAt (optional): string; lastSeenAt (optional): string }
+   Responses:
+   - 200 OK [*/*]: object
+
+13. POST /api/connectors/{connectorId}/deactivate
+   Operation ID: deactivate
+   Tags: connectors-api-controller
+   Parameters:
+   - path param `connectorId` (required): string
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: object
+
+14. POST /api/cost-categories
+   Operation ID: costCategoriesUpsert
+   Tags: master-data-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+15. POST /api/cost-centres
+   Operation ID: costCentresUpsert
+   Tags: master-data-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+16. POST /api/currencies
+   Operation ID: currenciesUpsert
+   Tags: master-data-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+17. POST /api/employee-groups
+   Operation ID: employeeGroupsUpsert
+   Tags: payroll-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+18. POST /api/employees
+   Operation ID: employeesUpsert
+   Tags: payroll-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+19. POST /api/godowns
+   Operation ID: godownsUpsert
+   Tags: master-data-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+20. POST /api/groups
+   Operation ID: groupsUpsert
+   Tags: master-data-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+21. POST /api/ledger-groups
+   Operation ID: ledgerGroupsUpsert
+   Tags: master-data-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+22. POST /api/ledgers
+   Operation ID: ledgersUpsert
+   Tags: master-data-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+23. POST /api/pay-heads
+   Operation ID: payHeadsUpsert
+   Tags: payroll-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+24. POST /api/price-levels
+   Operation ID: priceLevelsUpsert
+   Tags: master-data-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+25. POST /api/price-lists
+   Operation ID: priceListsUpsert
+   Tags: master-data-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+26. POST /api/projects
+   Operation ID: projectsUpsert
+   Tags: master-data-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+27. POST /api/routing/connector
+   Operation ID: selectConnector
+   Tags: routing-api-controller
+   Parameters: none documented
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 OK [*/*]: object
+
+28. POST /api/settings/company-currency
+   Operation ID: companyCurrencyUpdate
+   Tags: settings-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+29. POST /api/settings/company-features
+   Operation ID: companyFeaturesUpdate
+   Tags: settings-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+30. POST /api/settings/einvoice
+   Operation ID: einvoiceUpdate
+   Tags: settings-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+31. POST /api/settings/ewaybill
+   Operation ID: ewaybillUpdate
+   Tags: settings-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+32. POST /api/settings/gst-registration
+   Operation ID: gstRegistrationUpdate
+   Tags: settings-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+33. POST /api/settings/numbering-rules
+   Operation ID: numberingRulesUpdate
+   Tags: settings-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+34. POST /api/settings/price-structures
+   Operation ID: priceStructuresUpdate
+   Tags: settings-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+35. POST /api/settings/security-roles
+   Operation ID: securityRolesUpdate
+   Tags: settings-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+36. POST /api/settings/stock-controls
+   Operation ID: stockControlsUpdate
+   Tags: settings-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+37. POST /api/stock-categories
+   Operation ID: stockCategoriesUpsert
+   Tags: master-data-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+38. POST /api/stock-groups
+   Operation ID: stockGroupsUpsert
+   Tags: master-data-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+39. POST /api/stock-items
+   Operation ID: stockItemsUpsert
+   Tags: master-data-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+40. POST /api/sync/attendance-type/{id}
+   Operation ID: syncAttendanceType
+   Tags: Tally Sync APIs
+   Parameters:
+   - path param `id` (required): integer
+   - query param `forceSync` (optional): boolean
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallySyncResult: object { success (optional): boolean; status (optional): string; message (optional): string; entityType (optional): string; entityId (optional): integer; syncLogId (optional): integer; tallyGuid (optional): string; errors (optional): array of string }
+
+41. POST /api/sync/attendance/{id}
+   Operation ID: syncAttendanceVoucher
+   Tags: Tally Sync APIs
+   Parameters:
+   - path param `id` (required): integer
+   - query param `forceSync` (optional): boolean
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallySyncResult: object { success (optional): boolean; status (optional): string; message (optional): string; entityType (optional): string; entityId (optional): integer; syncLogId (optional): integer; tallyGuid (optional): string; errors (optional): array of string }
+
+42. POST /api/sync/bom/{id}
+   Operation ID: syncBom
+   Tags: Tally Sync APIs
+   Parameters:
+   - path param `id` (required): integer
+   - query param `forceSync` (optional): boolean
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallySyncResult: object { success (optional): boolean; status (optional): string; message (optional): string; entityType (optional): string; entityId (optional): integer; syncLogId (optional): integer; tallyGuid (optional): string; errors (optional): array of string }
+
+43. POST /api/sync/budget/{id}
+   Operation ID: syncBudget
+   Tags: Tally Sync APIs
+   Parameters:
+   - path param `id` (required): integer
+   - query param `forceSync` (optional): boolean
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallySyncResult: object { success (optional): boolean; status (optional): string; message (optional): string; entityType (optional): string; entityId (optional): integer; syncLogId (optional): integer; tallyGuid (optional): string; errors (optional): array of string }
+
+44. POST /api/sync/cancel-invoice/{invoiceId}
+   Operation ID: syncCancelInvoice
+   Tags: Tally Sync APIs
+   Parameters:
+   - path param `invoiceId` (required): integer
+   - query param `forceSync` (optional): boolean
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallySyncResult: object { success (optional): boolean; status (optional): string; message (optional): string; entityType (optional): string; entityId (optional): integer; syncLogId (optional): integer; tallyGuid (optional): string; errors (optional): array of string }
+
+45. POST /api/sync/contra/{id}
+   Operation ID: syncContra
+   Tags: Tally Sync APIs
+   Parameters:
+   - path param `id` (required): integer
+   - query param `forceSync` (optional): boolean
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallySyncResult: object { success (optional): boolean; status (optional): string; message (optional): string; entityType (optional): string; entityId (optional): integer; syncLogId (optional): integer; tallyGuid (optional): string; errors (optional): array of string }
+
+46. POST /api/sync/cost-category/{id}
+   Operation ID: syncCostCategory
+   Tags: Tally Sync APIs
+   Parameters:
+   - path param `id` (required): integer
+   - query param `forceSync` (optional): boolean
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallySyncResult: object { success (optional): boolean; status (optional): string; message (optional): string; entityType (optional): string; entityId (optional): integer; syncLogId (optional): integer; tallyGuid (optional): string; errors (optional): array of string }
+
+47. POST /api/sync/cost-centre/{id}
+   Operation ID: syncCostCentre
+   Tags: Tally Sync APIs
+   Parameters:
+   - path param `id` (required): integer
+   - query param `forceSync` (optional): boolean
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallySyncResult: object { success (optional): boolean; status (optional): string; message (optional): string; entityType (optional): string; entityId (optional): integer; syncLogId (optional): integer; tallyGuid (optional): string; errors (optional): array of string }
+
+48. POST /api/sync/credit-note/{id}
+   Operation ID: syncCreditNote
+   Tags: Tally Sync APIs
+   Parameters:
+   - path param `id` (required): integer
+   - query param `forceSync` (optional): boolean
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallySyncResult: object { success (optional): boolean; status (optional): string; message (optional): string; entityType (optional): string; entityId (optional): integer; syncLogId (optional): integer; tallyGuid (optional): string; errors (optional): array of string }
+
+49. POST /api/sync/customer/{customerId}
+   Operation ID: syncCustomer
+   Tags: Tally Sync APIs
+   Parameters:
+   - path param `customerId` (required): integer
+   - query param `forceSync` (optional): boolean
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallySyncResult: object { success (optional): boolean; status (optional): string; message (optional): string; entityType (optional): string; entityId (optional): integer; syncLogId (optional): integer; tallyGuid (optional): string; errors (optional): array of string }
+
+50. POST /api/sync/debit-note/{id}
+   Operation ID: syncDebitNote
+   Tags: Tally Sync APIs
+   Parameters:
+   - path param `id` (required): integer
+   - query param `forceSync` (optional): boolean
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallySyncResult: object { success (optional): boolean; status (optional): string; message (optional): string; entityType (optional): string; entityId (optional): integer; syncLogId (optional): integer; tallyGuid (optional): string; errors (optional): array of string }
+
+51. POST /api/sync/delivery-note/{id}
+   Operation ID: syncDeliveryNote
+   Tags: Tally Sync APIs
+   Parameters:
+   - path param `id` (required): integer
+   - query param `forceSync` (optional): boolean
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallySyncResult: object { success (optional): boolean; status (optional): string; message (optional): string; entityType (optional): string; entityId (optional): integer; syncLogId (optional): integer; tallyGuid (optional): string; errors (optional): array of string }
+
+52. POST /api/sync/employee-group/{id}
+   Operation ID: syncEmployeeGroup
+   Tags: Tally Sync APIs
+   Parameters:
+   - path param `id` (required): integer
+   - query param `forceSync` (optional): boolean
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallySyncResult: object { success (optional): boolean; status (optional): string; message (optional): string; entityType (optional): string; entityId (optional): integer; syncLogId (optional): integer; tallyGuid (optional): string; errors (optional): array of string }
+
+53. POST /api/sync/employee/{id}
+   Operation ID: syncEmployee
+   Tags: Tally Sync APIs
+   Parameters:
+   - path param `id` (required): integer
+   - query param `forceSync` (optional): boolean
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallySyncResult: object { success (optional): boolean; status (optional): string; message (optional): string; entityType (optional): string; entityId (optional): integer; syncLogId (optional): integer; tallyGuid (optional): string; errors (optional): array of string }
+
+54. POST /api/sync/godown/{id}
+   Operation ID: syncGodown
+   Tags: Tally Sync APIs
+   Parameters:
+   - path param `id` (required): integer
+   - query param `forceSync` (optional): boolean
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallySyncResult: object { success (optional): boolean; status (optional): string; message (optional): string; entityType (optional): string; entityId (optional): integer; syncLogId (optional): integer; tallyGuid (optional): string; errors (optional): array of string }
+
+55. POST /api/sync/goods-receipt/{id}
+   Operation ID: syncGoodsReceipt
+   Tags: Tally Sync APIs
+   Parameters:
+   - path param `id` (required): integer
+   - query param `forceSync` (optional): boolean
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallySyncResult: object { success (optional): boolean; status (optional): string; message (optional): string; entityType (optional): string; entityId (optional): integer; syncLogId (optional): integer; tallyGuid (optional): string; errors (optional): array of string }
+
+56. POST /api/sync/job-work-in-order/{id}
+   Operation ID: syncJobWorkInOrder
+   Tags: Tally Sync APIs
+   Parameters:
+   - path param `id` (required): integer
+   - query param `forceSync` (optional): boolean
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallySyncResult: object { success (optional): boolean; status (optional): string; message (optional): string; entityType (optional): string; entityId (optional): integer; syncLogId (optional): integer; tallyGuid (optional): string; errors (optional): array of string }
+
+57. POST /api/sync/job-work-out-order/{id}
+   Operation ID: syncJobWorkOutOrder
+   Tags: Tally Sync APIs
+   Parameters:
+   - path param `id` (required): integer
+   - query param `forceSync` (optional): boolean
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallySyncResult: object { success (optional): boolean; status (optional): string; message (optional): string; entityType (optional): string; entityId (optional): integer; syncLogId (optional): integer; tallyGuid (optional): string; errors (optional): array of string }
+
+58. POST /api/sync/journal/{id}
+   Operation ID: syncJournal
+   Tags: Tally Sync APIs
+   Parameters:
+   - path param `id` (required): integer
+   - query param `forceSync` (optional): boolean
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallySyncResult: object { success (optional): boolean; status (optional): string; message (optional): string; entityType (optional): string; entityId (optional): integer; syncLogId (optional): integer; tallyGuid (optional): string; errors (optional): array of string }
+
+59. POST /api/sync/material-in/{id}
+   Operation ID: syncMaterialIn
+   Tags: Tally Sync APIs
+   Parameters:
+   - path param `id` (required): integer
+   - query param `forceSync` (optional): boolean
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallySyncResult: object { success (optional): boolean; status (optional): string; message (optional): string; entityType (optional): string; entityId (optional): integer; syncLogId (optional): integer; tallyGuid (optional): string; errors (optional): array of string }
+
+60. POST /api/sync/material-out/{id}
+   Operation ID: syncMaterialOut
+   Tags: Tally Sync APIs
+   Parameters:
+   - path param `id` (required): integer
+   - query param `forceSync` (optional): boolean
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallySyncResult: object { success (optional): boolean; status (optional): string; message (optional): string; entityType (optional): string; entityId (optional): integer; syncLogId (optional): integer; tallyGuid (optional): string; errors (optional): array of string }
+
+61. POST /api/sync/memorandum/{id}
+   Operation ID: syncMemorandum
+   Tags: Tally Sync APIs
+   Parameters:
+   - path param `id` (required): integer
+   - query param `forceSync` (optional): boolean
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallySyncResult: object { success (optional): boolean; status (optional): string; message (optional): string; entityType (optional): string; entityId (optional): integer; syncLogId (optional): integer; tallyGuid (optional): string; errors (optional): array of string }
+
+62. POST /api/sync/pay-head/{id}
+   Operation ID: syncPayHead
+   Tags: Tally Sync APIs
+   Parameters:
+   - path param `id` (required): integer
+   - query param `forceSync` (optional): boolean
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallySyncResult: object { success (optional): boolean; status (optional): string; message (optional): string; entityType (optional): string; entityId (optional): integer; syncLogId (optional): integer; tallyGuid (optional): string; errors (optional): array of string }
+
+63. POST /api/sync/payment/{paymentId}
+   Operation ID: syncPayment
+   Tags: Tally Sync APIs
+   Parameters:
+   - path param `paymentId` (required): integer
+   - query param `forceSync` (optional): boolean
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallySyncResult: object { success (optional): boolean; status (optional): string; message (optional): string; entityType (optional): string; entityId (optional): integer; syncLogId (optional): integer; tallyGuid (optional): string; errors (optional): array of string }
+
+64. POST /api/sync/payroll/{id}
+   Operation ID: syncPayrollVoucher
+   Tags: Tally Sync APIs
+   Parameters:
+   - path param `id` (required): integer
+   - query param `forceSync` (optional): boolean
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallySyncResult: object { success (optional): boolean; status (optional): string; message (optional): string; entityType (optional): string; entityId (optional): integer; syncLogId (optional): integer; tallyGuid (optional): string; errors (optional): array of string }
+
+65. POST /api/sync/physical-stock/{id}
+   Operation ID: syncPhysicalStock
+   Tags: Tally Sync APIs
+   Parameters:
+   - path param `id` (required): integer
+   - query param `forceSync` (optional): boolean
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallySyncResult: object { success (optional): boolean; status (optional): string; message (optional): string; entityType (optional): string; entityId (optional): integer; syncLogId (optional): integer; tallyGuid (optional): string; errors (optional): array of string }
+
+66. POST /api/sync/price-level/{id}
+   Operation ID: syncPriceLevel
+   Tags: Tally Sync APIs
+   Parameters:
+   - path param `id` (required): integer
+   - query param `forceSync` (optional): boolean
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallySyncResult: object { success (optional): boolean; status (optional): string; message (optional): string; entityType (optional): string; entityId (optional): integer; syncLogId (optional): integer; tallyGuid (optional): string; errors (optional): array of string }
+
+67. POST /api/sync/product/{productId}
+   Operation ID: syncProduct
+   Tags: Tally Sync APIs
+   Parameters:
+   - path param `productId` (required): integer
+   - query param `forceSync` (optional): boolean
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallySyncResult: object { success (optional): boolean; status (optional): string; message (optional): string; entityType (optional): string; entityId (optional): integer; syncLogId (optional): integer; tallyGuid (optional): string; errors (optional): array of string }
+
+68. POST /api/sync/purchase-invoice/{invoiceId}
+   Operation ID: syncPurchaseInvoice
+   Tags: Tally Sync APIs
+   Parameters:
+   - path param `invoiceId` (required): integer
+   - query param `forceSync` (optional): boolean
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallySyncResult: object { success (optional): boolean; status (optional): string; message (optional): string; entityType (optional): string; entityId (optional): integer; syncLogId (optional): integer; tallyGuid (optional): string; errors (optional): array of string }
+
+69. POST /api/sync/purchase-order/{id}
+   Operation ID: syncPurchaseOrder
+   Tags: Tally Sync APIs
+   Parameters:
+   - path param `id` (required): integer
+   - query param `forceSync` (optional): boolean
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallySyncResult: object { success (optional): boolean; status (optional): string; message (optional): string; entityType (optional): string; entityId (optional): integer; syncLogId (optional): integer; tallyGuid (optional): string; errors (optional): array of string }
+
+70. POST /api/sync/refund/{paymentId}
+   Operation ID: syncRefund
+   Tags: Tally Sync APIs
+   Parameters:
+   - path param `paymentId` (required): integer
+   - query param `forceSync` (optional): boolean
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallySyncResult: object { success (optional): boolean; status (optional): string; message (optional): string; entityType (optional): string; entityId (optional): integer; syncLogId (optional): integer; tallyGuid (optional): string; errors (optional): array of string }
+
+71. POST /api/sync/rejection-in/{id}
+   Operation ID: syncRejectionIn
+   Tags: Tally Sync APIs
+   Parameters:
+   - path param `id` (required): integer
+   - query param `forceSync` (optional): boolean
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallySyncResult: object { success (optional): boolean; status (optional): string; message (optional): string; entityType (optional): string; entityId (optional): integer; syncLogId (optional): integer; tallyGuid (optional): string; errors (optional): array of string }
+
+72. POST /api/sync/rejection-out/{id}
+   Operation ID: syncRejectionOut
+   Tags: Tally Sync APIs
+   Parameters:
+   - path param `id` (required): integer
+   - query param `forceSync` (optional): boolean
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallySyncResult: object { success (optional): boolean; status (optional): string; message (optional): string; entityType (optional): string; entityId (optional): integer; syncLogId (optional): integer; tallyGuid (optional): string; errors (optional): array of string }
+
+73. POST /api/sync/return-invoice/{invoiceId}
+   Operation ID: syncReturnInvoice
+   Tags: Tally Sync APIs
+   Parameters:
+   - path param `invoiceId` (required): integer
+   - query param `forceSync` (optional): boolean
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallySyncResult: object { success (optional): boolean; status (optional): string; message (optional): string; entityType (optional): string; entityId (optional): integer; syncLogId (optional): integer; tallyGuid (optional): string; errors (optional): array of string }
+
+74. POST /api/sync/reversing-journal/{id}
+   Operation ID: syncReversingJournal
+   Tags: Tally Sync APIs
+   Parameters:
+   - path param `id` (required): integer
+   - query param `forceSync` (optional): boolean
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallySyncResult: object { success (optional): boolean; status (optional): string; message (optional): string; entityType (optional): string; entityId (optional): integer; syncLogId (optional): integer; tallyGuid (optional): string; errors (optional): array of string }
+
+75. POST /api/sync/sales-invoice/{invoiceId}
+   Operation ID: syncSalesInvoice
+   Tags: Tally Sync APIs
+   Parameters:
+   - path param `invoiceId` (required): integer
+   - query param `forceSync` (optional): boolean
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallySyncResult: object { success (optional): boolean; status (optional): string; message (optional): string; entityType (optional): string; entityId (optional): integer; syncLogId (optional): integer; tallyGuid (optional): string; errors (optional): array of string }
+
+76. POST /api/sync/sales-order/{id}
+   Operation ID: syncSalesOrder
+   Tags: Tally Sync APIs
+   Parameters:
+   - path param `id` (required): integer
+   - query param `forceSync` (optional): boolean
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallySyncResult: object { success (optional): boolean; status (optional): string; message (optional): string; entityType (optional): string; entityId (optional): integer; syncLogId (optional): integer; tallyGuid (optional): string; errors (optional): array of string }
+
+77. POST /api/sync/stock-category/{id}
+   Operation ID: syncStockCategory
+   Tags: Tally Sync APIs
+   Parameters:
+   - path param `id` (required): integer
+   - query param `forceSync` (optional): boolean
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallySyncResult: object { success (optional): boolean; status (optional): string; message (optional): string; entityType (optional): string; entityId (optional): integer; syncLogId (optional): integer; tallyGuid (optional): string; errors (optional): array of string }
+
+78. POST /api/sync/stock-group/{id}
+   Operation ID: syncStockGroup
+   Tags: Tally Sync APIs
+   Parameters:
+   - path param `id` (required): integer
+   - query param `forceSync` (optional): boolean
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallySyncResult: object { success (optional): boolean; status (optional): string; message (optional): string; entityType (optional): string; entityId (optional): integer; syncLogId (optional): integer; tallyGuid (optional): string; errors (optional): array of string }
+
+79. POST /api/sync/stock-journal/{id}
+   Operation ID: syncStockJournal
+   Tags: Tally Sync APIs
+   Parameters:
+   - path param `id` (required): integer
+   - query param `forceSync` (optional): boolean
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallySyncResult: object { success (optional): boolean; status (optional): string; message (optional): string; entityType (optional): string; entityId (optional): integer; syncLogId (optional): integer; tallyGuid (optional): string; errors (optional): array of string }
+
+80. POST /api/sync/supplier/{supplierId}
+   Operation ID: syncSupplier
+   Tags: Tally Sync APIs
+   Parameters:
+   - path param `supplierId` (required): integer
+   - query param `forceSync` (optional): boolean
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallySyncResult: object { success (optional): boolean; status (optional): string; message (optional): string; entityType (optional): string; entityId (optional): integer; syncLogId (optional): integer; tallyGuid (optional): string; errors (optional): array of string }
+
+81. POST /api/sync/voucher-type/{id}
+   Operation ID: syncVoucherType
+   Tags: Tally Sync APIs
+   Parameters:
+   - path param `id` (required): integer
+   - query param `forceSync` (optional): boolean
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallySyncResult: object { success (optional): boolean; status (optional): string; message (optional): string; entityType (optional): string; entityId (optional): integer; syncLogId (optional): integer; tallyGuid (optional): string; errors (optional): array of string }
+
+82. POST /api/tally
+   Operation ID: forward_6
+   Tags: connector-proxy-controller
+   Parameters: none documented
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+83. POST /api/tally-mappings/ledgers
+   Operation ID: create
+   Tags: Tally Ledger Mapping
+   Parameters: none documented
+   Request Body:
+   - application/json: TallyLedgerMappingRequest: object { businessUnitId (optional): integer; erpLedgerType (optional): string; erpLedgerName (optional): string; tallyLedgerName (optional): string; tallyGroupName (optional): string; isActive (optional): boolean }
+   Responses:
+   - 200 OK [*/*]: TallyLedgerMapping: object { id (optional): integer; businessUnitId (optional): integer; erpLedgerType (optional): string; erpLedgerName (optional): string; tallyLedgerName (optional): string; tallyGroupName (optional): string; active (optional): boolean; createdAt (optional): string; updatedAt (optional): string }
+
+84. POST /api/tally-mappings/ledgers/defaults/{businessUnitId}
+   Operation ID: seedDefaults
+   Tags: Tally Ledger Mapping
+   Parameters:
+   - path param `businessUnitId` (required): integer
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: array of TallyLedgerMapping: object { id (optional): integer; businessUnitId (optional): integer; erpLedgerType (optional): string; erpLedgerName (optional): string; tallyLedgerName (optional): string; tallyGroupName (optional): string; active (optional): boolean; createdAt (optional): string; updatedAt (optional): string }
+
+85. POST /api/tally-sync/retry-failed
+   Operation ID: retryFailed
+   Tags: Tally Sync Logs
+   Parameters: none documented
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: object
+
+86. POST /api/tally-sync/retry/{syncLogId}
+   Operation ID: retry
+   Tags: Tally Sync Logs
+   Parameters:
+   - path param `syncLogId` (required): integer
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallySyncResult: object { success (optional): boolean; status (optional): string; message (optional): string; entityType (optional): string; entityId (optional): integer; syncLogId (optional): integer; tallyGuid (optional): string; errors (optional): array of string }
+
+87. POST /api/tally/
+   Operation ID: forward_11
+   Tags: connector-proxy-controller
+   Parameters: none documented
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+88. POST /api/tally/**
+   Operation ID: forward_1
+   Tags: connector-proxy-controller
+   Parameters: none documented
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+89. POST /api/tally/bulk-sync/all-masters
+   Operation ID: allMasters
+   Tags: Tally Bulk Sync
+   Parameters: none documented
+   Request Body:
+   - application/json: BulkSyncRequest: object { fromDate (optional): string; toDate (optional): string; businessUnitId (optional): integer; skipAlreadySynced (optional): boolean; forceSync (optional): boolean }
+   Responses:
+   - 200 OK [*/*]: BulkSyncResponse: object { total (optional): integer; success (optional): integer; failed (optional): integer; skipped (optional): integer; failedItems (optional): array of FailedItem: object { entityId (optional): integer; message (optional): string } }
+
+90. POST /api/tally/bulk-sync/attendance-types
+   Operation ID: attendanceTypes
+   Tags: Tally Bulk Sync
+   Parameters: none documented
+   Request Body:
+   - application/json: BulkSyncRequest: object { fromDate (optional): string; toDate (optional): string; businessUnitId (optional): integer; skipAlreadySynced (optional): boolean; forceSync (optional): boolean }
+   Responses:
+   - 200 OK [*/*]: BulkSyncResponse: object { total (optional): integer; success (optional): integer; failed (optional): integer; skipped (optional): integer; failedItems (optional): array of FailedItem: object { entityId (optional): integer; message (optional): string } }
+
+91. POST /api/tally/bulk-sync/attendance-vouchers
+   Operation ID: attendanceVouchers
+   Tags: Tally Bulk Sync
+   Parameters: none documented
+   Request Body:
+   - application/json: BulkSyncRequest: object { fromDate (optional): string; toDate (optional): string; businessUnitId (optional): integer; skipAlreadySynced (optional): boolean; forceSync (optional): boolean }
+   Responses:
+   - 200 OK [*/*]: BulkSyncResponse: object { total (optional): integer; success (optional): integer; failed (optional): integer; skipped (optional): integer; failedItems (optional): array of FailedItem: object { entityId (optional): integer; message (optional): string } }
+
+92. POST /api/tally/bulk-sync/boms
+   Operation ID: boms
+   Tags: Tally Bulk Sync
+   Parameters: none documented
+   Request Body:
+   - application/json: BulkSyncRequest: object { fromDate (optional): string; toDate (optional): string; businessUnitId (optional): integer; skipAlreadySynced (optional): boolean; forceSync (optional): boolean }
+   Responses:
+   - 200 OK [*/*]: BulkSyncResponse: object { total (optional): integer; success (optional): integer; failed (optional): integer; skipped (optional): integer; failedItems (optional): array of FailedItem: object { entityId (optional): integer; message (optional): string } }
+
+93. POST /api/tally/bulk-sync/budgets
+   Operation ID: budgets
+   Tags: Tally Bulk Sync
+   Parameters: none documented
+   Request Body:
+   - application/json: BulkSyncRequest: object { fromDate (optional): string; toDate (optional): string; businessUnitId (optional): integer; skipAlreadySynced (optional): boolean; forceSync (optional): boolean }
+   Responses:
+   - 200 OK [*/*]: BulkSyncResponse: object { total (optional): integer; success (optional): integer; failed (optional): integer; skipped (optional): integer; failedItems (optional): array of FailedItem: object { entityId (optional): integer; message (optional): string } }
+
+94. POST /api/tally/bulk-sync/contras
+   Operation ID: contras
+   Tags: Tally Bulk Sync
+   Parameters: none documented
+   Request Body:
+   - application/json: BulkSyncRequest: object { fromDate (optional): string; toDate (optional): string; businessUnitId (optional): integer; skipAlreadySynced (optional): boolean; forceSync (optional): boolean }
+   Responses:
+   - 200 OK [*/*]: BulkSyncResponse: object { total (optional): integer; success (optional): integer; failed (optional): integer; skipped (optional): integer; failedItems (optional): array of FailedItem: object { entityId (optional): integer; message (optional): string } }
+
+95. POST /api/tally/bulk-sync/cost-categories
+   Operation ID: costCategories
+   Tags: Tally Bulk Sync
+   Parameters: none documented
+   Request Body:
+   - application/json: BulkSyncRequest: object { fromDate (optional): string; toDate (optional): string; businessUnitId (optional): integer; skipAlreadySynced (optional): boolean; forceSync (optional): boolean }
+   Responses:
+   - 200 OK [*/*]: BulkSyncResponse: object { total (optional): integer; success (optional): integer; failed (optional): integer; skipped (optional): integer; failedItems (optional): array of FailedItem: object { entityId (optional): integer; message (optional): string } }
+
+96. POST /api/tally/bulk-sync/cost-centres
+   Operation ID: costCentres
+   Tags: Tally Bulk Sync
+   Parameters: none documented
+   Request Body:
+   - application/json: BulkSyncRequest: object { fromDate (optional): string; toDate (optional): string; businessUnitId (optional): integer; skipAlreadySynced (optional): boolean; forceSync (optional): boolean }
+   Responses:
+   - 200 OK [*/*]: BulkSyncResponse: object { total (optional): integer; success (optional): integer; failed (optional): integer; skipped (optional): integer; failedItems (optional): array of FailedItem: object { entityId (optional): integer; message (optional): string } }
+
+97. POST /api/tally/bulk-sync/credit-notes
+   Operation ID: creditNotes
+   Tags: Tally Bulk Sync
+   Parameters: none documented
+   Request Body:
+   - application/json: BulkSyncRequest: object { fromDate (optional): string; toDate (optional): string; businessUnitId (optional): integer; skipAlreadySynced (optional): boolean; forceSync (optional): boolean }
+   Responses:
+   - 200 OK [*/*]: BulkSyncResponse: object { total (optional): integer; success (optional): integer; failed (optional): integer; skipped (optional): integer; failedItems (optional): array of FailedItem: object { entityId (optional): integer; message (optional): string } }
+
+98. POST /api/tally/bulk-sync/customers
+   Operation ID: customers
+   Tags: Tally Bulk Sync
+   Parameters: none documented
+   Request Body:
+   - application/json: BulkSyncRequest: object { fromDate (optional): string; toDate (optional): string; businessUnitId (optional): integer; skipAlreadySynced (optional): boolean; forceSync (optional): boolean }
+   Responses:
+   - 200 OK [*/*]: BulkSyncResponse: object { total (optional): integer; success (optional): integer; failed (optional): integer; skipped (optional): integer; failedItems (optional): array of FailedItem: object { entityId (optional): integer; message (optional): string } }
+
+99. POST /api/tally/bulk-sync/debit-notes
+   Operation ID: debitNotes
+   Tags: Tally Bulk Sync
+   Parameters: none documented
+   Request Body:
+   - application/json: BulkSyncRequest: object { fromDate (optional): string; toDate (optional): string; businessUnitId (optional): integer; skipAlreadySynced (optional): boolean; forceSync (optional): boolean }
+   Responses:
+   - 200 OK [*/*]: BulkSyncResponse: object { total (optional): integer; success (optional): integer; failed (optional): integer; skipped (optional): integer; failedItems (optional): array of FailedItem: object { entityId (optional): integer; message (optional): string } }
+
+100. POST /api/tally/bulk-sync/delivery-notes
+   Operation ID: deliveryNotes
+   Tags: Tally Bulk Sync
+   Parameters: none documented
+   Request Body:
+   - application/json: BulkSyncRequest: object { fromDate (optional): string; toDate (optional): string; businessUnitId (optional): integer; skipAlreadySynced (optional): boolean; forceSync (optional): boolean }
+   Responses:
+   - 200 OK [*/*]: BulkSyncResponse: object { total (optional): integer; success (optional): integer; failed (optional): integer; skipped (optional): integer; failedItems (optional): array of FailedItem: object { entityId (optional): integer; message (optional): string } }
+
+101. POST /api/tally/bulk-sync/employee-groups
+   Operation ID: employeeGroups
+   Tags: Tally Bulk Sync
+   Parameters: none documented
+   Request Body:
+   - application/json: BulkSyncRequest: object { fromDate (optional): string; toDate (optional): string; businessUnitId (optional): integer; skipAlreadySynced (optional): boolean; forceSync (optional): boolean }
+   Responses:
+   - 200 OK [*/*]: BulkSyncResponse: object { total (optional): integer; success (optional): integer; failed (optional): integer; skipped (optional): integer; failedItems (optional): array of FailedItem: object { entityId (optional): integer; message (optional): string } }
+
+102. POST /api/tally/bulk-sync/employees
+   Operation ID: employees
+   Tags: Tally Bulk Sync
+   Parameters: none documented
+   Request Body:
+   - application/json: BulkSyncRequest: object { fromDate (optional): string; toDate (optional): string; businessUnitId (optional): integer; skipAlreadySynced (optional): boolean; forceSync (optional): boolean }
+   Responses:
+   - 200 OK [*/*]: BulkSyncResponse: object { total (optional): integer; success (optional): integer; failed (optional): integer; skipped (optional): integer; failedItems (optional): array of FailedItem: object { entityId (optional): integer; message (optional): string } }
+
+103. POST /api/tally/bulk-sync/godowns
+   Operation ID: godowns
+   Tags: Tally Bulk Sync
+   Parameters: none documented
+   Request Body:
+   - application/json: BulkSyncRequest: object { fromDate (optional): string; toDate (optional): string; businessUnitId (optional): integer; skipAlreadySynced (optional): boolean; forceSync (optional): boolean }
+   Responses:
+   - 200 OK [*/*]: BulkSyncResponse: object { total (optional): integer; success (optional): integer; failed (optional): integer; skipped (optional): integer; failedItems (optional): array of FailedItem: object { entityId (optional): integer; message (optional): string } }
+
+104. POST /api/tally/bulk-sync/goods-receipts
+   Operation ID: goodsReceipts
+   Tags: Tally Bulk Sync
+   Parameters: none documented
+   Request Body:
+   - application/json: BulkSyncRequest: object { fromDate (optional): string; toDate (optional): string; businessUnitId (optional): integer; skipAlreadySynced (optional): boolean; forceSync (optional): boolean }
+   Responses:
+   - 200 OK [*/*]: BulkSyncResponse: object { total (optional): integer; success (optional): integer; failed (optional): integer; skipped (optional): integer; failedItems (optional): array of FailedItem: object { entityId (optional): integer; message (optional): string } }
+
+105. POST /api/tally/bulk-sync/job-work-in-orders
+   Operation ID: jobWorkInOrders
+   Tags: Tally Bulk Sync
+   Parameters: none documented
+   Request Body:
+   - application/json: BulkSyncRequest: object { fromDate (optional): string; toDate (optional): string; businessUnitId (optional): integer; skipAlreadySynced (optional): boolean; forceSync (optional): boolean }
+   Responses:
+   - 200 OK [*/*]: BulkSyncResponse: object { total (optional): integer; success (optional): integer; failed (optional): integer; skipped (optional): integer; failedItems (optional): array of FailedItem: object { entityId (optional): integer; message (optional): string } }
+
+106. POST /api/tally/bulk-sync/job-work-out-orders
+   Operation ID: jobWorkOutOrders
+   Tags: Tally Bulk Sync
+   Parameters: none documented
+   Request Body:
+   - application/json: BulkSyncRequest: object { fromDate (optional): string; toDate (optional): string; businessUnitId (optional): integer; skipAlreadySynced (optional): boolean; forceSync (optional): boolean }
+   Responses:
+   - 200 OK [*/*]: BulkSyncResponse: object { total (optional): integer; success (optional): integer; failed (optional): integer; skipped (optional): integer; failedItems (optional): array of FailedItem: object { entityId (optional): integer; message (optional): string } }
+
+107. POST /api/tally/bulk-sync/journals
+   Operation ID: journals
+   Tags: Tally Bulk Sync
+   Parameters: none documented
+   Request Body:
+   - application/json: BulkSyncRequest: object { fromDate (optional): string; toDate (optional): string; businessUnitId (optional): integer; skipAlreadySynced (optional): boolean; forceSync (optional): boolean }
+   Responses:
+   - 200 OK [*/*]: BulkSyncResponse: object { total (optional): integer; success (optional): integer; failed (optional): integer; skipped (optional): integer; failedItems (optional): array of FailedItem: object { entityId (optional): integer; message (optional): string } }
+
+108. POST /api/tally/bulk-sync/material-ins
+   Operation ID: materialIns
+   Tags: Tally Bulk Sync
+   Parameters: none documented
+   Request Body:
+   - application/json: BulkSyncRequest: object { fromDate (optional): string; toDate (optional): string; businessUnitId (optional): integer; skipAlreadySynced (optional): boolean; forceSync (optional): boolean }
+   Responses:
+   - 200 OK [*/*]: BulkSyncResponse: object { total (optional): integer; success (optional): integer; failed (optional): integer; skipped (optional): integer; failedItems (optional): array of FailedItem: object { entityId (optional): integer; message (optional): string } }
+
+109. POST /api/tally/bulk-sync/material-outs
+   Operation ID: materialOuts
+   Tags: Tally Bulk Sync
+   Parameters: none documented
+   Request Body:
+   - application/json: BulkSyncRequest: object { fromDate (optional): string; toDate (optional): string; businessUnitId (optional): integer; skipAlreadySynced (optional): boolean; forceSync (optional): boolean }
+   Responses:
+   - 200 OK [*/*]: BulkSyncResponse: object { total (optional): integer; success (optional): integer; failed (optional): integer; skipped (optional): integer; failedItems (optional): array of FailedItem: object { entityId (optional): integer; message (optional): string } }
+
+110. POST /api/tally/bulk-sync/memorandums
+   Operation ID: memorandums
+   Tags: Tally Bulk Sync
+   Parameters: none documented
+   Request Body:
+   - application/json: BulkSyncRequest: object { fromDate (optional): string; toDate (optional): string; businessUnitId (optional): integer; skipAlreadySynced (optional): boolean; forceSync (optional): boolean }
+   Responses:
+   - 200 OK [*/*]: BulkSyncResponse: object { total (optional): integer; success (optional): integer; failed (optional): integer; skipped (optional): integer; failedItems (optional): array of FailedItem: object { entityId (optional): integer; message (optional): string } }
+
+111. POST /api/tally/bulk-sync/pay-heads
+   Operation ID: payHeads
+   Tags: Tally Bulk Sync
+   Parameters: none documented
+   Request Body:
+   - application/json: BulkSyncRequest: object { fromDate (optional): string; toDate (optional): string; businessUnitId (optional): integer; skipAlreadySynced (optional): boolean; forceSync (optional): boolean }
+   Responses:
+   - 200 OK [*/*]: BulkSyncResponse: object { total (optional): integer; success (optional): integer; failed (optional): integer; skipped (optional): integer; failedItems (optional): array of FailedItem: object { entityId (optional): integer; message (optional): string } }
+
+112. POST /api/tally/bulk-sync/payments
+   Operation ID: payments
+   Tags: Tally Bulk Sync
+   Parameters: none documented
+   Request Body:
+   - application/json: BulkSyncRequest: object { fromDate (optional): string; toDate (optional): string; businessUnitId (optional): integer; skipAlreadySynced (optional): boolean; forceSync (optional): boolean }
+   Responses:
+   - 200 OK [*/*]: BulkSyncResponse: object { total (optional): integer; success (optional): integer; failed (optional): integer; skipped (optional): integer; failedItems (optional): array of FailedItem: object { entityId (optional): integer; message (optional): string } }
+
+113. POST /api/tally/bulk-sync/payroll
+   Operation ID: payroll
+   Tags: Tally Bulk Sync
+   Parameters: none documented
+   Request Body:
+   - application/json: BulkSyncRequest: object { fromDate (optional): string; toDate (optional): string; businessUnitId (optional): integer; skipAlreadySynced (optional): boolean; forceSync (optional): boolean }
+   Responses:
+   - 200 OK [*/*]: BulkSyncResponse: object { total (optional): integer; success (optional): integer; failed (optional): integer; skipped (optional): integer; failedItems (optional): array of FailedItem: object { entityId (optional): integer; message (optional): string } }
+
+114. POST /api/tally/bulk-sync/physical-stocks
+   Operation ID: physicalStocks
+   Tags: Tally Bulk Sync
+   Parameters: none documented
+   Request Body:
+   - application/json: BulkSyncRequest: object { fromDate (optional): string; toDate (optional): string; businessUnitId (optional): integer; skipAlreadySynced (optional): boolean; forceSync (optional): boolean }
+   Responses:
+   - 200 OK [*/*]: BulkSyncResponse: object { total (optional): integer; success (optional): integer; failed (optional): integer; skipped (optional): integer; failedItems (optional): array of FailedItem: object { entityId (optional): integer; message (optional): string } }
+
+115. POST /api/tally/bulk-sync/price-levels
+   Operation ID: priceLevels
+   Tags: Tally Bulk Sync
+   Parameters: none documented
+   Request Body:
+   - application/json: BulkSyncRequest: object { fromDate (optional): string; toDate (optional): string; businessUnitId (optional): integer; skipAlreadySynced (optional): boolean; forceSync (optional): boolean }
+   Responses:
+   - 200 OK [*/*]: BulkSyncResponse: object { total (optional): integer; success (optional): integer; failed (optional): integer; skipped (optional): integer; failedItems (optional): array of FailedItem: object { entityId (optional): integer; message (optional): string } }
+
+116. POST /api/tally/bulk-sync/products
+   Operation ID: products
+   Tags: Tally Bulk Sync
+   Parameters: none documented
+   Request Body:
+   - application/json: BulkSyncRequest: object { fromDate (optional): string; toDate (optional): string; businessUnitId (optional): integer; skipAlreadySynced (optional): boolean; forceSync (optional): boolean }
+   Responses:
+   - 200 OK [*/*]: BulkSyncResponse: object { total (optional): integer; success (optional): integer; failed (optional): integer; skipped (optional): integer; failedItems (optional): array of FailedItem: object { entityId (optional): integer; message (optional): string } }
+
+117. POST /api/tally/bulk-sync/purchase-invoices
+   Operation ID: purchaseInvoices
+   Tags: Tally Bulk Sync
+   Parameters: none documented
+   Request Body:
+   - application/json: BulkSyncRequest: object { fromDate (optional): string; toDate (optional): string; businessUnitId (optional): integer; skipAlreadySynced (optional): boolean; forceSync (optional): boolean }
+   Responses:
+   - 200 OK [*/*]: BulkSyncResponse: object { total (optional): integer; success (optional): integer; failed (optional): integer; skipped (optional): integer; failedItems (optional): array of FailedItem: object { entityId (optional): integer; message (optional): string } }
+
+118. POST /api/tally/bulk-sync/purchase-orders
+   Operation ID: purchaseOrders
+   Tags: Tally Bulk Sync
+   Parameters: none documented
+   Request Body:
+   - application/json: BulkSyncRequest: object { fromDate (optional): string; toDate (optional): string; businessUnitId (optional): integer; skipAlreadySynced (optional): boolean; forceSync (optional): boolean }
+   Responses:
+   - 200 OK [*/*]: BulkSyncResponse: object { total (optional): integer; success (optional): integer; failed (optional): integer; skipped (optional): integer; failedItems (optional): array of FailedItem: object { entityId (optional): integer; message (optional): string } }
+
+119. POST /api/tally/bulk-sync/rejections-in
+   Operation ID: rejectionsIn
+   Tags: Tally Bulk Sync
+   Parameters: none documented
+   Request Body:
+   - application/json: BulkSyncRequest: object { fromDate (optional): string; toDate (optional): string; businessUnitId (optional): integer; skipAlreadySynced (optional): boolean; forceSync (optional): boolean }
+   Responses:
+   - 200 OK [*/*]: BulkSyncResponse: object { total (optional): integer; success (optional): integer; failed (optional): integer; skipped (optional): integer; failedItems (optional): array of FailedItem: object { entityId (optional): integer; message (optional): string } }
+
+120. POST /api/tally/bulk-sync/rejections-out
+   Operation ID: rejectionsOut
+   Tags: Tally Bulk Sync
+   Parameters: none documented
+   Request Body:
+   - application/json: BulkSyncRequest: object { fromDate (optional): string; toDate (optional): string; businessUnitId (optional): integer; skipAlreadySynced (optional): boolean; forceSync (optional): boolean }
+   Responses:
+   - 200 OK [*/*]: BulkSyncResponse: object { total (optional): integer; success (optional): integer; failed (optional): integer; skipped (optional): integer; failedItems (optional): array of FailedItem: object { entityId (optional): integer; message (optional): string } }
+
+121. POST /api/tally/bulk-sync/reversing-journals
+   Operation ID: reversingJournals
+   Tags: Tally Bulk Sync
+   Parameters: none documented
+   Request Body:
+   - application/json: BulkSyncRequest: object { fromDate (optional): string; toDate (optional): string; businessUnitId (optional): integer; skipAlreadySynced (optional): boolean; forceSync (optional): boolean }
+   Responses:
+   - 200 OK [*/*]: BulkSyncResponse: object { total (optional): integer; success (optional): integer; failed (optional): integer; skipped (optional): integer; failedItems (optional): array of FailedItem: object { entityId (optional): integer; message (optional): string } }
+
+122. POST /api/tally/bulk-sync/sales-invoices
+   Operation ID: salesInvoices
+   Tags: Tally Bulk Sync
+   Parameters: none documented
+   Request Body:
+   - application/json: BulkSyncRequest: object { fromDate (optional): string; toDate (optional): string; businessUnitId (optional): integer; skipAlreadySynced (optional): boolean; forceSync (optional): boolean }
+   Responses:
+   - 200 OK [*/*]: BulkSyncResponse: object { total (optional): integer; success (optional): integer; failed (optional): integer; skipped (optional): integer; failedItems (optional): array of FailedItem: object { entityId (optional): integer; message (optional): string } }
+
+123. POST /api/tally/bulk-sync/sales-orders
+   Operation ID: salesOrders
+   Tags: Tally Bulk Sync
+   Parameters: none documented
+   Request Body:
+   - application/json: BulkSyncRequest: object { fromDate (optional): string; toDate (optional): string; businessUnitId (optional): integer; skipAlreadySynced (optional): boolean; forceSync (optional): boolean }
+   Responses:
+   - 200 OK [*/*]: BulkSyncResponse: object { total (optional): integer; success (optional): integer; failed (optional): integer; skipped (optional): integer; failedItems (optional): array of FailedItem: object { entityId (optional): integer; message (optional): string } }
+
+124. POST /api/tally/bulk-sync/stock-categories
+   Operation ID: stockCategories
+   Tags: Tally Bulk Sync
+   Parameters: none documented
+   Request Body:
+   - application/json: BulkSyncRequest: object { fromDate (optional): string; toDate (optional): string; businessUnitId (optional): integer; skipAlreadySynced (optional): boolean; forceSync (optional): boolean }
+   Responses:
+   - 200 OK [*/*]: BulkSyncResponse: object { total (optional): integer; success (optional): integer; failed (optional): integer; skipped (optional): integer; failedItems (optional): array of FailedItem: object { entityId (optional): integer; message (optional): string } }
+
+125. POST /api/tally/bulk-sync/stock-groups
+   Operation ID: stockGroups
+   Tags: Tally Bulk Sync
+   Parameters: none documented
+   Request Body:
+   - application/json: BulkSyncRequest: object { fromDate (optional): string; toDate (optional): string; businessUnitId (optional): integer; skipAlreadySynced (optional): boolean; forceSync (optional): boolean }
+   Responses:
+   - 200 OK [*/*]: BulkSyncResponse: object { total (optional): integer; success (optional): integer; failed (optional): integer; skipped (optional): integer; failedItems (optional): array of FailedItem: object { entityId (optional): integer; message (optional): string } }
+
+126. POST /api/tally/bulk-sync/stock-journals
+   Operation ID: stockJournals
+   Tags: Tally Bulk Sync
+   Parameters: none documented
+   Request Body:
+   - application/json: BulkSyncRequest: object { fromDate (optional): string; toDate (optional): string; businessUnitId (optional): integer; skipAlreadySynced (optional): boolean; forceSync (optional): boolean }
+   Responses:
+   - 200 OK [*/*]: BulkSyncResponse: object { total (optional): integer; success (optional): integer; failed (optional): integer; skipped (optional): integer; failedItems (optional): array of FailedItem: object { entityId (optional): integer; message (optional): string } }
+
+127. POST /api/tally/bulk-sync/suppliers
+   Operation ID: suppliers
+   Tags: Tally Bulk Sync
+   Parameters: none documented
+   Request Body:
+   - application/json: BulkSyncRequest: object { fromDate (optional): string; toDate (optional): string; businessUnitId (optional): integer; skipAlreadySynced (optional): boolean; forceSync (optional): boolean }
+   Responses:
+   - 200 OK [*/*]: BulkSyncResponse: object { total (optional): integer; success (optional): integer; failed (optional): integer; skipped (optional): integer; failedItems (optional): array of FailedItem: object { entityId (optional): integer; message (optional): string } }
+
+128. POST /api/tally/bulk-sync/voucher-types
+   Operation ID: voucherTypes
+   Tags: Tally Bulk Sync
+   Parameters: none documented
+   Request Body:
+   - application/json: BulkSyncRequest: object { fromDate (optional): string; toDate (optional): string; businessUnitId (optional): integer; skipAlreadySynced (optional): boolean; forceSync (optional): boolean }
+   Responses:
+   - 200 OK [*/*]: BulkSyncResponse: object { total (optional): integer; success (optional): integer; failed (optional): integer; skipped (optional): integer; failedItems (optional): array of FailedItem: object { entityId (optional): integer; message (optional): string } }
+
+129. POST /api/tally/company/select
+   Operation ID: select
+   Tags: Tally Company Context
+   Parameters: none documented
+   Request Body:
+   - application/json: CompanySelectionRequest: object { companyName (optional): string }
+   Responses:
+   - 200 OK [*/*]: object
+
+130. POST /api/tally/validate/attendance-type/{id}
+   Operation ID: attendanceType
+   Tags: Tally Validation
+   Parameters:
+   - path param `id` (required): integer
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallyValidationResult: object { valid (optional): boolean; errors (optional): array of string; warnings (optional): array of string }
+
+131. POST /api/tally/validate/bom/{id}
+   Operation ID: bom
+   Tags: Tally Validation
+   Parameters:
+   - path param `id` (required): integer
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallyValidationResult: object { valid (optional): boolean; errors (optional): array of string; warnings (optional): array of string }
+
+132. POST /api/tally/validate/budget/{id}
+   Operation ID: budget
+   Tags: Tally Validation
+   Parameters:
+   - path param `id` (required): integer
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallyValidationResult: object { valid (optional): boolean; errors (optional): array of string; warnings (optional): array of string }
+
+133. POST /api/tally/validate/cost-category/{id}
+   Operation ID: costCategory
+   Tags: Tally Validation
+   Parameters:
+   - path param `id` (required): integer
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallyValidationResult: object { valid (optional): boolean; errors (optional): array of string; warnings (optional): array of string }
+
+134. POST /api/tally/validate/cost-centre/{id}
+   Operation ID: costCentre
+   Tags: Tally Validation
+   Parameters:
+   - path param `id` (required): integer
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallyValidationResult: object { valid (optional): boolean; errors (optional): array of string; warnings (optional): array of string }
+
+135. POST /api/tally/validate/customer/{customerId}
+   Operation ID: customer
+   Tags: Tally Validation
+   Parameters:
+   - path param `customerId` (required): integer
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallyValidationResult: object { valid (optional): boolean; errors (optional): array of string; warnings (optional): array of string }
+
+136. POST /api/tally/validate/employee-group/{id}
+   Operation ID: employeeGroup
+   Tags: Tally Validation
+   Parameters:
+   - path param `id` (required): integer
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallyValidationResult: object { valid (optional): boolean; errors (optional): array of string; warnings (optional): array of string }
+
+137. POST /api/tally/validate/employee/{id}
+   Operation ID: employee
+   Tags: Tally Validation
+   Parameters:
+   - path param `id` (required): integer
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallyValidationResult: object { valid (optional): boolean; errors (optional): array of string; warnings (optional): array of string }
+
+138. POST /api/tally/validate/godown/{id}
+   Operation ID: godown
+   Tags: Tally Validation
+   Parameters:
+   - path param `id` (required): integer
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallyValidationResult: object { valid (optional): boolean; errors (optional): array of string; warnings (optional): array of string }
+
+139. POST /api/tally/validate/pay-head/{id}
+   Operation ID: payHead
+   Tags: Tally Validation
+   Parameters:
+   - path param `id` (required): integer
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallyValidationResult: object { valid (optional): boolean; errors (optional): array of string; warnings (optional): array of string }
+
+140. POST /api/tally/validate/payment/{paymentId}
+   Operation ID: payment
+   Tags: Tally Validation
+   Parameters:
+   - path param `paymentId` (required): integer
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallyValidationResult: object { valid (optional): boolean; errors (optional): array of string; warnings (optional): array of string }
+
+141. POST /api/tally/validate/price-level/{id}
+   Operation ID: priceLevel
+   Tags: Tally Validation
+   Parameters:
+   - path param `id` (required): integer
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallyValidationResult: object { valid (optional): boolean; errors (optional): array of string; warnings (optional): array of string }
+
+142. POST /api/tally/validate/product/{productId}
+   Operation ID: product
+   Tags: Tally Validation
+   Parameters:
+   - path param `productId` (required): integer
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallyValidationResult: object { valid (optional): boolean; errors (optional): array of string; warnings (optional): array of string }
+
+143. POST /api/tally/validate/purchase-invoice/{invoiceId}
+   Operation ID: purchaseInvoice
+   Tags: Tally Validation
+   Parameters:
+   - path param `invoiceId` (required): integer
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallyValidationResult: object { valid (optional): boolean; errors (optional): array of string; warnings (optional): array of string }
+
+144. POST /api/tally/validate/sales-invoice/{invoiceId}
+   Operation ID: salesInvoice
+   Tags: Tally Validation
+   Parameters:
+   - path param `invoiceId` (required): integer
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallyValidationResult: object { valid (optional): boolean; errors (optional): array of string; warnings (optional): array of string }
+
+145. POST /api/tally/validate/stock-category/{id}
+   Operation ID: stockCategory
+   Tags: Tally Validation
+   Parameters:
+   - path param `id` (required): integer
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallyValidationResult: object { valid (optional): boolean; errors (optional): array of string; warnings (optional): array of string }
+
+146. POST /api/tally/validate/stock-group/{id}
+   Operation ID: stockGroup
+   Tags: Tally Validation
+   Parameters:
+   - path param `id` (required): integer
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallyValidationResult: object { valid (optional): boolean; errors (optional): array of string; warnings (optional): array of string }
+
+147. POST /api/tally/validate/supplier/{supplierId}
+   Operation ID: supplier
+   Tags: Tally Validation
+   Parameters:
+   - path param `supplierId` (required): integer
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallyValidationResult: object { valid (optional): boolean; errors (optional): array of string; warnings (optional): array of string }
+
+148. POST /api/tally/validate/voucher-type/{id}
+   Operation ID: voucherType
+   Tags: Tally Validation
+   Parameters:
+   - path param `id` (required): integer
+   Request Body: none documented
+   Responses:
+   - 200 OK [*/*]: TallyValidationResult: object { valid (optional): boolean; errors (optional): array of string; warnings (optional): array of string }
+
+149. POST /api/uoms
+   Operation ID: uomsUpsert
+   Tags: master-data-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+150. POST /api/voucher-types
+   Operation ID: voucherTypesUpsert
+   Tags: master-data-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+151. POST /api/vouchers
+   Operation ID: vouchersUpsert
+   Tags: vouchers-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+152. POST /api/vouchers/attendance
+   Operation ID: attendanceUpsert
+   Tags: vouchers-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+153. POST /api/vouchers/contra
+   Operation ID: contraUpsert
+   Tags: vouchers-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+154. POST /api/vouchers/credit-notes
+   Operation ID: creditNotesUpsert
+   Tags: vouchers-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+155. POST /api/vouchers/debit-notes
+   Operation ID: debitNotesUpsert
+   Tags: vouchers-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+156. POST /api/vouchers/delivery-notes
+   Operation ID: deliveryNotesUpsert
+   Tags: vouchers-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+157. POST /api/vouchers/einvoice-ewaybill-ready
+   Operation ID: einvoiceEwaybillReady
+   Tags: vouchers-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+158. POST /api/vouchers/einvoice-ewaybill/generate
+   Operation ID: einvoiceEwaybillGenerate
+   Tags: vouchers-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+159. POST /api/vouchers/einvoice-ready
+   Operation ID: einvoiceReady
+   Tags: vouchers-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+160. POST /api/vouchers/einvoice/generate
+   Operation ID: einvoiceGenerate
+   Tags: vouchers-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+161. POST /api/vouchers/ewaybill-ready
+   Operation ID: ewaybillReady
+   Tags: vouchers-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+162. POST /api/vouchers/ewaybill/generate
+   Operation ID: ewaybillGenerate
+   Tags: vouchers-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+163. POST /api/vouchers/goods-receipts
+   Operation ID: goodsReceiptsUpsert
+   Tags: vouchers-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+164. POST /api/vouchers/import-xml
+   Operation ID: importXml
+   Tags: vouchers-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/xml: string
+   - text/xml: string
+   - text/plain: string
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+165. POST /api/vouchers/job-work-in-orders
+   Operation ID: jobWorkInOrdersUpsert
+   Tags: vouchers-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+166. POST /api/vouchers/job-work-out-orders
+   Operation ID: jobWorkOutOrdersUpsert
+   Tags: vouchers-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+167. POST /api/vouchers/journal
+   Operation ID: journalUpsert
+   Tags: vouchers-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+168. POST /api/vouchers/manufacturing
+   Operation ID: manufacturingUpsert
+   Tags: vouchers-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+169. POST /api/vouchers/material-in
+   Operation ID: materialInUpsert
+   Tags: vouchers-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+170. POST /api/vouchers/material-out
+   Operation ID: materialOutUpsert
+   Tags: vouchers-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+171. POST /api/vouchers/memorandum
+   Operation ID: memorandumUpsert
+   Tags: vouchers-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+172. POST /api/vouchers/payment
+   Operation ID: paymentUpsert
+   Tags: vouchers-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+173. POST /api/vouchers/payroll
+   Operation ID: payrollUpsert
+   Tags: vouchers-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+174. POST /api/vouchers/physical-stock
+   Operation ID: physicalStockUpsert
+   Tags: vouchers-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+175. POST /api/vouchers/purchase
+   Operation ID: purchaseUpsert
+   Tags: vouchers-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+176. POST /api/vouchers/purchase-orders
+   Operation ID: purchaseOrdersUpsert
+   Tags: vouchers-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+177. POST /api/vouchers/receipt
+   Operation ID: receiptUpsert
+   Tags: vouchers-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+178. POST /api/vouchers/rejections-in
+   Operation ID: rejectionsInUpsert
+   Tags: vouchers-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+179. POST /api/vouchers/rejections-out
+   Operation ID: rejectionsOutUpsert
+   Tags: vouchers-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+180. POST /api/vouchers/reversing-journal
+   Operation ID: reversingJournalUpsert
+   Tags: vouchers-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+181. POST /api/vouchers/sales
+   Operation ID: salesUpsert
+   Tags: vouchers-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+182. POST /api/vouchers/sales-orders
+   Operation ID: salesOrdersUpsert
+   Tags: vouchers-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+183. POST /api/vouchers/sales/einvoice-ewaybill-ready
+   Operation ID: salesEinvoiceEwaybillReady
+   Tags: vouchers-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+184. POST /api/vouchers/sales/einvoice-ewaybill/generate
+   Operation ID: salesEinvoiceEwaybillGenerate
+   Tags: vouchers-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+185. POST /api/vouchers/sales/einvoice-ready
+   Operation ID: salesEinvoiceReady
+   Tags: vouchers-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+186. POST /api/vouchers/sales/einvoice/generate
+   Operation ID: salesEinvoiceGenerate
+   Tags: vouchers-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+187. POST /api/vouchers/sales/ewaybill-ready
+   Operation ID: salesEwaybillReady
+   Tags: vouchers-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+188. POST /api/vouchers/sales/ewaybill/generate
+   Operation ID: salesEwaybillGenerate
+   Tags: vouchers-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+189. POST /api/vouchers/stock-journals
+   Operation ID: stockJournalsUpsert
+   Tags: vouchers-api-controller
+   Parameters:
+   - query param `action` (optional): enum(Create, Alter, Cancel, Delete)
+   Request Body:
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+190. POST /api/xml/execute
+   Operation ID: execute
+   Tags: xml-api-controller
+   Parameters: none documented
+   Request Body:
+   - application/xml: string
+   - text/xml: string
+   - text/plain: string
+   - application/json: string
+   Responses:
+   - 200 OK [*/*]: string
+
+Total POST endpoints in Backend: 190
+
+==========================================================================================
+Connector POST APIs
+==========================================================================================
+
+1. POST /attendance-types
+   Summary: Upsert Master
+   Operation ID: upsert_master_attendance_types_post
+   Parameters:
+   - query param `company` (optional): string anyOf null
+   - query param `action` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+2. POST /auth/token
+   Summary: Auth Token
+   Operation ID: auth_token_auth_token_post
+   Parameters: none documented
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+3. POST /boms
+   Summary: Upsert Master
+   Operation ID: upsert_master_boms_post
+   Parameters:
+   - query param `company` (optional): string anyOf null
+   - query param `action` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+4. POST /budgets
+   Summary: Upsert Master
+   Operation ID: upsert_master_budgets_post
+   Parameters:
+   - query param `company` (optional): string anyOf null
+   - query param `action` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+5. POST /companies
+   Summary: Upsert Master
+   Operation ID: upsert_master_companies_post
+   Parameters:
+   - query param `company` (optional): string anyOf null
+   - query param `action` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+6. POST /companies/alter
+   Summary: Company Alter
+   Operation ID: company_alter_companies_alter_post
+   Parameters:
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+7. POST /companies/create
+   Summary: Company Create
+   Operation ID: company_create_companies_create_post
+   Parameters:
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+8. POST /companies/open
+   Summary: Company Open
+   Operation ID: company_open_companies_open_post
+   Parameters:
+   - query param `company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+9. POST /companies/update
+   Summary: Company Update
+   Operation ID: company_update_companies_update_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+10. POST /cost-categories
+   Summary: Upsert Master
+   Operation ID: upsert_master_cost_categories_post
+   Parameters:
+   - query param `company` (optional): string anyOf null
+   - query param `action` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+11. POST /cost-centres
+   Summary: Upsert Master
+   Operation ID: upsert_master_cost_centres_post
+   Parameters:
+   - query param `company` (optional): string anyOf null
+   - query param `action` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+12. POST /currencies
+   Summary: Upsert Master
+   Operation ID: upsert_master_currencies_post
+   Parameters:
+   - query param `company` (optional): string anyOf null
+   - query param `action` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+13. POST /employee-groups
+   Summary: Employee Groups Upsert
+   Operation ID: employee_groups_upsert_employee_groups_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+14. POST /employees
+   Summary: Employees Upsert
+   Operation ID: employees_upsert_employees_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+15. POST /godowns
+   Summary: Upsert Master
+   Operation ID: upsert_master_godowns_post
+   Parameters:
+   - query param `company` (optional): string anyOf null
+   - query param `action` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+16. POST /groups
+   Summary: Upsert Master
+   Operation ID: upsert_master_groups_post
+   Parameters:
+   - query param `company` (optional): string anyOf null
+   - query param `action` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+17. POST /ledger-groups
+   Summary: Upsert Master
+   Operation ID: upsert_master_ledger_groups_post
+   Parameters:
+   - query param `company` (optional): string anyOf null
+   - query param `action` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+18. POST /ledgers
+   Summary: Upsert Master
+   Operation ID: upsert_master_ledgers_post
+   Parameters:
+   - query param `company` (optional): string anyOf null
+   - query param `action` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+19. POST /pay-heads
+   Summary: Upsert Master
+   Operation ID: upsert_master_pay_heads_post
+   Parameters:
+   - query param `company` (optional): string anyOf null
+   - query param `action` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+20. POST /price-levels
+   Summary: Upsert Master
+   Operation ID: upsert_master_price_levels_post
+   Parameters:
+   - query param `company` (optional): string anyOf null
+   - query param `action` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+21. POST /price-lists
+   Summary: Price Lists Upsert
+   Operation ID: price_lists_upsert_price_lists_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+22. POST /projects
+   Summary: Upsert Master
+   Operation ID: upsert_master_projects_post
+   Parameters:
+   - query param `company` (optional): string anyOf null
+   - query param `action` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+23. POST /settings/company-currency
+   Summary: Company Currency Update
+   Operation ID: company_currency_update_settings_company_currency_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+24. POST /settings/company-features
+   Summary: Company Features Update
+   Operation ID: company_features_update_settings_company_features_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+25. POST /settings/einvoice
+   Summary: Einvoice Settings Update
+   Operation ID: einvoice_settings_update_settings_einvoice_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+26. POST /settings/ewaybill
+   Summary: Ewaybill Settings Update
+   Operation ID: ewaybill_settings_update_settings_ewaybill_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+27. POST /settings/gst-registration
+   Summary: Gst Registration Update
+   Operation ID: gst_registration_update_settings_gst_registration_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+28. POST /settings/numbering-rules
+   Summary: Numbering Rules Update
+   Operation ID: numbering_rules_update_settings_numbering_rules_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+29. POST /settings/price-structures
+   Summary: Price Structures Update
+   Operation ID: price_structures_update_settings_price_structures_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+30. POST /settings/security-roles
+   Summary: Security Roles Update
+   Operation ID: security_roles_update_settings_security_roles_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+31. POST /settings/stock-controls
+   Summary: Stock Controls Update
+   Operation ID: stock_controls_update_settings_stock_controls_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+32. POST /stock-categories
+   Summary: Upsert Master
+   Operation ID: upsert_master_stock_categories_post
+   Parameters:
+   - query param `company` (optional): string anyOf null
+   - query param `action` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+33. POST /stock-groups
+   Summary: Upsert Master
+   Operation ID: upsert_master_stock_groups_post
+   Parameters:
+   - query param `company` (optional): string anyOf null
+   - query param `action` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+34. POST /stock-items
+   Summary: Upsert Master
+   Operation ID: upsert_master_stock_items_post
+   Parameters:
+   - query param `company` (optional): string anyOf null
+   - query param `action` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+35. POST /uoms
+   Summary: Upsert Master
+   Operation ID: upsert_master_uoms_post
+   Parameters:
+   - query param `company` (optional): string anyOf null
+   - query param `action` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+36. POST /voucher-types
+   Summary: Upsert Master
+   Operation ID: upsert_master_voucher_types_post
+   Parameters:
+   - query param `company` (optional): string anyOf null
+   - query param `action` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+37. POST /vouchers
+   Summary: Voucher Upsert
+   Operation ID: voucher_upsert_vouchers_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `voucher_type` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+38. POST /vouchers/attendance
+   Summary: Upsert Voucher
+   Operation ID: upsert_voucher_vouchers_attendance_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+39. POST /vouchers/contra
+   Summary: Upsert Voucher
+   Operation ID: upsert_voucher_vouchers_contra_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+40. POST /vouchers/credit-notes
+   Summary: Upsert Voucher
+   Operation ID: upsert_voucher_vouchers_credit_notes_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+41. POST /vouchers/debit-notes
+   Summary: Upsert Voucher
+   Operation ID: upsert_voucher_vouchers_debit_notes_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+42. POST /vouchers/delivery-notes
+   Summary: Upsert Voucher
+   Operation ID: upsert_voucher_vouchers_delivery_notes_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+43. POST /vouchers/einvoice-ewaybill-ready
+   Summary: Voucher Einvoice Ewaybill Ready
+   Operation ID: voucher_einvoice_ewaybill_ready_vouchers_einvoice_ewaybill_ready_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `voucher_type` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+44. POST /vouchers/einvoice-ewaybill/generate
+   Summary: Voucher Einvoice Ewaybill Generate
+   Operation ID: voucher_einvoice_ewaybill_generate_vouchers_einvoice_ewaybill_generate_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `voucher_type` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+45. POST /vouchers/einvoice-ready
+   Summary: Voucher Einvoice Ready
+   Operation ID: voucher_einvoice_ready_vouchers_einvoice_ready_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `voucher_type` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+46. POST /vouchers/einvoice/generate
+   Summary: Voucher Einvoice Generate
+   Operation ID: voucher_einvoice_generate_vouchers_einvoice_generate_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `voucher_type` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+47. POST /vouchers/ewaybill-ready
+   Summary: Voucher Ewaybill Ready
+   Operation ID: voucher_ewaybill_ready_vouchers_ewaybill_ready_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `voucher_type` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+48. POST /vouchers/ewaybill/generate
+   Summary: Voucher Ewaybill Generate
+   Operation ID: voucher_ewaybill_generate_vouchers_ewaybill_generate_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `voucher_type` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+49. POST /vouchers/goods-receipts
+   Summary: Upsert Voucher
+   Operation ID: upsert_voucher_vouchers_goods_receipts_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+50. POST /vouchers/import-xml
+   Summary: Vouchers Import Xml
+   Operation ID: vouchers_import_xml_vouchers_import_xml_post
+   Parameters:
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body: none documented
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+51. POST /vouchers/job-work-in-orders
+   Summary: Upsert Voucher
+   Operation ID: upsert_voucher_vouchers_job_work_in_orders_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+52. POST /vouchers/job-work-out-orders
+   Summary: Upsert Voucher
+   Operation ID: upsert_voucher_vouchers_job_work_out_orders_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+53. POST /vouchers/journal
+   Summary: Upsert Voucher
+   Operation ID: upsert_voucher_vouchers_journal_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+54. POST /vouchers/manufacturing
+   Summary: Upsert Voucher
+   Operation ID: upsert_voucher_vouchers_manufacturing_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+55. POST /vouchers/material-in
+   Summary: Upsert Voucher
+   Operation ID: upsert_voucher_vouchers_material_in_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+56. POST /vouchers/material-out
+   Summary: Upsert Voucher
+   Operation ID: upsert_voucher_vouchers_material_out_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+57. POST /vouchers/memorandum
+   Summary: Upsert Voucher
+   Operation ID: upsert_voucher_vouchers_memorandum_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+58. POST /vouchers/payment
+   Summary: Upsert Voucher
+   Operation ID: upsert_voucher_vouchers_payment_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+59. POST /vouchers/payroll
+   Summary: Upsert Voucher
+   Operation ID: upsert_voucher_vouchers_payroll_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+60. POST /vouchers/physical-stock
+   Summary: Upsert Voucher
+   Operation ID: upsert_voucher_vouchers_physical_stock_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+61. POST /vouchers/purchase
+   Summary: Upsert Voucher
+   Operation ID: upsert_voucher_vouchers_purchase_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+62. POST /vouchers/purchase-orders
+   Summary: Upsert Voucher
+   Operation ID: upsert_voucher_vouchers_purchase_orders_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+63. POST /vouchers/receipt
+   Summary: Upsert Voucher
+   Operation ID: upsert_voucher_vouchers_receipt_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+64. POST /vouchers/rejections-in
+   Summary: Upsert Voucher
+   Operation ID: upsert_voucher_vouchers_rejections_in_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+65. POST /vouchers/rejections-out
+   Summary: Upsert Voucher
+   Operation ID: upsert_voucher_vouchers_rejections_out_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+66. POST /vouchers/reversing-journal
+   Summary: Upsert Voucher
+   Operation ID: upsert_voucher_vouchers_reversing_journal_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+67. POST /vouchers/sales
+   Summary: Upsert Voucher
+   Operation ID: upsert_voucher_vouchers_sales_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+68. POST /vouchers/sales-orders
+   Summary: Upsert Voucher
+   Operation ID: upsert_voucher_vouchers_sales_orders_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+69. POST /vouchers/sales/einvoice-ewaybill-ready
+   Summary: Sales Einvoice Ewaybill Ready
+   Operation ID: sales_einvoice_ewaybill_ready_vouchers_sales_einvoice_ewaybill_ready_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+70. POST /vouchers/sales/einvoice-ewaybill/generate
+   Summary: Sales Einvoice Ewaybill Generate
+   Operation ID: sales_einvoice_ewaybill_generate_vouchers_sales_einvoice_ewaybill_generate_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+71. POST /vouchers/sales/einvoice-ready
+   Summary: Sales Einvoice Ready
+   Operation ID: sales_einvoice_ready_vouchers_sales_einvoice_ready_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+72. POST /vouchers/sales/einvoice/generate
+   Summary: Sales Einvoice Generate
+   Operation ID: sales_einvoice_generate_vouchers_sales_einvoice_generate_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+73. POST /vouchers/sales/ewaybill-ready
+   Summary: Sales Ewaybill Ready
+   Operation ID: sales_ewaybill_ready_vouchers_sales_ewaybill_ready_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+74. POST /vouchers/sales/ewaybill/generate
+   Summary: Sales Ewaybill Generate
+   Operation ID: sales_ewaybill_generate_vouchers_sales_ewaybill_generate_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+75. POST /vouchers/stock-journals
+   Summary: Upsert Voucher
+   Operation ID: upsert_voucher_vouchers_stock_journals_post
+   Parameters:
+   - query param `action` (optional): string anyOf null
+   - query param `company` (optional): string anyOf null
+   - header param `x-company` (optional): string anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body:
+   - application/json: object
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+76. POST /xml/execute
+   Summary: Xml Execute
+   Operation ID: xml_execute_xml_execute_post
+   Parameters:
+   - query param `view` (optional): string anyOf null
+   - query param `import_mode` (optional): boolean anyOf null
+   - header param `x-agent-key` (optional): string anyOf null
+   Request Body: none documented
+   Responses:
+   - 200 Successful Response [application/json]: unspecified
+   - 422 Validation Error [application/json]: HTTPValidationError: object { detail (optional): array of ValidationError: object { loc (required): array of string anyOf integer; msg (required): string; type (required): string } }
+
+Total POST endpoints in Connector: 76
+

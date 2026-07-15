@@ -1,0 +1,136 @@
+<section class="workspace-page">
+  <article class="surface-hero">
+    <div class="surface-hero__header">
+      <div class="surface-hero__content">
+        <div class="surface-hero__meta">Report Explorer</div>
+        <h3>Missing backend reports now have a usable report workspace.</h3>
+        <p>Choose any report API that did not have a dedicated screen, apply its supported filters, and inspect the live backend response in one place.</p>
+      </div>
+      <button type="button" (click)="load()" [disabled]="isLoading">
+        {{ isLoading ? 'Loading...' : 'Load Report' }}
+      </button>
+    </div>
+
+    <div class="surface-hero__stats">
+      <div class="surface-hero__panel">
+        <span>Available APIs</span>
+        <strong>{{ reports.length }}</strong>
+        <small>Unimplemented report endpoints now available through this explorer.</small>
+      </div>
+      <div class="surface-hero__panel">
+        <span>Selected</span>
+        <strong>{{ selectedReport.label }}</strong>
+        <small>{{ selectedReport.path }}</small>
+      </div>
+      <div class="surface-hero__panel">
+        <span>Company</span>
+        <strong>{{ selectedCompany || 'No company selected' }}</strong>
+        <small>Report requests use the currently selected company.</small>
+      </div>
+      <div class="surface-hero__panel">
+        <span>Preview Rows</span>
+        <strong>{{ tableRows.length }}</strong>
+        <small>Up to 50 rows are surfaced in the current response preview.</small>
+      </div>
+    </div>
+  </article>
+
+  <div class="feedback feedback--error" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+  <div class="workspace-grid">
+    <div class="workspace-stack">
+      <article class="workspace-card">
+        <h3>Report Controls</h3>
+        <p>{{ selectedReport.description }}</p>
+        <div class="workspace-divider"></div>
+
+        <form [formGroup]="form" (ngSubmit)="load()" class="workspace-form">
+          <label>
+            <span>Report API</span>
+            <select formControlName="report">
+              <option *ngFor="let report of reports" [value]="report.key">{{ report.label }}</option>
+            </select>
+          </label>
+
+          <div class="workspace-fields workspace-fields--two">
+            <label *ngIf="hasField('from_date')">
+              <span>From Date</span>
+              <input formControlName="from_date" type="date" />
+            </label>
+
+            <label *ngIf="hasField('to_date')">
+              <span>To Date</span>
+              <input formControlName="to_date" type="date" />
+            </label>
+
+            <label *ngIf="hasField('ledger_name')">
+              <span>Ledger Name</span>
+              <input formControlName="ledger_name" placeholder="Cash" />
+            </label>
+
+            <label *ngIf="hasField('view')">
+              <span>View</span>
+              <input formControlName="view" placeholder="raw" />
+            </label>
+          </div>
+
+          <div class="workspace-actions">
+            <button type="submit" [disabled]="isLoading">{{ isLoading ? 'Loading...' : 'Run API' }}</button>
+          </div>
+        </form>
+      </article>
+
+      <article class="workspace-card">
+        <h3>Endpoint Details</h3>
+        <div class="workspace-meta">
+          <div class="workspace-metric">
+            <span>Path</span>
+            <strong>{{ selectedReport.path }}</strong>
+          </div>
+          <div class="workspace-metric">
+            <span>Filters</span>
+            <strong>{{ selectedReport.fields.length || 0 }}</strong>
+          </div>
+        </div>
+        <div class="workspace-divider"></div>
+        <p class="workspace-note">{{ selectedReport.description }}</p>
+      </article>
+    </div>
+
+    <div class="workspace-stack">
+      <article class="workspace-card">
+        <h3>Response Preview</h3>
+        <p>{{ responseSummary || 'Run a report to see a structured preview.' }}</p>
+        <div class="workspace-divider"></div>
+
+        <div class="workspace-table" *ngIf="tableRows.length">
+          <table>
+            <thead>
+              <tr>
+                <th *ngFor="let column of tableColumns">{{ column }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of tableRows">
+                <td *ngFor="let column of tableColumns">{{ row[column] }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="state-panel" *ngIf="!tableRows.length && !rawResponse && !isLoading">
+          Select a report and run it to load live backend data.
+        </div>
+
+        <div class="state-panel" *ngIf="isLoading">Loading report response...</div>
+      </article>
+
+      <article class="workspace-card">
+        <h3>Raw Response</h3>
+        <p>Full backend response body for the selected report.</p>
+        <div class="workspace-divider"></div>
+        <div class="workspace-code">{{ rawResponse || 'No response loaded yet.' }}</div>
+      </article>
+    </div>
+  </div>
+</section>

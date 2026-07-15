@@ -1,0 +1,122 @@
+<section class="feature-page">
+  <div class="page-header">
+    <div>
+      <div class="eyebrow">Receivables</div>
+      <h2>Total Receivables</h2>
+      <p>Compact ledger-wise receivable view in the same layout style as the reference application.</p>
+    </div>
+    <div class="export-actions">
+      <span class="export-actions__label">Download</span>
+      <button type="button" class="export-actions__button" (click)="download('xlsx')">Excel</button>
+      <button type="button" class="export-actions__button" (click)="download('pdf')">PDF</button>
+    </div>
+  </div>
+
+  <div class="feedback feedback--error" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+  <article class="filter-card">
+    <form [formGroup]="form" (ngSubmit)="load()" class="report-toolbar">
+      <label class="report-toolbar__field">
+        <span>From Date</span>
+        <input formControlName="from_date" type="date" />
+      </label>
+
+      <label class="report-toolbar__field">
+        <span>To Date</span>
+        <input formControlName="to_date" type="date" />
+      </label>
+
+      <label class="report-toolbar__field">
+        <span>Ledger Name</span>
+        <select formControlName="ledger_name">
+          <option value="">All Ledgers</option>
+          <option *ngFor="let ledger of ledgerOptions" [value]="ledger">{{ ledger }}</option>
+        </select>
+      </label>
+
+      <div class="report-toolbar__field">
+        <span>Source</span>
+        <div class="report-chip">{{ dataSourceLabel }}</div>
+      </div>
+
+      <div class="report-toolbar__actions">
+        <button type="button" class="export-actions__button" (click)="download('xlsx')">Excel</button>
+        <button type="button" class="export-actions__button" (click)="download('pdf')">PDF</button>
+        <button type="submit" [disabled]="isLoading || isLoadingLedgers">
+          {{ isLoadingLedgers ? 'Loading Ledgers...' : (isLoading ? 'Loading...' : 'View Report') }}
+        </button>
+      </div>
+    </form>
+  </article>
+
+  <div class="state-panel" *ngIf="isLoadingLedgers">Loading ledger options...</div>
+  <div class="state-panel" *ngIf="responseMeta && !isLoading && !isLoadingLedgers">
+    Source {{ responseMeta.source || '-' }} | Last Sync {{ responseMeta.last_synced_at || '-' }}
+  </div>
+
+  <div class="state-panel" *ngIf="!hasLoaded && !isLoading && !isLoadingLedgers">
+    Run the report to load voucher data for the selected ledger.
+  </div>
+
+  <div class="state-panel" *ngIf="isLoading">Loading ledger vouchers...</div>
+
+  <div class="state-panel" *ngIf="hasLoaded && !hasVoucher && !isLoading && !isLoadingLedgers">
+    No ledger voucher data was returned for these filters.
+  </div>
+
+  <div class="report-hero" *ngIf="hasVoucher && !isLoading && !isLoadingLedgers">
+    <div class="report-hero__panel">
+      <span class="report-hero__eyebrow">Receivable Register</span>
+      <h3>Ledger Voucher Summary</h3>
+      <p>Cache-first receivable register with live fallback data in a Tally-style report shell.</p>
+    </div>
+    <div class="report-hero__summary">
+      <div class="report-hero__summary-card" *ngFor="let card of summaryCards">
+        <span>{{ card.label }}</span>
+        <strong>{{ card.value }}</strong>
+      </div>
+    </div>
+  </div>
+
+  <article class="tally-register" *ngIf="hasVoucher && !isLoading && !isLoadingLedgers" style="--register-columns: 6;">
+    <div class="tally-register__topline">
+      <span>{{ dataSourceLabel }}</span>
+      <span>{{ form.get('from_date')?.value }} to {{ form.get('to_date')?.value }}</span>
+    </div>
+
+    <div class="tally-register__title">
+      <h3>Ledger Vouchers</h3>
+      <div>
+        <strong>{{ form.get('ledger_name')?.value || 'All Ledgers' }}</strong>
+        <span>{{ voucherRows.length }} Rows</span>
+      </div>
+    </div>
+
+    <div class="tally-register__header">
+      <span>Ledger Name</span>
+      <span>Debit</span>
+      <span>Credit</span>
+      <span>Date</span>
+      <span>Voucher Type</span>
+      <span>Due Amount</span>
+    </div>
+
+    <div class="tally-register__row" *ngFor="let row of voucherRows">
+      <span>{{ row.ledger }}</span>
+      <strong>{{ row.debitAmount }}</strong>
+      <strong>{{ row.creditAmount }}</strong>
+      <span>{{ row.date }}</span>
+      <span>{{ row.voucherType }}</span>
+      <strong>{{ row.creditAmount !== '-' ? row.creditAmount : row.debitAmount }}</strong>
+    </div>
+
+    <div class="tally-register__footer">
+      <span>{{ form.get('ledger_name')?.value || 'All Ledgers' }}</span>
+      <strong>{{ summaryCards[3]?.value || '-' }}</strong>
+      <strong>{{ summaryCards[4]?.value || '-' }}</strong>
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </article>
+</section>

@@ -1,0 +1,71 @@
+{
+  "profile_name": "local_connector_profile",
+  "package_file": "local_connector_profile.tdl",
+  "status": "scaffold",
+  "features": {
+    "company_open": {
+      "status": "scaffold",
+      "mode": "tdl-report",
+      "routes": [
+        "/companies/open"
+      ],
+      "report_name": "LC Company Open Report",
+      "write_report_name": "LC Company Open Report"
+    },
+    "company_create": {
+      "status": "scaffold",
+      "mode": "tdl-report",
+      "routes": [
+        "/companies/create"
+      ],
+      "report_name": "LC Company Create Report",
+      "write_report_name": "LC Company Create Report"
+    },
+    "security_roles": {
+      "status": "scaffold",
+      "mode": "tdl-collection",
+      "routes": [
+        "/settings/security-roles"
+      ],
+      "report_name": "LC Security Roles Report",
+      "write_report_name": "LC Security Roles Write Report",
+      "collection_name": "LC_SECURITY_ROLES"
+    },
+    "price_levels": {
+      "status": "scaffold",
+      "mode": "tdl-report",
+      "routes": [
+        "/price-levels",
+        "/settings/price-structures"
+      ],
+      "report_name": "LC Price Levels Report",
+      "write_report_name": "LC Price Levels Write Report",
+      "collection_name": "LC_PRICE_LEVELS"
+    },
+    "payroll_exports": {
+      "status": "scaffold",
+      "mode": "tdl-collection",
+      "routes": [
+        "/employees",
+        "/employee-groups",
+        "/pay-heads",
+        "/attendance-types"
+      ],
+      "report_name": "LC Payroll Exports Report",
+      "route_collections": {
+        "/employees": "LC_EMPLOYEES",
+        "/employee-groups": "LC_EMPLOYEE_GROUPS",
+        "/pay-heads": "LC_PAY_HEADS",
+        "/attendance-types": "LC_ATTENDANCE_TYPES"
+      }
+    },
+    "tds_outstandings": {
+      "status": "scaffold",
+      "mode": "tdl-report",
+      "routes": [
+        "/reports/tds-outstandings"
+      ],
+      "report_name": "LC TDS Outstandings Report"
+    }
+  }
+}

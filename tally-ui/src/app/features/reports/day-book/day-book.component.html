@@ -1,0 +1,261 @@
+<section class="daybook-page">
+  <article class="daybook-hero">
+    <div class="daybook-hero__content">
+      <div class="daybook-hero__badge-row">
+        <span class="daybook-hero__eyebrow">Voucher Register</span>
+        <span class="daybook-hero__source">{{ reportSource | uppercase }}</span>
+      </div>
+
+      <h1>Day Book workspace</h1>
+      <p>
+        Review voucher movement for the selected company in a cleaner reporting surface with better range context,
+        faster scanning, and direct export actions.
+      </p>
+
+      <div class="daybook-hero__metrics">
+        <div class="daybook-hero__metric">
+          <span>Selected Company</span>
+          <strong>{{ selectedCompanyLabel }}</strong>
+        </div>
+        <div class="daybook-hero__metric">
+          <span>Voucher Count</span>
+          <strong>{{ voucherCount }}</strong>
+        </div>
+        <div class="daybook-hero__metric">
+          <span>Total Amount</span>
+          <strong>{{ totalAmount }}</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="daybook-hero__side">
+      <div class="daybook-hero__panel">
+        <span>Report Range</span>
+        <strong>{{ reportDateRangeLabel }}</strong>
+      </div>
+      <div class="daybook-hero__panel">
+        <span>Last Sync</span>
+        <strong>{{ response?.meta?.last_synced_at || 'Not available' }}</strong>
+      </div>
+      <div class="daybook-hero__panel daybook-hero__panel--accent">
+        <span>Export</span>
+        <div class="daybook-hero__panel-actions">
+          <button type="button" class="export-actions__button" (click)="download('xlsx')">Excel</button>
+          <button type="button" class="export-actions__button" (click)="download('pdf')">PDF</button>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <div class="feedback feedback--error" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+  <article class="filter-card daybook-filter-card">
+    <form [formGroup]="form" (ngSubmit)="load()" class="report-toolbar daybook-toolbar">
+      <label class="report-toolbar__field">
+        <span>From Date</span>
+        <input formControlName="from_date" type="date" />
+      </label>
+
+      <label class="report-toolbar__field">
+        <span>To Date</span>
+        <input formControlName="to_date" type="date" />
+      </label>
+
+      <div class="report-toolbar__field">
+        <span>Selected Company</span>
+        <div class="report-chip report-chip--wide">{{ selectedCompanyLabel }}</div>
+      </div>
+
+      <div class="report-toolbar__field">
+        <span>Data Source</span>
+        <div class="report-chip">{{ reportSource }}</div>
+      </div>
+
+      <div class="report-toolbar__actions">
+        <button type="button" class="export-actions__button" (click)="download('xlsx')">Excel</button>
+        <button type="button" class="export-actions__button" (click)="download('pdf')">PDF</button>
+        <button type="submit" [disabled]="isLoading">
+          {{ isLoading ? 'Loading...' : 'View Report' }}
+        </button>
+      </div>
+    </form>
+  </article>
+
+  <div class="daybook-summary" *ngIf="voucherCount && !isLoading">
+    <div class="daybook-summary__card">
+      <span>From Date</span>
+      <strong>{{ form.value.from_date }}</strong>
+    </div>
+    <div class="daybook-summary__card">
+      <span>To Date</span>
+      <strong>{{ form.value.to_date }}</strong>
+    </div>
+    <div class="daybook-summary__card">
+      <span>Report Source</span>
+      <strong>{{ reportSource }}</strong>
+    </div>
+    <div class="daybook-summary__card">
+      <span>Company</span>
+      <strong>{{ selectedCompanyLabel }}</strong>
+    </div>
+  </div>
+
+  <div class="state-panel" *ngIf="!response && !isLoading">
+    Run the report to load day-book data for the selected company.
+  </div>
+
+  <div class="state-panel" *ngIf="isLoading">Loading day-book report...</div>
+
+  <div class="state-panel" *ngIf="response && !voucherCount && !isLoading">
+    No day-book vouchers were returned for {{ selectedCompanyLabel }} in the selected date range.
+  </div>
+
+  <article class="daybook-register" *ngIf="voucherCount && !isLoading">
+    <div class="daybook-register__headerbar">
+      <div>
+        <span class="daybook-register__eyebrow">Register View</span>
+        <h3>Day Book</h3>
+      </div>
+      <div class="daybook-register__header-meta">
+        <strong>{{ voucherCount }} vouchers</strong>
+        <span>Total {{ totalAmount }}</span>
+      </div>
+    </div>
+
+    <div class="daybook-register__meta-row">
+      <span>{{ selectedCompanyLabel }}</span>
+      <span>{{ reportDateRangeLabel }}</span>
+      <span>Source {{ reportSource }}</span>
+    </div>
+
+    <div class="tally-register" style="--register-columns: 6;">
+      <div class="tally-register__header">
+        <span>Voucher No</span>
+        <span>Name</span>
+        <span>Date</span>
+        <span>Voucher Type</span>
+        <span>Amount</span>
+        <span>Narration</span>
+      </div>
+
+      <div
+        class="tally-register__row tally-register__row--action"
+        [class.tally-register__row--selected]="selectedVoucher?.voucherNumber === voucher.voucherNumber && selectedVoucher?.date === voucher.date"
+        (click)="selectVoucher(voucher)"
+        *ngFor="let voucher of voucherRows">
+        <span>{{ voucher.voucherNumber }}</span>
+        <button type="button" class="tally-register__particular">{{ voucher.partyLedger }}</button>
+        <span>{{ voucher.date }}</span>
+        <span>{{ voucher.voucherType }}</span>
+        <strong>{{ voucher.amount }}</strong>
+        <span>{{ voucher.narration }}</span>
+      </div>
+
+      <div class="tally-register__footer">
+        <span>Total Vouchers</span>
+        <span>{{ voucherCount }}</span>
+        <span></span>
+        <span></span>
+        <strong>{{ totalAmount }}</strong>
+        <span></span>
+      </div>
+    </div>
+  </article>
+</section>
+
+<section class="voucher-window-backdrop" *ngIf="selectedVoucher && !isLoading" (click)="closeVoucher()">
+  <article class="voucher-window" (click)="$event.stopPropagation()">
+    <header class="voucher-window__topbar">
+      <div class="voucher-window__title">Accounting Voucher Alteration</div>
+      <button type="button" class="voucher-window__close" (click)="closeVoucher()">Close</button>
+    </header>
+
+    <div class="voucher-window__company-strip">{{ selectedCompanyLabel }}</div>
+
+    <div class="voucher-window__voucher-strip">
+      <div class="voucher-window__voucher-type">{{ selectedVoucher?.voucherType }}</div>
+      <div class="voucher-window__voucher-no">No. {{ selectedVoucher?.voucherNumber }}</div>
+      <div class="voucher-window__voucher-date">{{ selectedVoucherDateLabel }}</div>
+    </div>
+
+    <div class="voucher-window__body">
+      <div class="voucher-window__account-strip">
+        <div class="voucher-window__account-row">
+          <span>Party A/c name</span>
+          <strong>{{ selectedVoucherPartyName }}</strong>
+        </div>
+        <div class="voucher-window__account-row">
+          <span>{{ selectedVoucher?.voucherType }} ledger</span>
+          <strong>{{ selectedVoucherPrimaryLedger }}</strong>
+        </div>
+      </div>
+
+      <section class="voucher-stock" *ngIf="selectedVoucherInventoryEntries.length">
+        <div class="voucher-stock__head voucher-stock__head--tally">
+          <span>Name of Item</span>
+          <span>Quantity</span>
+          <span>Rate</span>
+          <span>per</span>
+          <span>Amount</span>
+        </div>
+
+        <div class="voucher-stock__row voucher-stock__row--tally" *ngFor="let entry of selectedVoucherInventoryEntries">
+          <strong>{{ entry.item }}</strong>
+          <span>{{ entry.billedQty || entry.actualQty }}</span>
+          <span>{{ inventoryEntryRateValue(entry.rate) }}</span>
+          <span>{{ inventoryEntryRateUnit(entry.rate, entry.billedQty || entry.actualQty) }}</span>
+          <span>{{ inventoryEntryAmount(entry.amount) }}</span>
+        </div>
+      </section>
+
+      <section class="voucher-ledger">
+        <div class="voucher-ledger__head">
+          <span class="voucher-ledger__head-label voucher-ledger__head-label--particulars">Particulars</span>
+          <span class="voucher-ledger__head-label voucher-ledger__head-label--amount">Debit</span>
+          <span class="voucher-ledger__head-label voucher-ledger__head-label--amount">Credit</span>
+        </div>
+
+        <div class="voucher-ledger__rows" *ngIf="selectedVoucherLedgerEntries.length; else noLedgerEntries">
+          <div class="voucher-ledger__row" *ngFor="let entry of selectedVoucherLedgerEntries">
+            <div class="voucher-ledger__particular">
+              <strong>{{ entry.ledger }}</strong>
+              <span *ngIf="entry.partyLedger === 'Yes'">Party Ledger</span>
+            </div>
+            <span class="voucher-ledger__amount">{{ ledgerEntryDebit(entry.amount) }}</span>
+            <span class="voucher-ledger__amount">{{ ledgerEntryCredit(entry.amount) }}</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="voucher-meta">
+        <div class="voucher-meta__card">
+          <h4>Voucher Fields</h4>
+          <div class="voucher-meta__rows" *ngIf="selectedVoucherFields.length; else noVoucherFields">
+            <div *ngFor="let field of selectedVoucherFields">
+              <span>{{ field.label }}</span>
+              <strong>{{ field.value }}</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="voucher-meta__card">
+          <h4>Narration</h4>
+          <p>{{ selectedVoucher?.narration }}</p>
+        </div>
+      </section>
+    </div>
+
+    <footer class="voucher-window__footer">
+      <span>Press outside the window or use Close to return to Day Book.</span>
+      <strong>Total {{ selectedVoucherAmountLabel }}</strong>
+    </footer>
+  </article>
+</section>
+
+<ng-template #noLedgerEntries>
+  <div class="voucher-empty voucher-empty--window">No ledger entries available for this voucher.</div>
+</ng-template>
+
+<ng-template #noVoucherFields>
+  <div class="voucher-empty voucher-empty--window">No extra voucher fields available.</div>
+</ng-template>

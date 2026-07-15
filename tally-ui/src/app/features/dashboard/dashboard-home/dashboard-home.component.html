@@ -1,0 +1,275 @@
+<section class="dashboard">
+  <header class="dashboard-header">
+    <div class="dashboard-header__title">
+      <p>Dashboard</p>
+      <h1>{{ selectedCompany || 'Selected Company' }}</h1>
+      <span>{{ periodLabel }}</span>
+    </div>
+
+    <div class="dashboard-header__meta">
+      <div>
+        <label>Data Source</label>
+        <strong>{{ cacheSourceLabel }}</strong>
+      </div>
+      <div>
+        <label>Companies</label>
+        <strong>{{ connectedCompanies }}</strong>
+      </div>
+    </div>
+  </header>
+
+  <div class="feedback feedback--warning" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+  <section class="tally-grid" *ngIf="!errorMessage">
+    <article class="tile tile--chart">
+      <div class="tile__header">
+        <div>
+          <h2>Sales Trend</h2>
+          <p>{{ periodLabel }}</p>
+        </div>
+        <strong>{{ formatCurrency(salesTotal) }}</strong>
+      </div>
+
+      <div class="trend-chart" *ngIf="salesTrend.length; else emptySalesTrend">
+        <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+          <polygon class="trend-chart__area" [attr.points]="buildTrendAreaPath(salesTrend)"></polygon>
+          <polyline class="trend-chart__line" [attr.points]="buildTrendPath(salesTrend)"></polyline>
+        </svg>
+        <div class="trend-chart__labels">
+          <span *ngFor="let point of salesTrend">{{ point.label }}</span>
+        </div>
+      </div>
+      <div class="tile__footer">
+        <span>Sales vouchers</span>
+        <strong>{{ salesVoucherCount }}</strong>
+      </div>
+    </article>
+
+    <article class="tile tile--chart">
+      <div class="tile__header">
+        <div>
+          <h2>Purchase Trend</h2>
+          <p>{{ periodLabel }}</p>
+        </div>
+        <strong>{{ formatCurrency(purchaseTotal) }}</strong>
+      </div>
+
+      <div class="trend-chart trend-chart--purchase" *ngIf="purchaseTrend.length; else emptyPurchaseTrend">
+        <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+          <polygon class="trend-chart__area" [attr.points]="buildTrendAreaPath(purchaseTrend)"></polygon>
+          <polyline class="trend-chart__line" [attr.points]="buildTrendPath(purchaseTrend)"></polyline>
+        </svg>
+        <div class="trend-chart__labels">
+          <span *ngFor="let point of purchaseTrend">{{ point.label }}</span>
+        </div>
+      </div>
+      <div class="tile__footer">
+        <span>Purchase vouchers</span>
+        <strong>{{ purchaseVoucherCount }}</strong>
+      </div>
+    </article>
+
+    <article class="tile">
+      <div class="tile__header tile__header--simple">
+        <div>
+          <h2>Cash In/Out Flow</h2>
+          <p>{{ periodLabel }}</p>
+        </div>
+      </div>
+      <div class="metric-table">
+        <div class="metric-table__head">
+          <span>Particulars</span>
+          <span>Amount</span>
+        </div>
+        <div class="metric-table__row" *ngFor="let row of cashFlowRows">
+          <span>{{ row.label }}</span>
+          <strong [class.is-positive]="row.tone === 'positive'" [class.is-negative]="row.tone === 'negative'">{{ row.value }}</strong>
+        </div>
+      </div>
+    </article>
+
+    <article class="tile">
+      <div class="tile__header tile__header--simple">
+        <div>
+          <h2>Trading Details</h2>
+          <p>{{ periodLabel }}</p>
+        </div>
+      </div>
+      <div class="metric-table">
+        <div class="metric-table__head">
+          <span>Particulars</span>
+          <span>Amount</span>
+        </div>
+        <div class="metric-table__row" *ngFor="let row of tradingDetailRows">
+          <span>{{ row.label }}</span>
+          <strong [class.is-positive]="row.tone === 'positive'" [class.is-negative]="row.tone === 'negative'">{{ row.value }}</strong>
+        </div>
+      </div>
+    </article>
+
+    <article class="tile">
+      <div class="tile__header tile__header--simple">
+        <div>
+          <h2>Assets/Liabilities</h2>
+          <p>{{ selectedCompany || 'Selected Company' }}</p>
+        </div>
+      </div>
+      <div class="metric-table">
+        <div class="metric-table__head">
+          <span>Particulars</span>
+          <span>Closing Balance</span>
+        </div>
+        <div class="metric-table__row">
+          <span>Assets</span>
+          <strong>{{ formatCurrency(assetTotal) }}</strong>
+        </div>
+        <div class="metric-table__row">
+          <span>Liabilities</span>
+          <strong>{{ formatCurrency(liabilityTotal) }}</strong>
+        </div>
+      </div>
+    </article>
+
+    <article class="tile">
+      <div class="tile__header tile__header--simple">
+        <div>
+          <h2>Receivables/Payables</h2>
+          <p>{{ periodLabel }}</p>
+        </div>
+      </div>
+      <div class="metric-table">
+        <div class="metric-table__head">
+          <span>Particulars</span>
+          <span>Pending Amount</span>
+        </div>
+        <div class="metric-table__row" *ngFor="let row of receivablePayableRows">
+          <span>{{ row.label }}</span>
+          <strong [class.is-positive]="row.tone === 'positive'" [class.is-negative]="row.tone === 'negative'">{{ row.value }}</strong>
+        </div>
+      </div>
+    </article>
+
+    <article class="tile">
+      <div class="tile__header tile__header--simple">
+        <div>
+          <h2>Cash/Bank Accounts</h2>
+          <p>{{ selectedCompany || 'Selected Company' }}</p>
+        </div>
+      </div>
+      <div class="metric-table">
+        <div class="metric-table__head">
+          <span>Particulars</span>
+          <span>Closing Balance</span>
+        </div>
+        <div class="metric-table__row">
+          <span>Cash-in-Hand</span>
+          <strong>{{ formatCurrency(receiptTotal - paymentTotal) }}</strong>
+        </div>
+        <div class="metric-table__row">
+          <span>Bank Accounts</span>
+          <strong>{{ formatCurrency(0) }}</strong>
+        </div>
+      </div>
+    </article>
+
+    <article class="tile">
+      <div class="tile__header tile__header--simple">
+        <div>
+          <h2>Top Groups/Ledgers</h2>
+          <p>{{ selectedCompany || 'Selected Company' }}</p>
+        </div>
+      </div>
+      <div class="list-table">
+        <div class="list-table__head">
+          <span>Particulars</span>
+          <span>Total</span>
+        </div>
+        <div class="list-table__row" *ngFor="let customer of topCustomers">
+          <span>{{ customer.name }}</span>
+          <strong>{{ formatCurrency(customer.amount) }}</strong>
+        </div>
+        <div class="list-table__row" *ngFor="let supplier of topSuppliers | slice:0:2">
+          <span>{{ supplier.name }}</span>
+          <strong>{{ formatCurrency(supplier.amount) }}</strong>
+        </div>
+        <div class="list-table__row list-table__row--empty" *ngIf="!topCustomers.length && !topSuppliers.length">
+          <span>No ledger movement</span>
+          <strong>—</strong>
+        </div>
+      </div>
+    </article>
+
+    <article class="tile">
+      <div class="tile__header tile__header--simple">
+        <div>
+          <h2>Accounting Ratios</h2>
+          <p>{{ periodLabel }}</p>
+        </div>
+      </div>
+      <div class="metric-table">
+        <div class="metric-table__head">
+          <span>Particulars</span>
+          <span>Value</span>
+        </div>
+        <div class="metric-table__row" *ngFor="let row of accountingRatioRows">
+          <span>{{ row.label }}</span>
+          <strong>{{ row.value }}</strong>
+        </div>
+      </div>
+    </article>
+
+    <article class="tile tile--wide">
+      <div class="tile__header tile__header--simple">
+        <div>
+          <h2>Inventory Details</h2>
+          <p>{{ selectedCompany || 'Selected Company' }}</p>
+        </div>
+      </div>
+      <div class="metric-table">
+        <div class="metric-table__head">
+          <span>Particulars</span>
+          <span>Value</span>
+        </div>
+        <div class="metric-table__row">
+          <span>Closing Stock</span>
+          <strong>{{ formatCurrency(assetTotal) }}</strong>
+        </div>
+        <div class="metric-table__row">
+          <span>Outwards</span>
+          <strong>{{ formatCurrency(salesTotal) }}</strong>
+        </div>
+        <div class="metric-table__row">
+          <span>Inwards</span>
+          <strong>{{ formatCurrency(purchaseTotal) }}</strong>
+        </div>
+      </div>
+    </article>
+
+    <article class="tile tile--wide">
+      <div class="tile__header tile__header--simple">
+        <div>
+          <h2>Workspace Links</h2>
+          <p>Selected company shortcuts</p>
+        </div>
+      </div>
+      <div class="list-table">
+        <div class="list-table__head">
+          <span>Action</span>
+          <span>Route</span>
+        </div>
+        <a class="list-table__row list-table__row--link" *ngFor="let action of quickActions" [routerLink]="action.route">
+          <span>{{ action.label }}</span>
+          <strong>{{ action.route }}</strong>
+        </a>
+      </div>
+    </article>
+  </section>
+</section>
+
+<ng-template #emptySalesTrend>
+  <div class="trend-chart trend-chart--empty">No sales trend data for {{ selectedCompany || 'this company' }}.</div>
+</ng-template>
+
+<ng-template #emptyPurchaseTrend>
+  <div class="trend-chart trend-chart--empty">No purchase trend data for {{ selectedCompany || 'this company' }}.</div>
+</ng-template>

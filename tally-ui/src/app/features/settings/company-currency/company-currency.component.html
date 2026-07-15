@@ -1,0 +1,109 @@
+<section class="feature-page">
+  <div class="page-header">
+    <div>
+      <div class="eyebrow">Settings</div>
+      <h2>Company Currency</h2>
+      <p>Manage the active company currency profile using a cleaner and more structured settings layout.</p>
+    </div>
+    <button type="button" (click)="load()" [disabled]="isLoading">Refresh</button>
+  </div>
+
+  <div class="feedback feedback--error" *ngIf="errorMessage">{{ errorMessage }}</div>
+  <div class="feedback feedback--success" *ngIf="submitMessage">{{ submitMessage }}</div>
+
+  <div class="settings-grid">
+    <article class="form-card settings-form-card">
+      <h3>Edit Currency Settings</h3>
+      <p class="table-card__meta">Update the currency values for the currently active company context.</p>
+      <form [formGroup]="form" (ngSubmit)="save()" class="entity-form">
+        <label>
+          <span>Currency Name</span>
+          <input formControlName="CURRENCYNAME" placeholder="Indian Rupee" />
+        </label>
+        <label>
+          <span>Mailing Name</span>
+          <input formControlName="MAILINGNAME" placeholder="INR" />
+        </label>
+        <label>
+          <span>Decimal Symbol</span>
+          <input formControlName="DECIMALSYMBOL" placeholder="Paise" />
+        </label>
+        <button type="submit" [disabled]="isSubmitting">
+          {{ isSubmitting ? 'Saving...' : 'Save Currency Settings' }}
+        </button>
+      </form>
+    </article>
+
+    <article class="table-card table-card--full">
+      <div class="table-card__header">
+        <div>
+          <h3>Currency Overview</h3>
+          <p class="table-card__meta">Live company currency details returned from the backend.</p>
+        </div>
+        <span>{{ companyName || '-' }}</span>
+      </div>
+
+      <div class="report-kpis" *ngIf="response && !isLoading">
+        <div class="report-kpi" *ngFor="let card of summaryCards">
+          <span>{{ card.label }}</span>
+          <strong>{{ card.value }}</strong>
+        </div>
+      </div>
+
+      <div class="state-panel" *ngIf="isLoading">Loading company currency...</div>
+
+      <div class="settings-stack" *ngIf="response && !isLoading">
+        <div class="detail-card">
+          <div class="detail-card__header">
+            <h4>Current Company Snapshot</h4>
+            <span>{{ companyName }}</span>
+          </div>
+          <div class="company-info-grid">
+            <div class="company-info-item">
+              <span>Books From</span>
+              <strong>{{ booksFrom }}</strong>
+            </div>
+            <div class="company-info-item">
+              <span>Currency Name</span>
+              <strong>{{ readValue(primaryCompany.CURRENCYNAME) || '-' }}</strong>
+            </div>
+            <div class="company-info-item">
+              <span>Mailing Name</span>
+              <strong>{{ readValue(primaryCompany.MAILINGNAME) || '-' }}</strong>
+            </div>
+            <div class="company-info-item">
+              <span>Decimal Symbol</span>
+              <strong>{{ readValue(primaryCompany.DECIMALSYMBOL) || '-' }}</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-card">
+          <div class="detail-card__header">
+            <h4>Connected Companies</h4>
+            <span>{{ companies.length }} rows</span>
+          </div>
+          <div class="company-list" *ngIf="companies.length; else noCompanies">
+            <div class="company-list__row" *ngFor="let company of companies; let i = index">
+              <div>
+                <strong>{{ readValue(company.NAME) || ('Company ' + (i + 1)) }}</strong>
+                <span>Books From {{ readValue(company.BOOKSFROM) || '-' }}</span>
+              </div>
+              <div>
+                <strong>{{ readValue(company.MAILINGNAME) || '-' }}</strong>
+                <span>Currency Mailing Name</span>
+              </div>
+            </div>
+          </div>
+          <ng-template #noCompanies>
+            <div class="state-panel">No companies were returned by the backend.</div>
+          </ng-template>
+        </div>
+
+        <div class="state-panel">
+          Updates are sent to the backend settings API for the currently active company context in Tally.
+        </div>
+      </div>
+    </article>
+  </div>
+</section>

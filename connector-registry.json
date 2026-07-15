@@ -1,0 +1,11 @@
+[ {
+  "connectorId" : "default",
+  "baseUrl" : "http://127.0.0.1:8082",
+  "agentKey" : "local-dev-key",
+  "company" : null,
+  "branch" : null,
+  "description" : "Default connector target from application.properties",
+  "active" : true,
+  "firstSeenAt" : "2026-07-02T10:51:07.331367815Z",
+  "lastSeenAt" : "2026-07-02T10:51:07.331367815Z"
+} ]

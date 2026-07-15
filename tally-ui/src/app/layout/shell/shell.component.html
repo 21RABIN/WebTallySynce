@@ -1,0 +1,342 @@
+<div class="shell" [class.shell--nav-open]="mobileNavOpen" [class.shell--sidebar-collapsed]="sidebarCollapsed">
+  <aside class="sidebar">
+    <button type="button" class="brand-card brand-card--sidebar" (click)="toggleSidebarCollapse()">
+      <div class="brand-card__mark">L</div>
+      <div class="brand-card__copy">
+        <div class="brand-card__eyebrow">Tally Connector</div>
+        <h1>Tally Companion</h1>
+        <p>Mobile-style Tally workspace</p>
+      </div>
+    </button>
+
+    <nav class="nav" aria-label="Primary">
+      <section class="nav-section" *ngFor="let section of navSections">
+        <button
+          type="button"
+          class="nav-section__toggle"
+          [class.is-active]="isSectionActive(section)"
+          (click)="toggleSection(section.label)"
+        >
+          <span class="nav-section__label">{{ section.label }}</span>
+          <span class="nav-section__caret">{{ isSectionExpanded(section.label) ? '-' : '+' }}</span>
+        </button>
+
+        <div class="nav-section__items" *ngIf="isSectionExpanded(section.label)">
+          <a
+            *ngFor="let item of section.items"
+            [routerLink]="item.route"
+            routerLinkActive="is-active"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
+            <span>{{ item.label }}</span>
+            <small *ngIf="item.badge">{{ item.badge }}</small>
+          </a>
+        </div>
+      </section>
+    </nav>
+  </aside>
+
+  <div class="shell-backdrop" (click)="toggleMobileNav()"></div>
+
+  <div class="content">
+    <header class="topbar">
+      <div class="topbar__intro">
+        <button type="button" class="mobile-nav-button" (click)="toggleMobileNav()">Menu</button>
+        <button
+          *ngIf="sidebarCollapsed"
+          type="button"
+          class="brand-card brand-card--topbar"
+          (click)="toggleSidebarCollapse()"
+        >
+          <div class="brand-card__mark">L</div>
+          <div class="brand-card__copy">
+            <div class="brand-card__eyebrow">Tally Connector</div>
+            <h1>Tally Companion</h1>
+          </div>
+        </button>
+        <div class="topbar__team">
+          <strong>Team Workspace</strong>
+          <span>Synced a month ago</span>
+        </div>
+      </div>
+
+      <div class="topbar__actions">
+        <div class="support-text">Support: 93103 88862</div>
+        <div class="sync-badge" *ngIf="syncState$ | async as syncState" [class.sync-badge--online]="syncState.online" [class.sync-badge--offline]="!syncState.online">
+          <span class="sync-badge__dot"></span>
+          <span>{{ syncState.statusLabel }}</span>
+          <small *ngIf="syncState.pendingQueueCount > 0">{{ syncState.pendingQueueCount }} pending</small>
+          <small *ngIf="syncState.pendingReviewCount > 0">{{ syncState.pendingReviewCount }} review</small>
+        </div>
+        <div class="queue-tools" *ngIf="syncState$ | async as syncState">
+          <div class="queue-tools__headline">
+            <strong>Queue Tools</strong>
+            <span>{{ syncState.failedQueueCount }} failed · {{ syncState.retryQueueCount }} retry</span>
+          </div>
+          <div class="queue-tools__actions">
+            <button
+              type="button"
+              class="queue-tools__button queue-tools__button--primary"
+              (click)="openReconciliationModal()"
+              [disabled]="reconciliationLoading"
+            >
+              {{ reconciliationLoading ? 'Opening approval...' : 'Sync Approval' }}
+            </button>
+            <button
+              type="button"
+              class="queue-tools__button queue-tools__button--danger"
+              (click)="clearFailedQueue()"
+              [disabled]="clearingFailed"
+            >
+              {{ clearingFailed ? 'Clearing failed...' : 'Clear Failed' }}
+            </button>
+            <button
+              type="button"
+              class="queue-tools__button queue-tools__button--muted"
+              (click)="clearRetryQueue()"
+              [disabled]="clearingRetry"
+            >
+              {{ clearingRetry ? 'Clearing retry...' : 'Clear Retry' }}
+            </button>
+            <button
+              type="button"
+              class="queue-tools__button queue-tools__button--muted"
+              (click)="clearHistoryQueue()"
+              [disabled]="clearingHistory"
+            >
+              {{ clearingHistory ? 'Clearing history...' : 'Clear History' }}
+            </button>
+          </div>
+          <small class="queue-tools__note" *ngIf="cleanupMessage" [class.queue-tools__note--error]="cleanupError">
+            {{ cleanupMessage }}
+          </small>
+        </div>
+        <div class="topbar-company">
+          <label class="topbar-company__field">
+            <span>Company</span>
+            <select [value]="displayedSelectedCompany" (change)="onCompanyChange($any($event.target).value)">
+              <option value="" disabled>Select company</option>
+              <option *ngFor="let company of displayedCompanyOptions" [value]="company">{{ company }}</option>
+            </select>
+          </label>
+          <small class="topbar-company__current" *ngIf="displayedSelectedCompany">
+            Selected: {{ displayedSelectedCompany }}
+          </small>
+        </div>
+
+        <div class="user-card" *ngIf="currentUser$ | async as user">
+          <div class="user-card__avatar">
+            {{ (user.displayName || user.username || 'U').charAt(0) | uppercase }}
+          </div>
+          <div class="user-card__copy">
+            <span class="user-card__name">{{ user.displayName || user.username }}</span>
+            <span class="user-card__roles">{{ (user.roles || []).join(', ') || 'Finance Operator' }}</span>
+          </div>
+        </div>
+
+        <button type="button" class="logout-button" (click)="logout()">Logout</button>
+      </div>
+    </header>
+
+    <main class="page">
+      <div class="page-strip">
+        <span>{{ currentRouteLabel }}</span>
+        <small *ngIf="selectedCompany">Company: {{ selectedCompany }}</small>
+      </div>
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>
+
+<div class="reconciliation-modal" *ngIf="reconciliationModalOpen">
+  <div class="reconciliation-modal__backdrop" (click)="closeReconciliationModal()"></div>
+  <section class="reconciliation-modal__panel" aria-label="Offline reconciliation review">
+    <header class="reconciliation-modal__header">
+      <div>
+        <small>Reconnect Review</small>
+        <h2>Offline to Tally sync review</h2>
+        <p *ngIf="selectedCompany">Company: {{ selectedCompany }}</p>
+      </div>
+      <button type="button" class="reconciliation-modal__close" (click)="closeReconciliationModal()">Close</button>
+    </header>
+
+    <div class="reconciliation-modal__summary">
+      <strong>{{ reconciliationSummary }}</strong>
+      <span *ngIf="reconciliationError" class="reconciliation-modal__error">{{ reconciliationError }}</span>
+    </div>
+
+    <div class="reconciliation-counts" *ngIf="reconciliationCounts | keyvalue as countItems">
+      <div class="reconciliation-count" *ngFor="let item of countItems">
+        <span>{{ item.key }}</span>
+        <strong>{{ item.value }}</strong>
+      </div>
+    </div>
+
+    <section class="reconciliation-section" *ngIf="pendingReconciliationItems.length">
+      <div class="reconciliation-section__header">
+        <h3>Ready To Sync</h3>
+        <span>{{ pendingReconciliationItems.length }}</span>
+      </div>
+      <article class="reconciliation-item" *ngFor="let item of pendingReconciliationItems">
+        <div class="reconciliation-item__top">
+          <div>
+            <strong>{{ item.entity_name || item.entity_type }}</strong>
+            <small>{{ item.entity_type }}</small>
+          </div>
+          <label>
+            <span>Action</span>
+            <select [ngModel]="item.selectedAction" (ngModelChange)="updateReconciliationAction(item, $event)">
+              <option value="USE_DB_AND_SYNC_TO_TALLY">Sync to Tally</option>
+              <option value="SKIP_FOR_NOW">Skip for now</option>
+            </select>
+          </label>
+        </div>
+        <div class="reconciliation-fields">
+          <div class="reconciliation-field" *ngFor="let key of previewKeys(item)">
+            <span>{{ key }}</span>
+            <strong>{{ item.preview_fields?.[key] }}</strong>
+          </div>
+        </div>
+        <div class="reconciliation-meta" *ngIf="itemStateMeta(item).length">
+          <span class="reconciliation-meta__chip" *ngFor="let meta of itemStateMeta(item)">{{ meta.label }}: {{ meta.value }}</span>
+        </div>
+        <p class="reconciliation-item__error" *ngIf="item.last_error">{{ item.last_error }}</p>
+      </article>
+    </section>
+
+    <section class="reconciliation-section" *ngIf="failedReplayItems.length">
+      <div class="reconciliation-section__header">
+        <h3>Failed Replay Items</h3>
+        <span>{{ failedReplayItems.length }}</span>
+      </div>
+      <article class="reconciliation-item reconciliation-item--failed" *ngFor="let item of failedReplayItems">
+        <div class="reconciliation-item__top">
+          <div>
+            <strong>{{ item.entity_name || item.entity_type }}</strong>
+            <small>{{ item.entity_type }}</small>
+          </div>
+          <label>
+            <span>Action</span>
+            <select [ngModel]="item.selectedAction" (ngModelChange)="updateReconciliationAction(item, $event)">
+              <option value="USE_DB_AND_SYNC_TO_TALLY">Retry Sync to Tally</option>
+              <option value="SKIP_FOR_NOW">Skip for now</option>
+              <option value="MARK_AS_ALREADY_SYNCED">Mark as already synced</option>
+            </select>
+          </label>
+        </div>
+        <div class="reconciliation-fields">
+          <div class="reconciliation-field" *ngFor="let key of previewKeys(item)">
+            <span>{{ key }}</span>
+            <strong>{{ item.preview_fields?.[key] }}</strong>
+          </div>
+        </div>
+        <div class="reconciliation-meta" *ngIf="itemStateMeta(item).length">
+          <span class="reconciliation-meta__chip" *ngFor="let meta of itemStateMeta(item)">{{ meta.label }}: {{ meta.value }}</span>
+        </div>
+        <p class="reconciliation-item__error" *ngIf="item.last_error">{{ item.last_error }}</p>
+      </article>
+    </section>
+
+    <section class="reconciliation-section" *ngIf="conflictItems.length">
+      <div class="reconciliation-section__header">
+        <h3>Conflicts</h3>
+        <span>{{ conflictItems.length }}</span>
+      </div>
+      <article class="reconciliation-item reconciliation-item--conflict" *ngFor="let item of conflictItems">
+        <div class="reconciliation-item__top">
+          <div>
+            <strong>{{ item.entity_name || item.entity_type }}</strong>
+            <small>{{ item.entity_type }}</small>
+          </div>
+          <label>
+            <span>Action</span>
+            <select [ngModel]="item.selectedAction" (ngModelChange)="updateReconciliationAction(item, $event)">
+              <option value="SKIP_FOR_NOW">Skip for now</option>
+              <option value="USE_DB_AND_SYNC_TO_TALLY">Use DB and sync</option>
+              <option value="MARK_AS_ALREADY_SYNCED">Mark as already synced</option>
+            </select>
+          </label>
+        </div>
+        <div class="reconciliation-compare">
+          <div class="reconciliation-compare__column">
+            <strong>Database Queue</strong>
+            <div class="reconciliation-field" *ngFor="let key of previewKeys(item)">
+              <span>{{ key }}</span>
+              <small>{{ item.preview_fields?.[key] }}</small>
+            </div>
+          </div>
+          <div class="reconciliation-compare__column">
+            <strong>Tally</strong>
+            <div class="reconciliation-field" *ngFor="let key of tallyPreviewKeys(item)">
+              <span>{{ key }}</span>
+              <small>{{ item.tally_preview_fields?.[key] }}</small>
+            </div>
+          </div>
+        </div>
+        <div class="reconciliation-meta" *ngIf="itemStateMeta(item).length">
+          <span class="reconciliation-meta__chip" *ngFor="let meta of itemStateMeta(item)">{{ meta.label }}: {{ meta.value }}</span>
+        </div>
+        <p class="reconciliation-item__error" *ngIf="item.last_error">{{ item.last_error }}</p>
+      </article>
+    </section>
+
+    <section class="reconciliation-section" *ngIf="alreadyPresentItems.length">
+      <div class="reconciliation-section__header">
+        <h3>Already Present In Tally</h3>
+        <span>{{ alreadyPresentItems.length }}</span>
+      </div>
+      <article class="reconciliation-item" *ngFor="let item of alreadyPresentItems">
+        <div class="reconciliation-item__top">
+          <div>
+            <strong>{{ item.entity_name || item.entity_type }}</strong>
+            <small>{{ item.entity_type }}</small>
+          </div>
+          <label>
+            <span>Action</span>
+            <select [ngModel]="item.selectedAction" (ngModelChange)="updateReconciliationAction(item, $event)">
+              <option value="MARK_AS_ALREADY_SYNCED">Mark as already synced</option>
+              <option value="USE_DB_AND_SYNC_TO_TALLY">Sync anyway</option>
+              <option value="SKIP_FOR_NOW">Skip for now</option>
+            </select>
+          </label>
+        </div>
+        <div class="reconciliation-fields">
+          <div class="reconciliation-field" *ngFor="let key of previewKeys(item)">
+            <span>{{ key }}</span>
+            <strong>{{ item.preview_fields?.[key] }}</strong>
+          </div>
+        </div>
+        <div class="reconciliation-meta" *ngIf="itemStateMeta(item).length">
+          <span class="reconciliation-meta__chip" *ngFor="let meta of itemStateMeta(item)">{{ meta.label }}: {{ meta.value }}</span>
+        </div>
+      </article>
+    </section>
+
+    <section class="reconciliation-section" *ngIf="recentTallyItems.length">
+      <div class="reconciliation-section__header">
+        <h3>Recent Tally Changes</h3>
+        <span>{{ recentTallyItems.length }}</span>
+      </div>
+      <article class="reconciliation-item" *ngFor="let item of recentTallyItems">
+        <div class="reconciliation-item__top">
+          <div>
+            <strong>{{ item['entity_name'] }}</strong>
+            <small>{{ item['entity_type'] }}</small>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <footer class="reconciliation-modal__footer">
+      <button type="button" class="queue-tools__button queue-tools__button--muted" (click)="refreshReconciliationPreview()" [disabled]="reconciliationLoading || reconciliationSyncing">
+        {{ reconciliationLoading ? 'Refreshing...' : 'Refresh' }}
+      </button>
+      <button type="button" class="queue-tools__button queue-tools__button--muted" (click)="dismissReconciliationModal()" [disabled]="reconciliationSyncing">
+        Dismiss
+      </button>
+      <button type="button" class="queue-tools__button queue-tools__button--danger" (click)="syncApprovedReconciliationItems()" [disabled]="reconciliationSyncing">
+        {{ reconciliationSyncing ? 'Syncing New Data...' : 'Sync All New Data' }}
+      </button>
+    </footer>
+  </section>
+</div>

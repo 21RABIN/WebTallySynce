@@ -1,0 +1,156 @@
+Tally New API Playbook
+
+Use this checklist whenever you create a new Tally-related API in this project.
+
+1. Decide the API purpose
+   - Is it a GET/read API, POST/write API, or report API?
+   - Is it for a voucher, master, setting, or utility flow?
+   - Identify the exact Tally object name and route name.
+
+2. Check if the connector already has a similar API
+   - Search `TallyConnectorPython/src/tally_connector/routes.py` for a similar route.
+   - Search `TallyConnectorPython/src/tally_connector/xml_builder.py` for a similar XML builder.
+   - Reuse the nearest existing pattern instead of inventing a new one.
+
+3. Decide the public Java backend route
+   - Add or update the controller in `tally-backend/src/main/java/com/tallybackend/web/`.
+   - Follow the pattern used by `VouchersApiController`.
+   - Keep the controller thin.
+   - The controller should only forward the request to the connector gateway.
+
+4. Map the Java route to the connector path
+   - The Java API path should map cleanly to the Python connector path.
+   - Example: Java `/api/vouchers/receipt` -> connector `/vouchers/receipt`
+   - Example: Java `/api/ledgers` -> connector `/ledgers`
+
+5. Update the gateway only if needed
+   - The main forwarding logic lives in `ConnectorGatewayService`.
+   - If the new API needs special routing, company selection, body transformation, or header handling, update the gateway carefully.
+   - Keep existing routes working exactly the same.
+
+6. Add the Python route
+   - Register the route in `routes.py`.
+   - Use the existing helper style:
+     - `register_voucher_route(...)` for voucher APIs
+     - `register_master(...)` for master APIs
+     - dedicated async functions for special flows
+   - Do not duplicate logic if a helper already exists.
+
+7. Validate the payload locally
+   - Check required fields before calling Tally.
+   - Validate action values like `Create`, `Alter`, `Cancel`, `Delete` when relevant.
+   - Validate date, name, ledger, reference, and nested list fields when needed.
+   - Fail early with a clear message if the payload is incomplete.
+
+8. Build the Tally XML
+   - Add or update the XML builder in `xml_builder.py`.
+   - Preserve the same field names that Tally expects.
+   - Include required static fields like:
+     - `VOUCHERTYPENAME`
+     - `PERSISTEDVIEW`
+     - `ISINVOICE`
+     - `DATE`
+   - Add nested list handling if the object needs it, such as:
+     - `LEDGERENTRIES.LIST`
+     - `ALLINVENTORYENTRIES.LIST`
+     - `BILLALLOCATIONS.LIST`
+
+9. Send the XML through the connector client
+   - Use `TallyClient.post_xml(...)` for write operations.
+   - Use `TallyClient.get_json(...)` only if the upstream API already returns JSON.
+   - Keep Tally communication inside the Python connector, not in the Java controller.
+
+10. Parse and normalize the Tally response
+    - Convert Tally XML to JSON.
+    - Shape success responses using the existing response helpers.
+    - Keep read responses aligned with the `summary | full | raw` view pattern where applicable.
+
+11. Standardize error responses
+    - All connector errors should use the compact `IMPORTRESULT` envelope when the error is Tally-related.
+    - Keep the error payload in this format:
+
+      {
+        "IMPORTRESULT": {
+          "CREATED": "0",
+          "ALTERED": "0",
+          "DELETED": "0",
+          "LASTVCHID": "0",
+          "LASTMID": "0",
+          "COMBINED": "0",
+          "IGNORED": "0",
+          "ERRORS": "0",
+          "CANCELLED": "0",
+          "EXCEPTIONS": "1",
+          "LINEERROR": "..."
+        }
+      }
+
+    - Put the real Tally rejection message in `LINEERROR`.
+    - If Tally gives a no-effect or exception response, convert that into the same envelope.
+
+12. Use real Tally behavior to refine the payload
+    - If Tally rejects the request, read the exact `LINEERROR`.
+    - Fix the payload shape, not just the message.
+    - For vouchers, check:
+      - date
+      - party ledger
+      - voucher type
+      - amount signs
+      - bill allocation type
+      - nested list structure
+    - For masters, check:
+      - name
+      - parent
+      - required master-specific fields
+
+13. Verify both success and failure cases
+    - Test a success case in Swagger or via curl.
+    - Test at least one failure case.
+    - Confirm the failure still returns the standard `IMPORTRESULT` error shape.
+    - Confirm the success shape matches the existing connector conventions.
+
+14. Keep changes narrow
+    - Do not change unrelated routes.
+    - Do not rename existing endpoints unless absolutely required.
+    - Do not introduce a new response style.
+    - Reuse helpers whenever possible.
+
+15. Common patterns to follow
+    - Controller layer in Java:
+      - thin wrappers
+      - forward to gateway
+      - no Tally business logic
+    - Python route layer:
+      - validate
+      - normalize
+      - build XML
+      - call Tally
+      - shape response
+    - XML builder:
+      - create Tally-compatible XML
+      - preserve nested object structure
+      - map connector fields to Tally fields
+
+16. Quick creation checklist
+    - Add Java endpoint
+    - Map to connector path
+    - Add Python route
+    - Add validation
+    - Add XML builder support
+    - Test with live Tally
+    - Fix based on actual `LINEERROR`
+    - Verify response shape
+
+17. Useful files in this project
+    - `tally-backend/src/main/java/com/tallybackend/web/VouchersApiController.java`
+    - `tally-backend/src/main/java/com/tallybackend/web/AbstractConnectorController.java`
+    - `tally-backend/src/main/java/com/tallybackend/service/ConnectorGatewayService.java`
+    - `TallyConnectorPython/src/tally_connector/routes.py`
+    - `TallyConnectorPython/src/tally_connector/xml_builder.py`
+    - `TallyConnectorPython/src/tally_connector/tally_client.py`
+
+18. Final rule
+    - Always follow the live Tally response, not just the guessed payload.
+    - If Tally says something is wrong, fix the payload or route to match Tally's real behavior.
+
+

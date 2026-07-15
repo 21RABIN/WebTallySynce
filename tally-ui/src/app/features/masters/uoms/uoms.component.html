@@ -1,0 +1,117 @@
+<section class="master-page">
+  <article class="surface-hero">
+    <div class="surface-hero__header">
+      <div class="surface-hero__content">
+        <div class="surface-hero__meta">Measurement Setup</div>
+        <h3>Units of measure redesigned into a cleaner control workspace.</h3>
+        <p>Manage units in a fresh form-and-registry view made for inventory and accounting teams.</p>
+      </div>
+      <div class="export-actions">
+        <span class="export-actions__label">Download</span>
+        <button type="button" class="export-actions__button" (click)="download('xlsx')">Excel</button>
+        <button type="button" class="export-actions__button" (click)="download('pdf')">PDF</button>
+        <button type="button" (click)="load()" [disabled]="isLoading">Refresh Units</button>
+      </div>
+    </div>
+
+    <div class="surface-hero__stats">
+      <div class="surface-hero__panel">
+        <span>Units</span>
+        <strong>{{ uoms.length }}</strong>
+        <small>Returned unit records from the connector.</small>
+      </div>
+      <div class="surface-hero__panel">
+        <span>Mode</span>
+        <strong>Create + Review</strong>
+        <small>Designed for quick UOM setup and audit.</small>
+      </div>
+      <div class="surface-hero__panel">
+        <span>Focus</span>
+        <strong>Inventory</strong>
+        <small>Supports base unit structure for stock workflows.</small>
+      </div>
+    </div>
+  </article>
+
+  <div class="feedback feedback--error" *ngIf="errorMessage">{{ errorMessage }}</div>
+  <div class="feedback feedback--success" *ngIf="submitMessage">{{ submitMessage }}</div>
+
+  <div class="surface-split">
+    <div class="surface-stack">
+      <article class="surface-form-card">
+        <h3>Create Unit</h3>
+        <p>Add simple unit definitions in a cleaner, more intentional setup experience.</p>
+        <div class="surface-keyline"></div>
+
+        <form [formGroup]="form" (ngSubmit)="submit()" class="entity-form">
+          <label>
+            <span>Symbol / Name</span>
+            <input formControlName="NAME" placeholder="Box" />
+          </label>
+
+          <label>
+            <span>Original Name</span>
+            <input formControlName="ORIGINALNAME" placeholder="Box" />
+          </label>
+
+          <label>
+            <span>Simple Unit</span>
+            <select formControlName="ISSIMPLEUNIT">
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </label>
+
+          <button type="submit" [disabled]="isSubmitting">
+            {{ isSubmitting ? 'Creating...' : 'Create Unit' }}
+          </button>
+        </form>
+      </article>
+
+      <article class="surface-note-card">
+        <h3>Why this template is fresh</h3>
+        <p>The old compact utility block is replaced with a dedicated measurement setup experience and a more premium review surface.</p>
+      </article>
+    </div>
+
+    <article class="surface-table-card">
+      <div class="surface-toolbar">
+        <div class="surface-toolbar__copy">
+          <div class="surface-toolbar__badge">Unit Table</div>
+          <h3>Unit Registry</h3>
+          <p>Returned UOM records appear in a fresh table tuned for inventory configuration work.</p>
+        </div>
+        <div class="surface-summary__card">
+          <span>Rows</span>
+          <strong>{{ uoms.length }}</strong>
+        </div>
+      </div>
+
+      <div class="state-panel" *ngIf="isLoading">Loading units...</div>
+
+      <div class="surface-table-shell" *ngIf="!isLoading">
+        <table *ngIf="uoms.length; else noUoms">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Original Name</th>
+              <th>Reserved Name</th>
+              <th>Decimal Places</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let uom of uoms">
+              <td>{{ uom.name }}</td>
+              <td>{{ uom.originalName || '—' }}</td>
+              <td>{{ uom.reservedName || '—' }}</td>
+              <td>{{ uom.decimalPlaces || '—' }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <ng-template #noUoms>
+          <div class="surface-empty">No units returned by the backend.</div>
+        </ng-template>
+      </div>
+    </article>
+  </div>
+</section>

@@ -1,0 +1,121 @@
+<section class="feature-page">
+  <div class="page-header">
+    <div>
+      <div class="eyebrow">Settings</div>
+      <h2>Company Features</h2>
+      <p>Update profile, GST, inventory, and location details using a cleaner and more readable settings screen.</p>
+    </div>
+    <button type="button" (click)="load()" [disabled]="isLoading">Refresh</button>
+  </div>
+
+  <div class="feedback feedback--error" *ngIf="errorMessage">{{ errorMessage }}</div>
+  <div class="feedback feedback--success" *ngIf="submitMessage">{{ submitMessage }}</div>
+
+  <div class="settings-grid">
+    <article class="form-card settings-form-card">
+      <h3>Edit Company Profile</h3>
+      <p class="table-card__meta">Control the main company profile fields used by the connected Tally company.</p>
+      <form [formGroup]="form" (ngSubmit)="save()" class="entity-form">
+        <label><span>Email</span><input formControlName="EMAIL" placeholder="company@example.com" /></label>
+        <div class="form-row">
+          <label><span>Pincode</span><input formControlName="PINCODE" placeholder="605001" /></label>
+          <label><span>State</span><input formControlName="STATENAME" placeholder="Tamil Nadu" /></label>
+        </div>
+        <label><span>Country</span><input formControlName="COUNTRYNAME" placeholder="India" /></label>
+        <div class="form-row">
+          <label>
+            <span>Inventory Enabled</span>
+            <select formControlName="ISINVENTORYON">
+              <option value="">Select</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </label>
+          <label>
+            <span>GST Enabled</span>
+            <select formControlName="ISGSTON">
+              <option value="">Select</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </label>
+        </div>
+        <button type="submit" [disabled]="isSubmitting">
+          {{ isSubmitting ? 'Saving...' : 'Save Company Features' }}
+        </button>
+      </form>
+    </article>
+
+    <article class="table-card table-card--full">
+      <div class="table-card__header">
+        <div>
+          <h3>Feature Overview</h3>
+          <p class="table-card__meta">Live company feature values returned from the backend.</p>
+        </div>
+        <span>{{ companyName || '-' }}</span>
+      </div>
+
+      <div class="report-kpis" *ngIf="response && !isLoading">
+        <div class="report-kpi" *ngFor="let card of featureCards">
+          <span>{{ card.label }}</span>
+          <strong>{{ card.value }}</strong>
+        </div>
+      </div>
+
+      <div class="state-panel" *ngIf="isLoading">Loading company features...</div>
+
+      <div class="settings-stack" *ngIf="response && !isLoading">
+        <div class="detail-card">
+          <div class="detail-card__header">
+            <h4>Current Company Snapshot</h4>
+            <span>{{ companyName }}</span>
+          </div>
+          <div class="company-info-grid">
+            <div class="company-info-item">
+              <span>Email</span>
+              <strong>{{ readValue(primaryCompany.EMAIL) || '-' }}</strong>
+            </div>
+            <div class="company-info-item">
+              <span>Pincode</span>
+              <strong>{{ readValue(primaryCompany.PINCODE) || '-' }}</strong>
+            </div>
+            <div class="company-info-item">
+              <span>Inventory</span>
+              <strong>{{ readValue(primaryCompany.ISINVENTORYON) || '-' }}</strong>
+            </div>
+            <div class="company-info-item">
+              <span>GST</span>
+              <strong>{{ readValue(primaryCompany.ISGSTON) || '-' }}</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-card">
+          <div class="detail-card__header">
+            <h4>Connected Companies</h4>
+            <span>{{ companies.length }} rows</span>
+          </div>
+          <div class="company-list" *ngIf="companies.length; else noCompanyFeatures">
+            <div class="company-list__row" *ngFor="let company of companies; let i = index">
+              <div>
+                <strong>{{ readValue(company.NAME) || ('Company ' + (i + 1)) }}</strong>
+                <span>{{ readValue(company.COUNTRYNAME) || '-' }} | {{ readValue(company.STATENAME) || '-' }}</span>
+              </div>
+              <div>
+                <strong>GST {{ readValue(company.ISGSTON) || '-' }}</strong>
+                <span>Inventory {{ readValue(company.ISINVENTORYON) || '-' }}</span>
+              </div>
+            </div>
+          </div>
+          <ng-template #noCompanyFeatures>
+            <div class="state-panel">No company feature data was returned by the backend.</div>
+          </ng-template>
+        </div>
+
+        <div class="state-panel">
+          Feature changes are submitted through the backend and depend on the active Tally company accepting the update.
+        </div>
+      </div>
+    </article>
+  </div>
+</section>

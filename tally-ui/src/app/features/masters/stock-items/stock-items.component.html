@@ -1,0 +1,310 @@
+<section class="item-screen">
+  <article class="item-hero">
+    <div class="item-hero__content">
+      <div class="item-hero__badge-row">
+        <p class="item-hero__eyebrow">Inventory Masters</p>
+        <span class="item-hero__live-pill">{{ responseMeta?.source || 'Live sync' }}</span>
+      </div>
+
+      <h1>Stock command center</h1>
+      <p class="item-hero__description">
+        Manage item masters, current stock values, GST setup, and unit mapping from a modern inventory workspace designed to feel cleaner, faster, and easier to scan.
+      </p>
+
+      <div class="item-hero__metrics">
+        <div class="item-hero__metric">
+          <span>Inventory Value</span>
+          <strong>{{ inventoryValueTotal }}</strong>
+        </div>
+        <div class="item-hero__metric">
+          <span>Tracked HSN</span>
+          <strong>{{ trackedHsnCount }}</strong>
+        </div>
+        <div class="item-hero__metric">
+          <span>Focused Item</span>
+          <strong>{{ selectedInsight }}</strong>
+        </div>
+      </div>
+    </div>
+
+    <div class="item-hero__meta">
+      <div class="item-hero__panel">
+        <span>Selected Company</span>
+        <strong>{{ selectedCompany || 'No company selected' }}</strong>
+      </div>
+      <div class="item-hero__panel">
+        <span>Last Sync</span>
+        <strong>{{ responseMeta?.last_synced_at || 'Not Available' }}</strong>
+      </div>
+      <div class="item-hero__panel item-hero__panel--accent">
+        <span>Workspace Mode</span>
+        <strong>{{ createMode ? 'Create item' : (editMode ? 'Edit item' : 'Review item') }}</strong>
+      </div>
+    </div>
+  </article>
+
+  <div class="item-screen__toolbar">
+    <div class="item-screen__status" *ngIf="responseMeta">
+      <span>Source {{ responseMeta.source || '-' }}</span>
+      <span>{{ stockItems.length }} total items</span>
+      <span>{{ filteredStockItems.length }} visible now</span>
+    </div>
+
+      <div class="item-screen__actions">
+      <div class="export-actions">
+        <span class="export-actions__label">Download</span>
+        <button type="button" class="export-actions__button" (click)="download('xlsx')">Excel</button>
+        <button type="button" class="export-actions__button" (click)="download('pdf')">PDF</button>
+      </div>
+        <button type="button" class="action-button" (click)="openCreateMode()">Create Item</button>
+        <button type="button" class="action-button" (click)="enableEditMode()" [disabled]="!selectedStockItem || createMode || editMode">Edit Item</button>
+        <button type="button" class="action-button action-button--dark" (click)="load()" [disabled]="isLoading">Refresh</button>
+      </div>
+  </div>
+
+  <section class="stat-grid">
+    <article class="stat-card">
+      <span class="stat-card__label">All Stock Items</span>
+      <strong>{{ stockItems.length }}</strong>
+      <p>Returned stock item rows from live sync.</p>
+    </article>
+    <article class="stat-card">
+      <span class="stat-card__label">GST Applicable</span>
+      <strong>{{ gstApplicableCount }}</strong>
+      <p>Items currently marked as GST applicable.</p>
+    </article>
+    <article class="stat-card">
+      <span class="stat-card__label">Units Mapped</span>
+      <strong>{{ unitMappedCount }}</strong>
+      <p>Items already carrying a base unit assignment.</p>
+    </article>
+    <article class="stat-card stat-card--accent">
+      <span class="stat-card__label">Inventory Value</span>
+      <strong>{{ inventoryValueTotal }}</strong>
+      <p>Total current stock value across currently loaded stock items.</p>
+    </article>
+  </section>
+
+  <div class="feedback feedback--error" *ngIf="errorMessage">{{ errorMessage }}</div>
+  <div class="feedback feedback--success" *ngIf="submitMessage">{{ submitMessage }}</div>
+
+  <div class="item-screen__body">
+    <article class="list-panel">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">Stock Item Directory</div>
+          <div class="panel-subtitle">
+            <span>{{ selectedCompany || 'No company selected' }}</span>
+            <span>{{ filteredStockItems.length }} visible</span>
+          </div>
+        </div>
+        <button type="button" class="action-button action-button--soft" (click)="openCreateMode()">New Item</button>
+      </div>
+
+      <div class="list-panel__search">
+        <input type="text" [(ngModel)]="searchTerm" placeholder="Search stock items, group, unit, HSN" />
+        <button type="button" class="clear-button" *ngIf="searchTerm" (click)="clearSearch()">Clear</button>
+      </div>
+
+      <div class="list-panel__summary" *ngIf="!isLoading && filteredStockItems.length">
+        <div class="list-panel__summary-chip">
+          <span>GST</span>
+          <strong>{{ gstApplicableCount }}</strong>
+        </div>
+        <div class="list-panel__summary-chip">
+          <span>Units</span>
+          <strong>{{ unitMappedCount }}</strong>
+        </div>
+        <div class="list-panel__summary-chip">
+          <span>HSN</span>
+          <strong>{{ trackedHsnCount }}</strong>
+        </div>
+      </div>
+
+      <div class="list-panel__loading" *ngIf="isLoading">Loading stock items...</div>
+
+      <div class="list-panel__empty" *ngIf="!isLoading && !filteredStockItems.length">
+        No stock items matched the current search or backend response.
+      </div>
+
+      <div class="list-panel__rows" *ngIf="!isLoading && filteredStockItems.length">
+        <button
+          type="button"
+          class="list-panel__row"
+          *ngFor="let stockItem of filteredStockItems"
+          [class.is-selected]="stockItem.name === selectedStockItemName && !createMode"
+          (click)="selectStockItem(stockItem.name)">
+          <span class="list-panel__avatar">{{ (stockItem.name || '?').charAt(0) }}</span>
+          <span class="list-panel__row-main">
+            <span class="list-panel__row-topline">
+              <span class="list-panel__row-name" [title]="stockItem.name">{{ stockItem.name }}</span>
+              <span class="list-panel__row-value">{{ stockItem.value || '0.00' }}</span>
+            </span>
+            <span class="list-panel__row-meta">
+              <span class="list-panel__pill">{{ stockItem.parent || 'Primary' }}</span>
+              <span class="list-panel__pill list-panel__pill--soft">{{ stockItem.baseUnits || 'No Unit' }}</span>
+              <span class="list-panel__micro">Qty {{ stockItem.quantity || '0' }}</span>
+              <span class="list-panel__micro" *ngIf="stockItem.hsnCode">HSN {{ stockItem.hsnCode }}</span>
+              <span class="list-panel__micro">{{ stockItem.gstApplicable || 'Applicable' }}</span>
+            </span>
+          </span>
+        </button>
+      </div>
+    </article>
+
+    <article class="detail-panel">
+      <div class="detail-panel__header">
+        <div>
+          <div class="panel-title">{{ detailTitle }}</div>
+          <div class="detail-panel__subtitle">
+            {{ createMode ? 'Create a new stock item with quantity, rate, unit, and GST details.' : (editMode ? 'Edit the selected stock item and save it back to Tally.' : 'Review the selected stock item and its inventory details.') }}
+          </div>
+        </div>
+        <div class="detail-panel__company">{{ selectedCompany || 'Company not selected' }}</div>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="submit()" class="alteration-form">
+        <div class="workspace-banner">
+          <div class="workspace-banner__copy">
+            <span class="workspace-banner__eyebrow">Inventory Setup</span>
+            <strong>{{ createMode ? 'Ready to create a new stock item' : (selectedStockItem?.name || 'Select a stock item') }}</strong>
+            <small>{{ createMode ? 'Fill the setup fields and save the item into the selected company.' : (editMode ? 'Update the selected item fields and save the changes.' : 'The right panel mirrors the currently selected inventory master.') }}</small>
+          </div>
+          <div class="workspace-banner__stats">
+            <div>
+              <span>Base Unit</span>
+              <strong>{{ form.get('BASEUNITS')?.value || 'None' }}</strong>
+            </div>
+            <div>
+              <span>GST</span>
+              <strong>{{ form.get('GSTAPPLICABLE')?.value || 'Applicable' }}</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="alteration-form__header">
+          <div class="field-row field-row--name">
+            <label for="stock-name">Name</label>
+            <input
+              id="stock-name"
+              formControlName="NAME"
+              [readonly]="!createMode"
+              [class.is-readonly]="!createMode"
+              placeholder="Stock Item Name" />
+          </div>
+
+          <div class="summary-box">
+            <div class="summary-box__title">{{ valueSummaryLabel }}</div>
+            <div class="summary-box__value">{{ selectedValueDisplay }}</div>
+            <div class="summary-box__caption">{{ form.get('BASEUNITS')?.value || 'No Unit Selected' }}</div>
+          </div>
+        </div>
+
+        <div class="alteration-form__content">
+          <div class="detail-column">
+            <div class="detail-section detail-section--soft">
+              <div class="detail-section__title">Core Mapping</div>
+              <p class="detail-section__copy">Choose the stock group and unit first so quantity and rate calculations stay aligned with your Tally inventory setup.</p>
+            </div>
+
+            <div class="field-row field-row--stacked">
+              <label for="stock-parent">Under</label>
+              <select id="stock-parent" formControlName="PARENT" [disabled]="!isEditable">
+                <option value="" disabled>Select stock group</option>
+                <option *ngFor="let parent of parentOptions" [value]="parent">{{ parent }}</option>
+              </select>
+            </div>
+
+            <div class="field-row field-row--stacked">
+              <label for="stock-units">Base Units</label>
+              <select id="stock-units" formControlName="BASEUNITS" [disabled]="!isEditable">
+                <option value="" disabled>Select base unit</option>
+                <option *ngFor="let uom of uomOptions" [value]="uom">{{ uom }}</option>
+              </select>
+            </div>
+
+            <div class="field-grid">
+              <div class="field-row field-row--stacked">
+                <label for="stock-quantity">{{ quantityFieldLabel }}</label>
+                <input id="stock-quantity" type="number" min="0" step="0.001" formControlName="QUANTITY" [readonly]="!isEditable" [class.is-readonly]="!isEditable" />
+              </div>
+
+              <div class="field-row field-row--stacked">
+                <label for="stock-rate">Rate (per unit)</label>
+                <input id="stock-rate" type="number" min="0" step="0.01" formControlName="RATEPER" [readonly]="!isEditable" [class.is-readonly]="!isEditable" />
+              </div>
+            </div>
+
+            <div class="field-row field-row--stacked">
+              <label for="stock-hsn">HSN Code</label>
+              <input id="stock-hsn" type="text" formControlName="HSNCODE" [readonly]="!isEditable" [class.is-readonly]="!isEditable" placeholder="998314" />
+            </div>
+          </div>
+
+          <div class="detail-column">
+            <div class="detail-section">
+              <div class="detail-section__title">Inventory Details</div>
+
+              <div class="detail-line">
+                <span>GST Applicable</span>
+                <strong>{{ selectedStockItem?.gstApplicable || form.get('GSTAPPLICABLE')?.value || 'Applicable' }}</strong>
+              </div>
+
+              <div class="detail-line">
+                <span>{{ quantityFieldLabel }}</span>
+                <strong>{{ selectedQuantityDisplay }}</strong>
+              </div>
+
+              <div class="detail-line">
+                <span>{{ createMode ? 'Opening Rate' : 'Current Rate' }}</span>
+                <strong>{{ selectedRateDisplay }}</strong>
+              </div>
+
+              <div class="detail-line">
+                <span>{{ valueSummaryLabel }}</span>
+                <strong>{{ selectedValueDisplay }}</strong>
+              </div>
+
+              <div class="detail-line">
+                <span>Base Unit</span>
+                <strong>{{ selectedStockItem?.baseUnits || form.get('BASEUNITS')?.value || 'Not Available' }}</strong>
+              </div>
+
+              <div class="detail-line">
+                <span>HSN Code</span>
+                <strong>{{ selectedStockItem?.hsnCode || form.get('HSNCODE')?.value || 'Not Available' }}</strong>
+              </div>
+            </div>
+
+            <div class="detail-section">
+              <div class="detail-section__title">Tax and Units</div>
+
+              <div class="field-row field-row--stacked">
+                <label for="stock-gst">GST Applicable</label>
+                <select id="stock-gst" formControlName="GSTAPPLICABLE" [disabled]="!isEditable">
+                  <option value="Applicable">Applicable</option>
+                  <option value="Not Applicable">Not Applicable</option>
+                </select>
+              </div>
+
+              <div class="detail-line">
+                <span>Company</span>
+                <strong>{{ selectedCompany || 'Not Selected' }}</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="alteration-form__footer">
+          <div class="footer-caption">
+            {{ createMode ? 'Create a stock item with quantity, rate, unit, and GST details.' : (editMode ? 'Edit the selected stock item and save the changes to Tally.' : 'Stock item details loaded from the backend database cache.') }}
+          </div>
+
+          <button type="submit" class="accept-button" [disabled]="isSubmitting || !isEditable || !parentOptions.length || !uomOptions.length">
+            {{ isSubmitting ? 'Saving...' : (createMode ? 'Create Item' : 'Update Item') }}
+          </button>
+        </div>
+      </form>
+    </article>
+  </div>
+</section>
