@@ -1,0 +1,50 @@
+services:
+  mysql:
+    image: mariadb:10.6
+    container_name: tally-mysql
+    restart: unless-stopped
+    env_file:
+      - ./mysql.env
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - tally_mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ../tally-backend
+      dockerfile: Dockerfile
+    container_name: tally-backend
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    env_file:
+      - ./backend.env
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/tallyconnector?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: tallyapp
+      SPRING_JPA_DATABASE: mysql
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
+    ports:
+      - "127.0.0.1:9090:9090"
+
+  ui:
+    build:
+      context: ../tally-ui
+      dockerfile: Dockerfile
+    container_name: tally-ui
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "127.0.0.1:4200:4200"
+
+volumes:
+  tally_mysql_data:

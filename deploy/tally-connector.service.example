@@ -1,0 +1,17 @@
+[Unit]
+Description=Tally Python Connector
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/opt/tallyconnector/TallyConnectorPython
+EnvironmentFile=/opt/tallyconnector/TallyConnectorPython/.env
+Environment=PYTHONPATH=src
+ExecStart=/opt/tallyconnector/TallyConnectorPython/.venv/bin/uvicorn tally_connector.main:app --host 0.0.0.0 --port 8082
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
