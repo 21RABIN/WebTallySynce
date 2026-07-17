@@ -1,0 +1,56 @@
+<section class="feature-page">
+  <div class="page-header">
+    <div>
+      <div class="eyebrow">Reports</div>
+      <h2>Companies</h2>
+      <p>Connected company list in a simple flat table view.</p>
+    </div>
+    <div class="export-actions">
+      <span class="export-actions__label">Download</span>
+      <button type="button" class="export-actions__button" (click)="download('xlsx')">Excel</button>
+      <button type="button" class="export-actions__button" (click)="download('pdf')">PDF</button>
+      <button type="button" (click)="load()" [disabled]="isLoading">Refresh</button>
+    </div>
+  </div>
+
+  <div class="feedback feedback--error" *ngIf="errorMessage">{{ errorMessage }}</div>
+  <div class="state-panel" *ngIf="cacheMeta && !isLoading">
+    Source {{ cacheMeta.source || '-' }} | Last Sync {{ cacheMeta.last_synced_at || '-' }}
+  </div>
+  <div class="state-panel" *ngIf="isLoading">Loading companies report...</div>
+
+  <div class="state-panel" *ngIf="response && !companies.length && !isLoading">
+    No companies were returned by the backend.
+  </div>
+
+  <article class="table-card table-card--full" *ngIf="companies.length && !isLoading">
+    <div class="table-card__header">
+      <div>
+        <h3>Connected Companies</h3>
+        <p class="table-card__meta">Returned companies available for connector operations.</p>
+      </div>
+      <div class="export-actions">
+        <span>{{ companies.length }} rows</span>
+        <button type="button" class="export-actions__button" (click)="download('xlsx')">Excel</button>
+        <button type="button" class="export-actions__button" (click)="download('pdf')">PDF</button>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table class="company-table">
+        <thead>
+          <tr>
+            <th>Company Name</th>
+            <th>Reserved Name</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let company of companies">
+            <td><strong>{{ company.name }}</strong></td>
+            <td><span>{{ company.reservedName || 'Standard working company available for connector operations.' }}</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </article>
+</section>

@@ -1,0 +1,235 @@
+<section class="ledger-screen">
+  <article class="ledger-hero">
+    <div class="ledger-hero__content">
+      <p class="ledger-hero__eyebrow">Master data</p>
+      <h1>Ledgers workspace</h1>
+      <p class="ledger-hero__description">
+        Review ledger structure, search master records faster, and create new ledgers in a cleaner modern Tally-style screen.
+      </p>
+    </div>
+
+    <div class="ledger-hero__meta">
+      <div class="ledger-hero__panel">
+        <span>Selected Company</span>
+        <strong>{{ selectedCompany || 'No company selected' }}</strong>
+      </div>
+      <div class="ledger-hero__panel">
+        <span>Last Sync</span>
+        <strong>{{ responseMeta?.last_synced_at || 'Not Available' }}</strong>
+      </div>
+    </div>
+  </article>
+
+  <div class="ledger-screen__toolbar">
+    <div class="ledger-screen__status" *ngIf="responseMeta">
+      <span>Source {{ responseMeta.source || '-' }}</span>
+      <span>{{ ledgers.length }} total ledgers</span>
+    </div>
+
+    <div class="ledger-screen__actions">
+      <div class="export-actions">
+        <span class="export-actions__label">Download</span>
+        <button type="button" class="export-actions__button" (click)="download('xlsx')">Excel</button>
+        <button type="button" class="export-actions__button" (click)="download('pdf')">PDF</button>
+      </div>
+      <button type="button" class="action-button" (click)="openCreateMode()">Create Ledger</button>
+      <button type="button" class="action-button action-button--dark" (click)="load()" [disabled]="isLoading">Refresh</button>
+    </div>
+  </div>
+
+  <section class="stat-grid">
+    <article class="stat-card">
+      <span class="stat-card__label">All Ledgers</span>
+      <strong>{{ ledgers.length }}</strong>
+      <p>Available from live ledger sync.</p>
+    </article>
+    <article class="stat-card">
+      <span class="stat-card__label">Grouped Ledgers</span>
+      <strong>{{ groupedLedgerCount }}</strong>
+      <p>Ledgers already mapped under a parent group.</p>
+    </article>
+    <article class="stat-card">
+      <span class="stat-card__label">Reserved Names</span>
+      <strong>{{ reservedLedgerCount }}</strong>
+      <p>Ledgers carrying a reserved or predefined name.</p>
+    </article>
+  </section>
+
+  <div class="feedback feedback--error" *ngIf="errorMessage">{{ errorMessage }}</div>
+  <div class="feedback feedback--success" *ngIf="submitMessage">{{ submitMessage }}</div>
+
+  <div class="ledger-screen__body">
+    <article class="ledger-list-panel">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">Ledger Directory</div>
+          <div class="panel-subtitle">
+            <span>{{ selectedCompany || 'No company selected' }}</span>
+            <span>{{ filteredLedgers.length }} visible</span>
+          </div>
+        </div>
+        <button type="button" class="action-button action-button--soft" (click)="openCreateMode()">New Ledger</button>
+      </div>
+
+      <div class="ledger-list-panel__search">
+        <input type="text" [(ngModel)]="searchTerm" placeholder="Search ledgers, parent, reserved name" />
+        <button type="button" class="clear-button" *ngIf="searchTerm" (click)="clearSearch()">Clear</button>
+      </div>
+
+      <div class="ledger-list-panel__summary" *ngIf="!isLoading && filteredLedgers.length">
+        <div class="ledger-list-panel__summary-chip">
+          <span>Grouped</span>
+          <strong>{{ groupedLedgerCount }}</strong>
+        </div>
+        <div class="ledger-list-panel__summary-chip">
+          <span>Reserved</span>
+          <strong>{{ reservedLedgerCount }}</strong>
+        </div>
+      </div>
+
+      <div class="ledger-list-panel__loading" *ngIf="isLoading">Loading ledgers...</div>
+
+      <div class="ledger-list-panel__empty" *ngIf="!isLoading && !filteredLedgers.length">
+        No ledgers matched the current search or backend response.
+      </div>
+
+      <div class="ledger-list-panel__rows" *ngIf="!isLoading && filteredLedgers.length">
+        <button
+          type="button"
+          class="ledger-list-panel__row"
+          *ngFor="let ledger of filteredLedgers"
+          [class.is-selected]="ledger.name === selectedLedgerName && !createMode"
+          (click)="selectLedger(ledger.name)">
+          <span class="ledger-list-panel__avatar">{{ (ledger.name || '?').charAt(0) }}</span>
+          <span class="ledger-list-panel__row-main">
+            <span class="ledger-list-panel__row-name" [title]="ledger.name">{{ ledger.name }}</span>
+            <span class="ledger-list-panel__row-meta">
+              <span class="ledger-list-panel__pill">{{ ledger.parent || 'Primary' }}</span>
+              <span class="ledger-list-panel__reserved" *ngIf="ledger.reservedName" [title]="ledger.reservedName">
+                {{ ledger.reservedName }}
+              </span>
+            </span>
+          </span>
+        </button>
+      </div>
+    </article>
+
+    <article class="ledger-detail-panel">
+      <div class="ledger-detail-panel__header">
+        <div>
+          <div class="panel-title">{{ detailTitle }}</div>
+          <div class="ledger-detail-panel__subtitle">
+            {{ createMode ? 'Create a new ledger under the correct group.' : 'Review the selected ledger and its available master details.' }}
+          </div>
+        </div>
+        <div class="ledger-detail-panel__company">{{ selectedCompany || 'Company not selected' }}</div>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="submit()" class="ledger-alteration-form">
+        <div class="ledger-alteration-form__header">
+          <div class="field-row field-row--name">
+            <label for="ledger-name">Name</label>
+            <input
+              id="ledger-name"
+              formControlName="NAME"
+              [readonly]="!createMode"
+              [class.is-readonly]="!createMode"
+              placeholder="Ledger Name" />
+          </div>
+
+          <div class="opening-balance-box">
+            <div class="opening-balance-box__title">Opening Balance Status</div>
+            <div class="opening-balance-box__value">
+              {{ createMode ? 'Pending' : 'Not Available' }}
+            </div>
+            <div class="opening-balance-box__caption">{{ selectedLedger?.parent || form.get('PARENT')?.value || 'Primary' }}</div>
+          </div>
+        </div>
+
+        <div class="ledger-alteration-form__content">
+          <div class="detail-column">
+            <div class="field-row field-row--stacked">
+              <label for="ledger-parent">Under</label>
+              <select
+                id="ledger-parent"
+                formControlName="PARENT"
+                [disabled]="!createMode">
+                <option value="" disabled>Select parent group</option>
+                <option *ngFor="let parent of parentOptions" [value]="parent">{{ parent }}</option>
+              </select>
+            </div>
+
+            <div class="detail-section">
+              <div class="detail-section__title">Master Details</div>
+
+              <div class="detail-line">
+                <span>Reserved Name</span>
+                <strong>{{ selectedLedger?.reservedName || 'Not Applicable' }}</strong>
+              </div>
+
+              <div class="detail-line">
+                <span>Alias</span>
+                <strong>{{ selectedLedger?.name || form.get('NAME')?.value || 'Not Applicable' }}</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="detail-column">
+            <div class="detail-section">
+              <div class="detail-section__title">Mailing Details</div>
+
+              <div class="detail-line">
+                <span>Name</span>
+                <strong>{{ selectedLedger?.name || form.get('NAME')?.value || 'Pending' }}</strong>
+              </div>
+
+              <div class="detail-line">
+                <span>Address</span>
+                <strong>Not Applicable</strong>
+              </div>
+
+              <div class="detail-line">
+                <span>State</span>
+                <strong>Not Applicable</strong>
+              </div>
+
+              <div class="detail-line">
+                <span>Country</span>
+                <strong>Not Applicable</strong>
+              </div>
+            </div>
+
+            <div class="detail-section">
+              <div class="detail-section__title">Tax Registration Details</div>
+
+              <div class="detail-line">
+                <span>PAN/IT No.</span>
+                <strong>Not Available</strong>
+              </div>
+
+              <div class="detail-line">
+                <span>Registration Type</span>
+                <strong>Not Available</strong>
+              </div>
+
+              <div class="detail-line">
+                <span>GSTIN/UIN</span>
+                <strong>Not Available</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ledger-alteration-form__footer">
+          <div class="footer-caption">
+            {{ createMode ? 'Create a new ledger in the selected company.' : 'Ledger details loaded from the backend database cache.' }}
+          </div>
+
+          <button type="submit" class="accept-button" [disabled]="isSubmitting || !createMode || !parentOptions.length">
+            {{ isSubmitting ? 'Saving...' : 'Accept' }}
+          </button>
+        </div>
+      </form>
+    </article>
+  </div>
+</section>

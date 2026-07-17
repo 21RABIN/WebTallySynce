@@ -1,0 +1,139 @@
+<section class="master-page">
+  <article class="surface-hero">
+    <div class="surface-hero__header">
+      <div class="surface-hero__content">
+        <div class="surface-hero__meta">Inventory Structure</div>
+        <h3>Stock group control built for cleaner inventory hierarchy management.</h3>
+        <p>Create top-level or nested stock groups, search the live structure faster, and keep inventory classification easier to understand.</p>
+      </div>
+      <div class="export-actions">
+        <span class="export-actions__label">Download</span>
+        <button type="button" class="export-actions__button" (click)="download('xlsx')">Excel</button>
+        <button type="button" class="export-actions__button" (click)="download('pdf')">PDF</button>
+        <button type="button" (click)="load()" [disabled]="isLoading">Refresh Stock Groups</button>
+      </div>
+    </div>
+
+    <div class="surface-hero__stats">
+      <div class="surface-hero__panel">
+        <span>Selected Company</span>
+        <strong>{{ selectedCompany || 'No company selected' }}</strong>
+        <small>Stock groups below are loaded only for this company.</small>
+      </div>
+      <div class="surface-hero__panel">
+        <span>Stock Groups</span>
+        <strong>{{ stockGroups.length }}</strong>
+        <small>Returned stock group rows from the backend.</small>
+      </div>
+      <div class="surface-hero__panel">
+        <span>Top Level</span>
+        <strong>{{ topLevelCount }}</strong>
+        <small>Root-level inventory groups in the current company.</small>
+      </div>
+      <div class="surface-hero__panel">
+        <span>Nested Groups</span>
+        <strong>{{ nestedCount }}</strong>
+        <small>Child groups under existing inventory parents.</small>
+      </div>
+    </div>
+  </article>
+
+  <div class="feedback feedback--error" *ngIf="errorMessage">{{ errorMessage }}</div>
+  <div class="feedback feedback--success" *ngIf="submitMessage">{{ submitMessage }}</div>
+
+  <div class="surface-split">
+    <div class="surface-stack">
+      <article class="surface-form-card">
+        <div class="stock-form-card__eyebrow">New hierarchy</div>
+        <h3>Create Stock Group</h3>
+        <p>Define the inventory hierarchy clearly before item-level operations begin.</p>
+        <div class="surface-keyline"></div>
+
+        <form [formGroup]="form" (ngSubmit)="submit()" class="entity-form">
+          <label>
+            <span>Name</span>
+            <input formControlName="NAME" placeholder="New Stock Group" />
+          </label>
+
+          <label>
+            <span>Parent</span>
+            <select formControlName="PARENT">
+              <option value="">None (Top Level)</option>
+              <option *ngFor="let parent of parentOptions" [value]="parent">{{ parent }}</option>
+            </select>
+          </label>
+
+          <button type="submit" [disabled]="isSubmitting">
+            {{ isSubmitting ? 'Creating...' : 'Create Stock Group' }}
+          </button>
+        </form>
+
+        <div class="stock-form-card__tips">
+          <div class="stock-form-card__tip">
+            <strong>Top level</strong>
+            <span>Choose `None (Top Level)` to create a root inventory bucket.</span>
+          </div>
+          <div class="stock-form-card__tip">
+            <strong>Nested</strong>
+            <span>Select a parent stock group when the new group belongs under an existing hierarchy.</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="surface-note-card">
+        <h3>Inventory Note</h3>
+        <p>Stock groups usually work best when the structure stays shallow, descriptive, and consistent with how your stock items are reported.</p>
+      </article>
+    </div>
+
+    <article class="surface-table-card">
+      <div class="surface-toolbar">
+        <div class="surface-toolbar__copy">
+          <div class="surface-toolbar__badge">Hierarchy View</div>
+          <h3>Stock Group Registry</h3>
+          <p>Live Tally stock groups for {{ selectedCompany || 'the selected company' }} are presented in a cleaner registry for quick structural review and faster lookup.</p>
+        </div>
+        <div class="surface-summary__card">
+          <span>Visible</span>
+          <strong>{{ filteredStockGroups.length }}</strong>
+          <small>{{ selectedCompany || 'No company selected' }}</small>
+        </div>
+      </div>
+
+      <div class="stock-toolbar">
+        <div class="stock-toolbar__search">
+          <input type="text" [(ngModel)]="searchTerm" placeholder="Search stock groups, parent, reserved name" />
+          <button type="button" *ngIf="searchTerm" (click)="clearSearch()">Clear</button>
+        </div>
+        <div class="stock-toolbar__chips" *ngIf="filteredStockGroups.length">
+          <span>Parents: {{ topLevelCount }}</span>
+          <span>Children: {{ nestedCount }}</span>
+        </div>
+      </div>
+
+      <div class="state-panel" *ngIf="isLoading">Loading stock groups...</div>
+
+      <div class="surface-table-shell" *ngIf="!isLoading">
+        <table *ngIf="filteredStockGroups.length; else noStockGroups">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Parent</th>
+              <th>Reserved Name</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let stockGroup of filteredStockGroups">
+              <td>{{ stockGroup.name }}</td>
+              <td>{{ stockGroup.parent || '—' }}</td>
+              <td>{{ stockGroup.reservedName || '—' }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <ng-template #noStockGroups>
+          <div class="surface-empty">No stock groups were found for {{ selectedCompany || 'the selected company' }}.</div>
+        </ng-template>
+      </div>
+    </article>
+  </div>
+</section>

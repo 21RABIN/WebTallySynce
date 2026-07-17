@@ -1,0 +1,45 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.venv/
+.venv-build/
+.venv-build-linux/
+
+# Node / Angular
+node_modules/
+dist/
+.angular/
+
+# Java / Maven
+target/
+*.class
+
+# Logs / runtime / temp
+*.log
+output/
+tmp/
+backups/
+
+# Local env / secrets
+.env
+
+# Generated archives
+*.zip
+*.tar
+*.tar.gz
+
+# Local DB files
+*.mv.db
+*.trace.db
+
+# Misc local tooling
+.playwright-cli/

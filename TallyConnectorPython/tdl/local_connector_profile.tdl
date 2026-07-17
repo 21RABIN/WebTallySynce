@@ -1,0 +1,71 @@
+[#Menu    : Gateway of Tally]
+    Add    : Item    : Before    : @@locQuit    : Local Connector Tools    : Display    : LC Tools Menu
+
+[Menu     : LC Tools Menu]
+    Title  : "Local Connector Tools"
+    Item   : "Company Open Status"         : Display : LC Company Open Report
+    Item   : "Company Create Status"       : Display : LC Company Create Report
+    Item   : "Security Roles Status"       : Display : LC Security Roles Report
+    Item   : "Price Levels Status"         : Display : LC Price Levels Report
+    Item   : "Payroll Exports Status"      : Display : LC Payroll Exports Report
+    Item   : "TDS Outstandings Status"     : Display : LC TDS Outstandings Report
+
+[Report   : LC Company Open Report]
+    Form   : LC Placeholder Form
+    Title  : "Local Connector Company Open"
+
+[Report   : LC Company Create Report]
+    Form   : LC Placeholder Form
+    Title  : "Local Connector Company Create"
+
+[Report   : LC Security Roles Report]
+    Form   : LC Placeholder Form
+    Title  : "Local Connector Security Roles"
+
+[Report   : LC Security Roles Write Report]
+    Form   : LC Placeholder Form
+    Title  : "Local Connector Security Roles Write"
+
+[Report   : LC Price Levels Report]
+    Form   : LC Placeholder Form
+    Title  : "Local Connector Price Levels"
+
+[Report   : LC Price Levels Write Report]
+    Form   : LC Placeholder Form
+    Title  : "Local Connector Price Levels Write"
+
+[Report   : LC Payroll Exports Report]
+    Form   : LC Placeholder Form
+    Title  : "Local Connector Payroll Exports"
+
+[Report   : LC TDS Outstandings Report]
+    Form   : LC Placeholder Form
+    Title  : "Local Connector TDS Outstandings"
+
+[Form     : LC Placeholder Form]
+    Part   : LC Placeholder Part
+    Width  : 100% Screen
+    Height : 100% Screen
+
+[Part     : LC Placeholder Part]
+    Line   : LC Placeholder Line1, LC Placeholder Line2, LC Placeholder Line3, LC Placeholder Line4
+
+[Line     : LC Placeholder Line1]
+    Field  : Medium Prompt, Medium Prompt
+    Local  : Field : Medium Prompt : Set as : "This is a scaffold TDL package for the local connector."
+    Local  : Field : Medium Prompt : Info   : "Implement the required collections/reports before enabling TDL_INTEGRATION_ENABLED."
+
+[Line     : LC Placeholder Line2]
+    Field  : Medium Prompt, Medium Prompt
+    Local  : Field : Medium Prompt : Set as : "Required features:"
+    Local  : Field : Medium Prompt : Info   : "company_open, company_create, security_roles, price_levels, payroll_exports, tds_outstandings"
+
+[Line     : LC Placeholder Line3]
+    Field  : Medium Prompt, Medium Prompt
+    Local  : Field : Medium Prompt : Set as : "Next step:"
+    Local  : Field : Medium Prompt : Info   : "Add real collections, reports, or functions for the connector endpoints."
+
+[Line     : LC Placeholder Line4]
+    Field  : Medium Prompt, Medium Prompt
+    Local  : Field : Medium Prompt : Set as : "Validation:"
+    Local  : Field : Medium Prompt : Info   : "Update tdl/manifest.json, restart the connector, then check /health/readiness and /capabilities."

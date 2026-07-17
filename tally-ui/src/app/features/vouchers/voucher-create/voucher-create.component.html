@@ -1,0 +1,945 @@
+<section class="voucher-studio" *ngIf="isVoucherWorkspace; else advancedWorkspace">
+  <header class="studio-hero">
+    <div class="studio-hero__copy">
+      <span class="studio-eyebrow">Voucher Studio</span>
+      <h1>Create vouchers faster with a cleaner workspace</h1>
+      <p>
+        Pick the voucher mode, fill the business details, review totals, and send the request to the backend from one
+        focused screen.
+      </p>
+    </div>
+
+    <div class="studio-hero__actions">
+      <div class="studio-chip">
+        <span>Company</span>
+        <strong>{{ companyLabel || 'Not selected' }}</strong>
+      </div>
+      <div class="studio-chip">
+        <span>API Route</span>
+        <strong>{{ activeRequest.path }}</strong>
+      </div>
+      <div class="studio-hero__buttons">
+        <button type="button" class="button button--ghost" (click)="resetForm()">Reset</button>
+        <button type="submit" class="button button--primary" form="voucher-entry-form" [disabled]="isSubmitting">
+          {{ isSubmitting ? 'Saving...' : 'Accept Voucher' }}
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="studio-alert studio-alert--error" *ngIf="errorMessage">{{ errorMessage }}</div>
+  <div class="studio-alert studio-alert--success" *ngIf="submitMessage">{{ submitMessage }}</div>
+
+  <section class="studio-overview">
+    <article class="overview-card overview-card--accent">
+      <span>Selected Mode</span>
+      <strong>{{ selectedEndpoint.label }}</strong>
+      <p>{{ selectedEndpoint.description }}</p>
+      <small>{{ selectedStatusLabel }}</small>
+    </article>
+
+    <article class="overview-card">
+      <span>Voucher Type</span>
+      <strong>{{ selectedVoucherHeading }}</strong>
+      <p>{{ selectedRequestKindLabel }}</p>
+    </article>
+
+    <article class="overview-card">
+      <span>Working Endpoints</span>
+      <strong>{{ workingEndpointCount }}</strong>
+      <p>{{ experimentalEndpointCount }} experimental, {{ unsupportedEndpointCount }} unsupported</p>
+    </article>
+
+    <article class="overview-card">
+      <span>Voucher Total</span>
+      <strong>{{ voucherTotalAmount }}</strong>
+      <p>{{ showInventoryVoucherSection ? inventoryLines.length + ' item rows' : 'Ledger posting mode' }}</p>
+    </article>
+  </section>
+
+  <div class="studio-layout">
+    <aside class="studio-panel studio-panel--rail">
+      <div class="panel-heading">
+        <div>
+          <span class="panel-stage">Step 1</span>
+          <span class="studio-eyebrow">Voucher Modes</span>
+          <h2>Choose your flow</h2>
+        </div>
+        <strong>{{ voucherEndpointOptions.length }}</strong>
+      </div>
+
+      <div class="mode-grid">
+        <button
+          type="button"
+          class="mode-card"
+          *ngFor="let endpoint of voucherEndpointOptions"
+          [class.mode-card--selected]="endpoint.key === selectedEndpoint.key"
+          [class.mode-card--working]="endpoint.createStatus === 'working'"
+          [class.mode-card--experimental]="endpoint.createStatus === 'experimental'"
+          [class.mode-card--unsupported]="endpoint.createStatus === 'unsupported'"
+          (click)="onVoucherEndpointChange(endpoint.key)">
+          <div class="mode-card__top">
+            <strong>{{ endpoint.label }}</strong>
+            <span>{{ endpoint.defaultVoucherType }}</span>
+          </div>
+          <p>{{ endpoint.description }}</p>
+        </button>
+      </div>
+
+      <div class="studio-note">
+        <span class="studio-eyebrow">Operator Hint</span>
+        <strong>{{ selectedVoucherHeading }}</strong>
+        <p>
+          {{ showInventoryVoucherSection
+            ? 'Use the inventory rows for product-based vouchers. Units, HSN, discount and GST stay visible while you work.'
+            : 'This route posts through ledgers only, so focus on party, offset ledger, amount and narration.' }}
+        </p>
+      </div>
+    </aside>
+
+    <main class="studio-main">
+      <form id="voucher-entry-form" [formGroup]="form" (ngSubmit)="submit()" class="studio-form">
+        <section class="studio-panel">
+          <div class="panel-heading">
+            <div>
+              <span class="panel-stage">Step 2</span>
+              <span class="studio-eyebrow">Document Setup</span>
+              <h2>{{ selectedVoucherHeading }} voucher</h2>
+            </div>
+            <div class="panel-badge">{{ companyLabel || 'No company selected' }}</div>
+          </div>
+
+          <div class="form-grid form-grid--header">
+            <label class="field-card">
+              <span>Company</span>
+              <select formControlName="company" (change)="onCompanyChange($any($event.target).value)">
+                <option value="" disabled>Select company</option>
+                <option *ngFor="let company of companyOptions" [value]="company">{{ company }}</option>
+              </select>
+            </label>
+
+            <label class="field-card">
+              <span>Voucher Type</span>
+              <input formControlName="voucherTypeName" readonly class="is-readonly" />
+            </label>
+
+            <label class="field-card">
+              <span>Date</span>
+              <input formControlName="date" type="date" />
+            </label>
+
+            <label class="field-card">
+              <span>Voucher No.</span>
+              <input formControlName="voucherNumber" type="text" placeholder="101" />
+              <small class="field-card__error" *ngIf="voucherNumberInlineError">{{ voucherNumberInlineError }}</small>
+            </label>
+
+            <label class="field-card field-card--wide">
+              <span>Reference</span>
+              <input formControlName="invoiceNumber" type="text" placeholder="SI-1001" />
+            </label>
+
+            <div class="value-card">
+              <span>Total Value</span>
+              <strong>{{ voucherTotalAmount }}</strong>
+              <small>{{ selectedEndpoint.label }}</small>
+            </div>
+          </div>
+        </section>
+
+        <section class="studio-content-grid">
+          <article class="studio-panel">
+            <div class="panel-heading">
+              <div>
+                <span class="panel-stage">Step 3A</span>
+                <span class="studio-eyebrow">Ledger Details</span>
+                <h3>Commercial posting</h3>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <label class="field-card">
+                <span>{{ partyLedgerLabel }}</span>
+                <select formControlName="partyLedgerName">
+                  <option value="">Select party ledger</option>
+                  <option *ngFor="let ledger of ledgerOptions" [value]="ledger">{{ ledger }}</option>
+                </select>
+              </label>
+
+              <label class="field-card">
+                <span>{{ offsetLedgerLabel }}</span>
+                <select formControlName="offsetLedgerName">
+                  <option value="">Select offset ledger</option>
+                  <option *ngFor="let ledger of ledgerOptions" [value]="ledger">{{ ledger }}</option>
+                </select>
+              </label>
+
+              <label class="field-card field-card--wide">
+                <span>Narration</span>
+                <input formControlName="narration" type="text" placeholder="Created from tally-ui" />
+              </label>
+
+              <label class="field-card">
+                <span>Amount</span>
+                <input formControlName="amount" type="text" placeholder="1000.00" />
+              </label>
+            </div>
+
+            <div class="mini-summary-grid">
+              <div class="mini-summary-card">
+                <span>Party</span>
+                <strong>{{ selectedPartyDisplay }}</strong>
+              </div>
+              <div class="mini-summary-card">
+                <span>{{ offsetLedgerLabel }}</span>
+                <strong>{{ form.controls.offsetLedgerName.value || 'Pending' }}</strong>
+              </div>
+              <div class="mini-summary-card">
+                <span>Tax Ledger</span>
+                <strong>{{ taxLedgerLabel }}</strong>
+              </div>
+            </div>
+
+            <div class="sub-panel" *ngIf="showInventoryVoucherSection">
+              <div class="sub-panel__header">
+                <span class="studio-eyebrow">Charges</span>
+                <strong>Tax, freight and round off</strong>
+              </div>
+
+              <div class="form-grid">
+                <label class="field-card">
+                  <span>Tax Ledger</span>
+                  <input formControlName="taxLedgerName" type="text" [placeholder]="taxLedgerLabel" />
+                </label>
+
+                <label class="field-card">
+                  <span>Freight Ledger</span>
+                  <input formControlName="freightLedgerName" type="text" placeholder="Freight Charges" />
+                </label>
+
+                <label class="field-card">
+                  <span>Freight Amount</span>
+                  <input formControlName="freightAmount" type="text" placeholder="0.00" />
+                </label>
+
+                <label class="field-card">
+                  <span>Round Off Ledger</span>
+                  <input formControlName="roundOffLedgerName" type="text" placeholder="Round Off" />
+                </label>
+
+                <label class="field-card">
+                  <span>Round Off Amount</span>
+                  <input formControlName="roundOffAmount" type="text" placeholder="0.00" />
+                </label>
+              </div>
+            </div>
+          </article>
+
+          <article class="studio-panel studio-panel--inventory" *ngIf="showInventoryVoucherSection; else ledgerOnlySummary">
+            <div class="panel-heading">
+              <div>
+                <span class="panel-stage">Step 3B</span>
+                <span class="studio-eyebrow">Inventory Workspace</span>
+                <h3>Items and line values</h3>
+              </div>
+              <button type="button" class="button button--ghost" (click)="addInventoryLine()">Add Line</button>
+            </div>
+
+            <div class="inventory-hero">
+              <div>
+                <span class="studio-eyebrow">Active Line</span>
+                <strong>{{ currentInventoryLine?.stockItemName || 'Select stock item' }}</strong>
+                <p>{{ selectedStockItemOption?.name || 'Choose an item to auto-load unit and HSN.' }}</p>
+              </div>
+              <div class="inventory-hero__badges">
+                <span>Available {{ selectedStockAvailabilityLabel }}</span>
+                <span>HSN {{ selectedItemHsnDisplay }}</span>
+                <span>Unit {{ selectedStockUnitLabel }}</span>
+                <span>Rows {{ inventoryLines.length }}</span>
+              </div>
+            </div>
+
+            <div class="inventory-lines">
+              <div class="inventory-line-card" *ngFor="let line of inventoryLines; let lineIndex = index" [class.is-active]="lineIndex === activeInventoryLineIndex">
+                <div class="inventory-line-card__top">
+                  <button type="button" class="inventory-line-index" (click)="setActiveInventoryLine(lineIndex)">{{ lineIndex + 1 }}</button>
+                  <div class="inventory-line-card__amount">
+                    <span>Amount</span>
+                    <strong>{{ line.amount || '0.00' }}</strong>
+                  </div>
+                  <button type="button" class="inventory-remove" (click)="removeInventoryLine(lineIndex)">Remove</button>
+                </div>
+
+                <div class="inventory-line-grid">
+                  <label class="inventory-field inventory-field--item">
+                    <span>Item</span>
+                    <select
+                      [ngModel]="line.stockItemName"
+                      [ngModelOptions]="{ standalone: true }"
+                      [attr.data-line-index]="lineIndex"
+                      data-line-field="stockItemName"
+                      (focus)="setActiveInventoryLine(lineIndex)"
+                      (ngModelChange)="onStockItemSelectionChange(lineIndex, $event)">
+                      <option [ngValue]="''">Select stock item</option>
+                      <option *ngFor="let stockItem of stockItemOptions" [ngValue]="stockItem.name">{{ stockItem.name }}</option>
+                    </select>
+                    <small class="inventory-field__meta">Available Qty: {{ getInventoryLineStockAvailabilityLabel(line) }}</small>
+                    <small class="inventory-field__warning" *ngIf="getSelectedStockAvailabilityMessage(line) as stockWarning">
+                      {{ stockWarning }}
+                    </small>
+                  </label>
+
+                  <label class="inventory-field">
+                    <span>Qty</span>
+                    <input
+                      [value]="line.quantity"
+                      type="text"
+                      placeholder="1"
+                      [attr.data-line-index]="lineIndex"
+                      data-line-field="quantity"
+                      (focus)="setActiveInventoryLine(lineIndex)"
+                      (keydown)="onInventoryCellKeydown($event, lineIndex, 'quantity')"
+                      (input)="onInventoryLineFieldChange(lineIndex, 'quantity', $any($event.target).value)" />
+                  </label>
+
+                  <label class="inventory-field">
+                    <span>Unit</span>
+                    <input
+                      [value]="line.unit"
+                      type="text"
+                      placeholder="NOS"
+                      [attr.data-line-index]="lineIndex"
+                      data-line-field="unit"
+                      (focus)="setActiveInventoryLine(lineIndex)"
+                      (keydown)="onInventoryCellKeydown($event, lineIndex, 'unit')"
+                      (input)="onInventoryLineFieldChange(lineIndex, 'unit', $any($event.target).value)" />
+                  </label>
+
+                  <label class="inventory-field">
+                    <span>Rate</span>
+                    <input
+                      [value]="line.rate"
+                      type="text"
+                      placeholder="1000.00"
+                      [attr.data-line-index]="lineIndex"
+                      data-line-field="rate"
+                      (focus)="setActiveInventoryLine(lineIndex)"
+                      (keydown)="onInventoryCellKeydown($event, lineIndex, 'rate')"
+                      (input)="onInventoryLineFieldChange(lineIndex, 'rate', $any($event.target).value)" />
+                  </label>
+
+                  <label class="inventory-field">
+                    <span>Disc %</span>
+                    <input
+                      [value]="line.discount"
+                      type="text"
+                      placeholder="0"
+                      [attr.data-line-index]="lineIndex"
+                      data-line-field="discount"
+                      (focus)="setActiveInventoryLine(lineIndex)"
+                      (keydown)="onInventoryCellKeydown($event, lineIndex, 'discount')"
+                      (input)="onInventoryLineFieldChange(lineIndex, 'discount', $any($event.target).value)" />
+                  </label>
+
+                  <label class="inventory-field">
+                    <span>GST %</span>
+                    <input
+                      [value]="line.gstRate"
+                      type="text"
+                      placeholder="18"
+                      [attr.data-line-index]="lineIndex"
+                      data-line-field="gstRate"
+                      (focus)="setActiveInventoryLine(lineIndex)"
+                      (keydown)="onInventoryCellKeydown($event, lineIndex, 'gstRate')"
+                      (input)="onInventoryLineFieldChange(lineIndex, 'gstRate', $any($event.target).value)" />
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="inventory-summary-grid">
+              <div class="mini-summary-card">
+                <span>Subtotal</span>
+                <strong>{{ inventorySubtotal }}</strong>
+              </div>
+              <div class="mini-summary-card">
+                <span>Discount</span>
+                <strong>{{ inventoryDiscountTotal }}</strong>
+              </div>
+              <div class="mini-summary-card">
+                <span>Tax</span>
+                <strong>{{ inventoryTaxTotal }}</strong>
+              </div>
+              <div class="mini-summary-card">
+                <span>Charges</span>
+                <strong>{{ inventoryChargesTotal }}</strong>
+              </div>
+              <div class="mini-summary-card mini-summary-card--highlight">
+                <span>Grand Total</span>
+                <strong>{{ inventoryGrandTotal }}</strong>
+              </div>
+            </div>
+
+            <div class="form-grid form-grid--detail">
+              <label class="field-card field-card--wide">
+                <span>Description</span>
+                <input
+                  [value]="currentInventoryLine?.description || ''"
+                  type="text"
+                  placeholder="Item description"
+                  (input)="onInventoryLineFieldChange(activeInventoryLineIndex, 'description', $any($event.target).value)" />
+              </label>
+
+              <label class="field-card">
+                <span>HSN / SAC</span>
+                <input
+                  [value]="currentInventoryLine?.hsnCode || ''"
+                  type="text"
+                  placeholder="998314"
+                  (input)="onInventoryLineFieldChange(activeInventoryLineIndex, 'hsnCode', $any($event.target).value)" />
+              </label>
+            </div>
+          </article>
+        </section>
+
+        <section class="studio-panel compliance-studio" *ngIf="showSalesComplianceStudio">
+          <div class="panel-heading">
+            <div>
+              <span class="panel-stage">Step 3C</span>
+              <span class="studio-eyebrow">Compliance Workspace</span>
+              <h3>E-Invoice and E-Way Bill</h3>
+            </div>
+            <div class="panel-badge">Sales Voucher</div>
+          </div>
+
+          <div class="metrics-grid">
+            <div class="metric-card" *ngFor="let metric of documentHighlights" [class.metric-card--accent]="metric.tone === 'accent'">
+              <span>{{ metric.label }}</span>
+              <strong>{{ metric.value }}</strong>
+            </div>
+          </div>
+
+          <div class="compliance-studio__grid">
+            <section class="sub-panel">
+              <div class="sub-panel__header">
+                <span class="studio-eyebrow">Seller</span>
+                <strong>Supplier GST profile</strong>
+              </div>
+
+              <div class="form-grid">
+                <label class="field-card">
+                  <span>Seller GSTIN</span>
+                  <input formControlName="sellerGstin" type="text" placeholder="29ABCDE1234F1Z5" />
+                </label>
+
+                <label class="field-card">
+                  <span>Legal Name</span>
+                  <input formControlName="sellerLegalName" type="text" placeholder="Seller legal name" />
+                </label>
+
+                <label class="field-card">
+                  <span>Phone</span>
+                  <input formControlName="sellerPhone" type="text" placeholder="9876543210" />
+                </label>
+
+                <label class="field-card">
+                  <span>Email</span>
+                  <input formControlName="sellerEmail" type="email" placeholder="accounts@example.com" />
+                </label>
+
+                <label class="field-card field-card--wide">
+                  <span>Address Line 1</span>
+                  <input formControlName="sellerAddress1" type="text" placeholder="Seller address" />
+                </label>
+
+                <label class="field-card field-card--wide">
+                  <span>Address Line 2</span>
+                  <input formControlName="sellerAddress2" type="text" placeholder="Landmark or area" />
+                </label>
+
+                <label class="field-card">
+                  <span>Location</span>
+                  <input formControlName="sellerLocation" type="text" placeholder="City / town" />
+                </label>
+
+                <label class="field-card">
+                  <span>Pincode</span>
+                  <input formControlName="sellerPincode" type="text" placeholder="560001" />
+                </label>
+
+                <label class="field-card">
+                  <span>State Code</span>
+                  <input formControlName="sellerStateCode" type="text" placeholder="29" />
+                </label>
+              </div>
+            </section>
+
+            <section class="sub-panel">
+              <div class="sub-panel__header">
+                <span class="studio-eyebrow">Buyer</span>
+                <strong>Customer GST profile</strong>
+              </div>
+
+              <div class="form-grid">
+                <label class="field-card">
+                  <span>Buyer GSTIN</span>
+                  <input formControlName="buyerGstin" type="text" placeholder="29AAACB2894G1ZJ" />
+                </label>
+
+                <label class="field-card">
+                  <span>Legal Name</span>
+                  <input formControlName="buyerLegalName" type="text" placeholder="Buyer legal name" />
+                </label>
+
+                <label class="field-card">
+                  <span>Trade Name</span>
+                  <input formControlName="buyerTradeName" type="text" placeholder="Buyer trade name" />
+                </label>
+
+                <label class="field-card">
+                  <span>Place Of Supply</span>
+                  <input formControlName="buyerPlaceOfSupply" type="text" placeholder="29" />
+                </label>
+
+                <label class="field-card">
+                  <span>Phone</span>
+                  <input formControlName="buyerPhone" type="text" placeholder="9123456780" />
+                </label>
+
+                <label class="field-card">
+                  <span>Email</span>
+                  <input formControlName="buyerEmail" type="email" placeholder="buyer@example.com" />
+                </label>
+
+                <label class="field-card field-card--wide">
+                  <span>Address Line 1</span>
+                  <input formControlName="buyerAddress1" type="text" placeholder="Buyer address" />
+                </label>
+
+                <label class="field-card field-card--wide">
+                  <span>Address Line 2</span>
+                  <input formControlName="buyerAddress2" type="text" placeholder="Area or landmark" />
+                </label>
+
+                <label class="field-card">
+                  <span>Location</span>
+                  <input formControlName="buyerLocation" type="text" placeholder="City / town" />
+                </label>
+
+                <label class="field-card">
+                  <span>Pincode</span>
+                  <input formControlName="buyerPincode" type="text" placeholder="560048" />
+                </label>
+
+                <label class="field-card">
+                  <span>State Code</span>
+                  <input formControlName="buyerStateCode" type="text" placeholder="29" />
+                </label>
+              </div>
+            </section>
+
+            <section class="sub-panel">
+              <div class="sub-panel__header">
+                <span class="studio-eyebrow">Dispatch</span>
+                <strong>Dispatch and ship-to</strong>
+              </div>
+
+              <div class="form-grid">
+                <label class="field-card field-card--wide">
+                  <span>Dispatch Address 1</span>
+                  <input formControlName="dispatchAddress1" type="text" placeholder="Dispatch address" />
+                </label>
+
+                <label class="field-card field-card--wide">
+                  <span>Dispatch Address 2</span>
+                  <input formControlName="dispatchAddress2" type="text" placeholder="Area or landmark" />
+                </label>
+
+                <label class="field-card">
+                  <span>Dispatch Location</span>
+                  <input formControlName="dispatchLocation" type="text" placeholder="City / town" />
+                </label>
+
+                <label class="field-card">
+                  <span>Dispatch Pincode</span>
+                  <input formControlName="dispatchPincode" type="text" placeholder="560001" />
+                </label>
+
+                <label class="field-card">
+                  <span>Dispatch State</span>
+                  <input formControlName="dispatchStateCode" type="text" placeholder="29" />
+                </label>
+
+                <label class="field-card field-card--wide">
+                  <span>Ship To Address 1</span>
+                  <input formControlName="shipAddress1" type="text" placeholder="Ship-to address" />
+                </label>
+
+                <label class="field-card field-card--wide">
+                  <span>Ship To Address 2</span>
+                  <input formControlName="shipAddress2" type="text" placeholder="Area or landmark" />
+                </label>
+
+                <label class="field-card">
+                  <span>Ship To Location</span>
+                  <input formControlName="shipLocation" type="text" placeholder="City / town" />
+                </label>
+
+                <label class="field-card">
+                  <span>Ship To Pincode</span>
+                  <input formControlName="shipPincode" type="text" placeholder="560048" />
+                </label>
+
+                <label class="field-card">
+                  <span>Ship To State</span>
+                  <input formControlName="shipStateCode" type="text" placeholder="29" />
+                </label>
+              </div>
+            </section>
+
+            <section class="sub-panel">
+              <div class="sub-panel__header">
+                <span class="studio-eyebrow">Transport</span>
+                <strong>E-Way Bill movement details</strong>
+              </div>
+
+              <div class="form-grid">
+                <label class="field-card">
+                  <span>Transporter ID</span>
+                  <input formControlName="transporterId" type="text" placeholder="29TRANS1234A1Z5" />
+                </label>
+
+                <label class="field-card">
+                  <span>Transporter Name</span>
+                  <input formControlName="transporterName" type="text" placeholder="Fast Move Logistics" />
+                </label>
+
+                <label class="field-card">
+                  <span>Transport Mode</span>
+                  <select formControlName="transportMode">
+                    <option value="Road">Road</option>
+                    <option value="Rail">Rail</option>
+                    <option value="Air">Air</option>
+                    <option value="Ship">Ship</option>
+                  </select>
+                </label>
+
+                <label class="field-card">
+                  <span>Distance Km</span>
+                  <input formControlName="distanceKm" type="text" placeholder="120" />
+                </label>
+
+                <label class="field-card">
+                  <span>Vehicle Number</span>
+                  <input formControlName="vehicleNumber" type="text" placeholder="KA01AB1234" />
+                </label>
+
+                <label class="field-card">
+                  <span>Vehicle Type</span>
+                  <select formControlName="vehicleType">
+                    <option value="Regular">Regular</option>
+                    <option value="ODC">ODC</option>
+                  </select>
+                </label>
+
+                <label class="field-card">
+                  <span>Document No</span>
+                  <input formControlName="transportDocumentNo" type="text" placeholder="LR-1001" />
+                </label>
+
+                <label class="field-card">
+                  <span>Document Date</span>
+                  <input formControlName="transportDocumentDate" type="date" />
+                </label>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <footer class="studio-footer">
+          <div>
+            <strong>{{ selectedEndpoint.label }}</strong>
+            <p>The request will use the current company, voucher type, ledgers, amount, and active inventory data.</p>
+          </div>
+          <div class="studio-footer__meta">
+            <span *ngIf="isLoadingLedgers">Loading ledgers...</span>
+            <span *ngIf="!isLoadingLedgers && !ledgerOptions.length">No ledger options returned.</span>
+            <span *ngIf="isLoadingStockItems">Loading stock items...</span>
+            <span *ngIf="!isLoadingStockItems && stockItemOptions.length">Stock items loaded: {{ stockItemOptions.length }}</span>
+            <span *ngIf="!isLoadingStockItems && !stockItemOptions.length">No stock items loaded. Refresh or check backend auth/cache.</span>
+          </div>
+        </footer>
+      </form>
+    </main>
+
+    <aside class="studio-panel studio-panel--response">
+      <div class="panel-heading">
+        <div>
+          <span class="panel-stage">Step 4</span>
+          <span class="studio-eyebrow">Live Summary</span>
+          <h2>Review and follow-up</h2>
+        </div>
+      </div>
+
+      <div class="metrics-grid">
+        <div class="metric-card" *ngFor="let metric of responseMetrics" [class.metric-card--success]="metric.tone === 'success'" [class.metric-card--accent]="metric.tone === 'accent'">
+          <span>{{ metric.label }}</span>
+          <strong>{{ metric.value }}</strong>
+        </div>
+      </div>
+
+      <div class="request-stack">
+        <section class="request-card" *ngFor="let section of requestSummarySections">
+          <h4>{{ section.title }}</h4>
+          <div class="request-card__fields">
+            <div class="request-field" *ngFor="let field of section.fields">
+              <span>{{ field.label }}</span>
+              <strong>{{ field.value }}</strong>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="timeline-card">
+        <h4>Flow Status</h4>
+        <div class="timeline-step" *ngFor="let step of responseTimeline" [class.timeline-step--done]="step.status === 'done'" [class.timeline-step--active]="step.status === 'active'">
+          <div class="timeline-step__dot"></div>
+          <div>
+            <strong>{{ step.label }}</strong>
+            <p>{{ step.detail }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="studio-note" *ngIf="!responseText && !isSubmitting">
+        <span class="studio-eyebrow">Waiting</span>
+        <strong>No response yet</strong>
+        <p>Fill the voucher details and press Accept Voucher to submit the request.</p>
+      </div>
+
+      <div class="studio-note" *ngIf="isSubmitting">
+        <span class="studio-eyebrow">Submitting</span>
+        <strong>Sending voucher to backend</strong>
+        <p>The connector and backend are processing your request now.</p>
+      </div>
+
+      <div class="compliance-panel" *ngIf="canRunSalesCompliance">
+        <div class="compliance-panel__copy">
+          <span class="studio-eyebrow">Post Voucher Actions</span>
+          <strong>E-Invoice and E-Way Bill</strong>
+          <p>Run compliance after a sales voucher is created. The selected stock line HSN/SAC is used in the request.</p>
+        </div>
+        <div class="compliance-panel__actions">
+          <button type="button" class="button button--ghost" (click)="runSalesCompliance('einvoice')" [disabled]="isRunningCompliance">
+            {{ isRunningCompliance ? 'Running...' : 'Generate E-Invoice' }}
+          </button>
+          <button type="button" class="button button--ghost" (click)="runSalesCompliance('ewaybill')" [disabled]="isRunningCompliance">
+            {{ isRunningCompliance ? 'Running...' : 'Generate E-Way Bill' }}
+          </button>
+          <button type="button" class="button button--primary" (click)="runSalesCompliance('both')" [disabled]="isRunningCompliance">
+            {{ isRunningCompliance ? 'Running...' : 'Generate Both' }}
+          </button>
+        </div>
+      </div>
+
+      <div class="studio-alert studio-alert--success" *ngIf="complianceMessage">{{ complianceMessage }}</div>
+      <div class="studio-alert studio-alert--error" *ngIf="complianceErrorMessage">{{ complianceErrorMessage }}</div>
+
+      <div class="request-stack" *ngIf="complianceResponseText && !isRunningCompliance">
+        <section class="request-card">
+          <h4>Compliance Result</h4>
+          <div class="request-card__fields">
+            <div class="request-field">
+              <span>Response</span>
+              <strong>{{ complianceResponseText }}</strong>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="request-stack" *ngIf="responseText && !isSubmitting">
+        <section class="request-card" *ngFor="let section of responseSections">
+          <h4>{{ section.title }}</h4>
+          <div class="request-card__fields">
+            <div class="request-field" *ngFor="let field of section.fields">
+              <span>{{ field.label }}</span>
+              <strong>{{ field.value }}</strong>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="timeline-card" *ngIf="showSalesComplianceStudio">
+        <h4>Compliance Status Lookup</h4>
+
+        <div class="metrics-grid">
+          <div class="metric-card" *ngFor="let metric of statusLookupHighlights" [class.metric-card--accent]="metric.tone === 'accent'">
+            <span>{{ metric.label }}</span>
+            <strong>{{ metric.value }}</strong>
+          </div>
+        </div>
+
+        <form [formGroup]="statusForm" (ngSubmit)="submitStatusLookup()" class="studio-form studio-form--compact">
+          <div class="form-grid">
+            <label class="field-card">
+              <span>Status Type</span>
+              <select formControlName="endpointKey">
+                <option *ngFor="let endpoint of statusEndpointOptions" [value]="endpoint.key">{{ endpoint.label }}</option>
+              </select>
+            </label>
+
+            <label class="field-card">
+              <span>Voucher No.</span>
+              <input formControlName="voucherNumber" type="text" placeholder="SI-1001" />
+            </label>
+
+            <label class="field-card">
+              <span>Reference</span>
+              <input formControlName="reference" type="text" placeholder="Optional reference" />
+            </label>
+
+            <label class="field-card">
+              <span>Party Ledger</span>
+              <input formControlName="partyLedgerName" type="text" placeholder="Customer 1" />
+            </label>
+
+            <label class="field-card">
+              <span>From Date</span>
+              <input formControlName="fromDate" type="date" />
+            </label>
+
+            <label class="field-card">
+              <span>To Date</span>
+              <input formControlName="toDate" type="date" />
+            </label>
+
+            <label class="field-card">
+              <span>Limit</span>
+              <input formControlName="limit" type="text" placeholder="20" />
+            </label>
+          </div>
+
+          <div class="compliance-panel__actions">
+            <button type="submit" class="button button--ghost" [disabled]="isCheckingStatus">
+              {{ isCheckingStatus ? 'Checking...' : 'Check Status' }}
+            </button>
+          </div>
+        </form>
+
+        <div class="studio-alert studio-alert--error" *ngIf="statusErrorMessage">{{ statusErrorMessage }}</div>
+
+        <div class="timeline-step" *ngFor="let step of statusTimeline" [class.timeline-step--done]="step.status === 'done'" [class.timeline-step--active]="step.status === 'active'">
+          <div class="timeline-step__dot"></div>
+          <div>
+            <strong>{{ step.label }}</strong>
+            <p>{{ step.detail }}</p>
+          </div>
+        </div>
+
+        <div class="request-stack" *ngIf="statusResponseText && !isCheckingStatus">
+          <section class="request-card" *ngFor="let section of statusResponseSections">
+            <h4>{{ section.title }}</h4>
+            <div class="request-card__fields">
+              <div class="request-field" *ngFor="let field of section.fields">
+                <span>{{ field.label }}</span>
+                <strong>{{ field.value }}</strong>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<ng-template #ledgerOnlySummary>
+  <article class="studio-panel studio-panel--empty">
+    <div class="panel-heading">
+      <div>
+        <span class="studio-eyebrow">Voucher Summary</span>
+        <h3>Ledger-only posting</h3>
+      </div>
+    </div>
+
+    <div class="empty-state">
+      <strong>{{ selectedVoucherHeading }} uses a ledger-focused workflow.</strong>
+      <p>Choose the party ledger, set the offset ledger, confirm the amount, and add narration if needed.</p>
+    </div>
+  </article>
+</ng-template>
+
+<ng-template #advancedWorkspace>
+  <section class="advanced-screen">
+    <div class="page-header">
+      <div>
+        <div class="studio-eyebrow">Operations</div>
+        <h2>Advanced Voucher API Workspace</h2>
+        <p>Compliance and XML actions stay available here when you switch away from voucher-create routes.</p>
+      </div>
+      <button type="button" class="button button--ghost" (click)="resetForm()">Reset Form</button>
+    </div>
+
+    <div class="studio-alert studio-alert--error" *ngIf="errorMessage">{{ errorMessage }}</div>
+    <div class="studio-alert studio-alert--success" *ngIf="submitMessage">{{ submitMessage }}</div>
+
+    <article class="studio-panel table-card--full">
+      <div class="panel-heading">
+        <div>
+          <span class="studio-eyebrow">Endpoint Setup</span>
+          <h3>Compliance and XML routes</h3>
+          <p class="table-card__meta">Use this area for compliance and XML actions.</p>
+        </div>
+        <span class="panel-badge">{{ selectedEndpoint.label }}</span>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="submit()" class="advanced-form">
+        <div class="form-row">
+          <label class="field-card">
+            <span>Endpoint</span>
+            <select formControlName="endpointKey" (change)="applyEndpointPreset(form.controls.endpointKey.value)">
+              <option *ngFor="let endpoint of endpoints" [value]="endpoint.key">{{ endpoint.label }}</option>
+            </select>
+          </label>
+          <label class="field-card">
+            <span>Company</span>
+            <select formControlName="company" (change)="onCompanyChange($any($event.target).value)">
+              <option value="" disabled>Select company</option>
+              <option *ngFor="let company of companyOptions" [value]="company">{{ company }}</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="form-row">
+          <label class="field-card">
+            <span>Voucher Type</span>
+            <input formControlName="voucherTypeName" type="text" />
+          </label>
+          <label class="field-card">
+            <span>Reference</span>
+            <input formControlName="invoiceNumber" type="text" />
+          </label>
+        </div>
+
+        <div class="form-row" *ngIf="isXmlEndpoint">
+          <label class="field-card field-card--wide">
+            <span>XML Body</span>
+            <textarea formControlName="rawXml" rows="16"></textarea>
+          </label>
+        </div>
+
+        <div class="form-row" *ngIf="isComplianceEndpoint">
+          <label class="field-card">
+            <span>Party Ledger</span>
+            <input formControlName="partyLedgerName" type="text" />
+          </label>
+          <label class="field-card">
+            <span>Amount</span>
+            <input formControlName="itemTaxableAmount" type="text" />
+          </label>
+        </div>
+
+        <button type="submit" class="button button--primary" [disabled]="isSubmitting">{{ submitButtonLabel }}</button>
+      </form>
+    </article>
+  </section>
+</ng-template>

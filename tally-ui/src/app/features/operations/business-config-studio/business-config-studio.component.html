@@ -1,0 +1,96 @@
+<section class="workspace-page">
+  <article class="surface-hero">
+    <div class="surface-hero__header">
+      <div class="surface-hero__content">
+        <div class="surface-hero__meta">Business Config Studio</div>
+        <h3>Settings, companies, and company context APIs now have one UI workspace.</h3>
+        <p>Use this screen to load and update settings resources, company endpoints, and Tally company context actions that previously had no dedicated UI.</p>
+      </div>
+      <button type="button" (click)="execute()" [disabled]="isSubmitting">
+        {{ isSubmitting ? 'Running...' : 'Run API' }}
+      </button>
+    </div>
+
+    <div class="surface-hero__stats">
+      <div class="surface-hero__panel">
+        <span>Available APIs</span>
+        <strong>{{ apis.length }}</strong>
+        <small>Settings, companies, and company-context routes covered here.</small>
+      </div>
+      <div class="surface-hero__panel">
+        <span>Category</span>
+        <strong>{{ selectedApi.category }}</strong>
+        <small>{{ selectedApi.method }} {{ selectedApi.path }}</small>
+      </div>
+      <div class="surface-hero__panel">
+        <span>Mode</span>
+        <strong>{{ selectedApi.method === 'GET' ? 'Read' : 'Write' }}</strong>
+        <small>{{ selectedApi.description }}</small>
+      </div>
+    </div>
+  </article>
+
+  <div class="feedback feedback--error" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+  <div class="workspace-grid">
+    <div class="workspace-stack">
+      <article class="workspace-card">
+        <h3>API Selector</h3>
+        <p>Pick the missing business configuration endpoint you want to run.</p>
+        <div class="workspace-divider"></div>
+
+        <form [formGroup]="form" class="workspace-form">
+          <label>
+            <span>Business API</span>
+            <select formControlName="api" (change)="onApiChange()">
+              <option *ngFor="let api of apis" [value]="api.key">
+                {{ api.category }} - {{ api.label }}
+              </option>
+            </select>
+          </label>
+
+          <label *ngIf="selectedApi.method === 'POST'">
+            <span>Request Payload</span>
+            <textarea formControlName="payload"></textarea>
+          </label>
+
+          <div class="workspace-actions">
+            <button type="button" (click)="execute()" [disabled]="isSubmitting">
+              {{ isSubmitting ? 'Running...' : 'Execute' }}
+            </button>
+          </div>
+        </form>
+      </article>
+
+      <article class="workspace-card">
+        <h3>Endpoint Info</h3>
+        <div class="workspace-meta">
+          <div class="workspace-metric">
+            <span>Path</span>
+            <strong>{{ selectedApi.path }}</strong>
+          </div>
+          <div class="workspace-metric">
+            <span>Method</span>
+            <strong>{{ selectedApi.method }}</strong>
+          </div>
+        </div>
+        <div class="workspace-divider"></div>
+        <p class="workspace-note">{{ selectedApi.description }}</p>
+      </article>
+    </div>
+
+    <div class="workspace-stack">
+      <article class="workspace-card">
+        <h3>Response Summary</h3>
+        <p>{{ responseSummary || 'Run an API to inspect the backend response.' }}</p>
+      </article>
+
+      <article class="workspace-card">
+        <h3>Raw Response</h3>
+        <p>Full backend response for the selected business configuration endpoint.</p>
+        <div class="workspace-divider"></div>
+        <div class="workspace-code">{{ responseBody || 'No response loaded yet.' }}</div>
+      </article>
+    </div>
+  </div>
+</section>

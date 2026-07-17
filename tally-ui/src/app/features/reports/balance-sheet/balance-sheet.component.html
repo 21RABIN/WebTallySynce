@@ -1,0 +1,134 @@
+<section class="financial-page">
+  <div class="page-header">
+    <div>
+      <div class="eyebrow">Financial</div>
+      <h2>Balance Sheet</h2>
+      <p>Two-column statement board with compact totals and filters.</p>
+    </div>
+    <div class="export-actions">
+      <span class="export-actions__label">Download</span>
+      <button type="button" class="export-actions__button" (click)="download('xlsx')">Excel</button>
+      <button type="button" class="export-actions__button" (click)="download('pdf')">PDF</button>
+    </div>
+  </div>
+
+  <div class="feedback feedback--error" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+  <article class="filter-card">
+    <form [formGroup]="form" (ngSubmit)="load()" class="report-toolbar">
+      <label class="report-toolbar__field">
+        <span>From Date</span>
+        <input formControlName="from_date" type="date" />
+      </label>
+
+      <label class="report-toolbar__field">
+        <span>To Date</span>
+        <input formControlName="to_date" type="date" />
+      </label>
+
+      <div class="report-kpi">
+        <span>Liabilities</span>
+        <strong>{{ formattedLiabilityTotal }}</strong>
+      </div>
+
+      <div class="report-kpi">
+        <span>Assets</span>
+        <strong>{{ formattedAssetTotal }}</strong>
+      </div>
+
+      <div class="report-toolbar__actions">
+        <button type="button" class="export-actions__button" (click)="download('xlsx')">Excel</button>
+        <button type="button" class="export-actions__button" (click)="download('pdf')">PDF</button>
+        <button type="submit" [disabled]="isLoading">
+          {{ isLoading ? 'Loading...' : 'Apply' }}
+        </button>
+      </div>
+    </form>
+  </article>
+
+  <div class="state-panel" *ngIf="!response && !isLoading">
+    Run the report to load live balance sheet data from Tally.
+  </div>
+
+  <div class="state-panel" *ngIf="isLoading">Loading balance sheet...</div>
+  <div class="state-panel" *ngIf="cacheMeta && !isLoading">
+    Source {{ cacheMeta.source || '-' }} | Last Sync {{ cacheMeta.last_synced_at || '-' }}
+  </div>
+
+  <div class="report-hero" *ngIf="response && hasRows && !isLoading">
+    <div class="report-hero__panel">
+      <span class="report-hero__eyebrow">Statement View</span>
+      <h3>Balance Sheet Overview</h3>
+      <p>Two-sided financial statement presented in the same Tally-style report language as the voucher screens.</p>
+    </div>
+    <div class="report-hero__summary">
+      <div class="report-hero__summary-card">
+        <span>Company</span>
+        <strong>{{ companyName }}</strong>
+      </div>
+      <div class="report-hero__summary-card">
+        <span>As At</span>
+        <strong>{{ reportDateLabel }}</strong>
+      </div>
+      <div class="report-hero__summary-card">
+        <span>Total Liabilities</span>
+        <strong>{{ formattedLiabilityTotal }}</strong>
+      </div>
+      <div class="report-hero__summary-card">
+        <span>Total Assets</span>
+        <strong>{{ formattedAssetTotal }}</strong>
+      </div>
+    </div>
+  </div>
+
+  <article class="table-card table-card--full tally-sheet" *ngIf="response && hasRows && !isLoading">
+    <div class="tally-sheet__topline">
+      <span>{{ cacheMeta?.source || 'cache' | uppercase }}</span>
+      <span>Last Sync {{ cacheMeta?.last_synced_at || '-' }}</span>
+    </div>
+
+    <div class="tally-sheet__title">
+      <h3>Balance Sheet</h3>
+      <div>
+        <strong>{{ companyName }}</strong>
+        <span>as at {{ reportDateLabel }}</span>
+      </div>
+    </div>
+
+    <div class="tally-sheet__grid">
+      <section class="tally-sheet__column">
+        <div class="tally-sheet__header">
+          <span>Liabilities</span>
+          <span>Amount</span>
+        </div>
+
+        <div class="tally-sheet__row" *ngFor="let row of displayLiabilityRows">
+          <div>{{ row.name }}</div>
+          <div class="statement-negative">{{ row.formattedAmount }}</div>
+        </div>
+
+        <div class="tally-sheet__total">
+          <span>Total</span>
+          <strong>{{ formattedLiabilityTotal }}</strong>
+        </div>
+      </section>
+
+      <section class="tally-sheet__column">
+        <div class="tally-sheet__header">
+          <span>Assets</span>
+          <span>Amount</span>
+        </div>
+
+        <div class="tally-sheet__row" *ngFor="let row of displayAssetRows">
+          <div>{{ row.name }}</div>
+          <div class="statement-positive">{{ row.formattedAmount }}</div>
+        </div>
+
+        <div class="tally-sheet__total">
+          <span>Total</span>
+          <strong>{{ formattedAssetTotal }}</strong>
+        </div>
+      </section>
+    </div>
+  </article>
+</section>

@@ -1,0 +1,88 @@
+<section class="master-page">
+  <article class="surface-hero">
+    <div class="surface-hero__header">
+      <div class="surface-hero__content">
+        <div class="surface-hero__meta">Reference Data</div>
+        <h3>Currency records now live in a fresh premium review surface.</h3>
+        <p>Inspect normalized currency output from the connector with a new data-first presentation instead of the old placeholder-heavy screen.</p>
+      </div>
+      <div class="export-actions">
+        <span class="export-actions__label">Download</span>
+        <button type="button" class="export-actions__button" (click)="download('xlsx')">Excel</button>
+        <button type="button" class="export-actions__button" (click)="download('pdf')">PDF</button>
+        <button type="button" (click)="load()" [disabled]="isLoading">Refresh Currencies</button>
+      </div>
+    </div>
+
+    <div class="surface-hero__stats">
+      <div class="surface-hero__panel">
+        <span>Rows</span>
+        <strong>{{ currencies.length }}</strong>
+        <small>Returned currency records available for review.</small>
+      </div>
+      <div class="surface-hero__panel">
+        <span>Source</span>
+        <strong>{{ responseSource || 'Connector' }}</strong>
+        <small>Latest backend data source label for this response.</small>
+      </div>
+      <div class="surface-hero__panel">
+        <span>Mode</span>
+        <strong>Read Only</strong>
+        <small>Focused on visibility and warning review.</small>
+      </div>
+    </div>
+  </article>
+
+  <div class="feedback feedback--error" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+  <article class="surface-table-card">
+    <div class="surface-toolbar">
+      <div class="surface-toolbar__copy">
+        <div class="surface-toolbar__badge">Inspection Table</div>
+        <h3>Currency Registry</h3>
+        <p>Normalized currency details are shown in a cleaner table optimized for finance operators.</p>
+      </div>
+      <div class="surface-summary__card">
+        <span>Rows</span>
+        <strong>{{ currencies.length }}</strong>
+      </div>
+    </div>
+
+    <p class="table-card__meta" *ngIf="responseSource">Source: {{ responseSource }}</p>
+
+    <div class="state-panel" *ngIf="isLoading">Loading currencies...</div>
+
+    <div class="surface-table-shell surface-table-shell--wide" *ngIf="!isLoading">
+      <table *ngIf="currencies.length; else noCurrencies">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Original Name</th>
+            <th>Symbol</th>
+            <th>Decimal Symbol</th>
+            <th>Decimal Places</th>
+            <th>Warning</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let currency of currencies">
+            <td>{{ currency.name }}</td>
+            <td>{{ currency.originalName || '—' }}</td>
+            <td>{{ currency.symbol || '—' }}</td>
+            <td>{{ currency.decimalSymbol || '—' }}</td>
+            <td>{{ currency.decimalPlaces || '—' }}</td>
+            <td>
+              <span class="warning-chip" *ngIf="currency.warningNote; else noWarning">
+                {{ currency.warningNote }}
+              </span>
+              <ng-template #noWarning>—</ng-template>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <ng-template #noCurrencies>
+        <div class="surface-empty">No currencies returned by the backend.</div>
+      </ng-template>
+    </div>
+  </article>
+</section>

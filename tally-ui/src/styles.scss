@@ -1,0 +1,117 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import './app/features/reports/reports.shared';
+
+:root {
+  --font-ui: 'Inter', 'Segoe UI', sans-serif;
+  --font-display: 'Inter', 'Segoe UI', sans-serif;
+
+  --color-bg: #edf2f8;
+  --color-bg-elevated: #ffffff;
+  --color-bg-panel: #f7f9fc;
+  --color-bg-soft: #f4f7fb;
+  --color-bg-strong: #121416;
+  --color-bg-strong-alt: #26292c;
+  --color-bg-accent: linear-gradient(180deg, #138614 0%, #0b7d0b 100%);
+  --color-ink: #111827;
+  --color-ink-muted: #5b6473;
+  --color-ink-soft: #8a91a0;
+  --color-line: rgba(17, 24, 39, 0.1);
+  --color-line-strong: rgba(17, 24, 39, 0.18);
+  --color-accent: #0b7d0b;
+  --color-accent-strong: #086408;
+  --color-accent-soft: rgba(11, 125, 11, 0.1);
+  --color-success: #0f9d68;
+  --color-success-soft: #e7faf2;
+  --color-warning: #c17c13;
+  --color-warning-soft: #fff4de;
+  --color-danger: #d14343;
+  --color-danger-soft: #feecec;
+  --color-info: #2563eb;
+  --color-info-soft: #e9f1ff;
+
+  --shadow-sm: 0 4px 10px rgba(26, 39, 33, 0.04);
+  --shadow-md: 0 16px 32px rgba(26, 39, 33, 0.08);
+  --shadow-lg: 0 24px 48px rgba(18, 28, 24, 0.12);
+
+  --radius-xs: 2px;
+  --radius-sm: 3px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+  --radius-xl: 8px;
+  --radius-pill: 999px;
+
+  --space-1: 6px;
+  --space-2: 10px;
+  --space-3: 14px;
+  --space-4: 18px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 40px;
+
+  --transition-fast: 160ms ease;
+  --transition-base: 240ms ease;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-ui);
+  color: var(--color-ink);
+  background: #edf2f8;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+button {
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast),
+    background var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+button:hover:not(:disabled) {
+  transform: none;
+}
+
+input,
+select,
+textarea {
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    background var(--transition-fast);
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background: rgba(21, 35, 29, 0.16);
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}

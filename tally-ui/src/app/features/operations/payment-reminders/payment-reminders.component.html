@@ -1,0 +1,160 @@
+<section class="master-page">
+  <div class="page-header">
+    <div>
+      <div class="eyebrow">Operations</div>
+      <h2>Payment Reminders</h2>
+      <p>Create and track receivable or payable follow-ups from a dedicated workflow screen.</p>
+    </div>
+    <button type="button" (click)="load()" [disabled]="isLoading">Refresh</button>
+  </div>
+
+  <div class="feedback feedback--error" *ngIf="errorMessage">{{ errorMessage }}</div>
+  <div class="feedback feedback--success" *ngIf="submitMessage">{{ submitMessage }}</div>
+
+  <div class="surface-split">
+    <div class="surface-stack">
+      <article class="surface-form-card">
+        <h3>Create Reminder</h3>
+        <p>Add a follow-up for an outstanding receivable or payable amount.</p>
+        <div class="surface-keyline"></div>
+
+        <form [formGroup]="form" (ngSubmit)="submit()" class="entity-form">
+          <label>
+            <span>Party Name</span>
+            <input formControlName="partyName" placeholder="Aamil Silawat" />
+          </label>
+
+          <div class="form-row">
+            <label>
+              <span>Reminder Type</span>
+              <select formControlName="reminderType">
+                <option value="RECEIVABLE">Receivable</option>
+                <option value="PAYABLE">Payable</option>
+              </select>
+            </label>
+
+            <label>
+              <span>Due Date</span>
+              <input formControlName="dueDate" type="date" />
+            </label>
+          </div>
+
+          <div class="form-row">
+            <label>
+              <span>Amount</span>
+              <input formControlName="amount" placeholder="1000.00" />
+            </label>
+
+            <label>
+              <span>Currency</span>
+              <input formControlName="currencyCode" placeholder="INR" />
+            </label>
+          </div>
+
+          <div class="form-row">
+            <label>
+              <span>Contact Name</span>
+              <input formControlName="contactName" placeholder="Accounts Team" />
+            </label>
+
+            <label>
+              <span>Mobile</span>
+              <input formControlName="mobile" placeholder="+91 90000 00000" />
+            </label>
+          </div>
+
+          <label>
+            <span>Email</span>
+            <input formControlName="email" placeholder="accounts@example.com" />
+          </label>
+
+          <label>
+            <span>Notes</span>
+            <input formControlName="notes" placeholder="Follow up on outstanding payment." />
+          </label>
+
+          <button type="submit" [disabled]="isSubmitting">
+            {{ isSubmitting ? 'Creating...' : 'Create Reminder' }}
+          </button>
+        </form>
+      </article>
+
+      <article class="surface-note-card">
+        <h3>Reminder Status</h3>
+        <p>Use `Send` after contact is made and `Resolve` once the party clears the amount.</p>
+      </article>
+    </div>
+
+    <article class="surface-table-card">
+      <div class="surface-toolbar">
+        <div class="surface-toolbar__copy">
+          <div class="surface-toolbar__badge">Reminder Queue</div>
+          <h3>Outstanding Follow-ups</h3>
+          <p>Track due dates, party names, statuses, and reminder actions in one table.</p>
+        </div>
+        <div class="surface-summary__card">
+          <span>Pending</span>
+          <strong>{{ pendingCount }}</strong>
+        </div>
+      </div>
+
+      <div class="report-kpis">
+        <div class="report-kpi">
+          <span>Total</span>
+          <strong>{{ reminders.length }}</strong>
+        </div>
+        <div class="report-kpi">
+          <span>Sent</span>
+          <strong>{{ sentCount }}</strong>
+        </div>
+        <div class="report-kpi">
+          <span>Resolved</span>
+          <strong>{{ resolvedCount }}</strong>
+        </div>
+      </div>
+
+      <div class="state-panel" *ngIf="isLoading">Loading reminders...</div>
+
+      <div class="surface-table-shell surface-table-shell--wide" *ngIf="!isLoading">
+        <table *ngIf="reminders.length; else noReminders">
+          <thead>
+            <tr>
+              <th>Party</th>
+              <th>Type</th>
+              <th>Due Date</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Contact</th>
+              <th>Last Sent</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let reminder of reminders">
+              <td>
+                <strong>{{ reminder.partyName }}</strong>
+                <div class="table-meta">{{ reminder.notes || 'No notes' }}</div>
+              </td>
+              <td>{{ reminder.reminderType }}</td>
+              <td>{{ reminder.dueDate }}</td>
+              <td>{{ formatAmount(reminder) }}</td>
+              <td><span class="status-pill" [attr.data-status]="reminder.status">{{ reminder.status }}</span></td>
+              <td>{{ reminder.contactName || reminder.email || reminder.mobile || '—' }}</td>
+              <td>{{ reminder.lastSentAt || '—' }}</td>
+              <td>
+                <div class="table-actions">
+                  <button type="button" (click)="send(reminder)" [disabled]="activeReminderId !== null || reminder.status === 'RESOLVED'">Send</button>
+                  <button type="button" (click)="resolve(reminder)" [disabled]="activeReminderId !== null || reminder.status === 'RESOLVED'">Resolve</button>
+                  <button type="button" (click)="delete(reminder)" [disabled]="activeReminderId !== null">Delete</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <ng-template #noReminders>
+          <div class="surface-empty">No payment reminders created yet.</div>
+        </ng-template>
+      </div>
+    </article>
+  </div>
+</section>

@@ -1,0 +1,47 @@
+<section class="login-page">
+  <div class="login-layout">
+    <article class="login-brand">
+      <div class="login-brand__eyebrow">Tally Workspace</div>
+      <h1>Tally Login</h1>
+      <p>Sign in to access vouchers, reports, masters, and daily accounting operations.</p>
+      <div class="login-brand__meta">
+        <div>
+          <strong>Platform</strong>
+          <span>Tally Web Interface</span>
+        </div>
+        <div>
+          <strong>Mode</strong>
+          <span>Local System Access</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="login-card">
+      <div class="login-card__intro">
+        <div class="eyebrow">Sign In</div>
+        <h2>Welcome Back</h2>
+        <p>Enter your username and password to continue.</p>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="submit()" class="login-form">
+        <label class="field">
+          <span>Username</span>
+          <input type="text" formControlName="username" placeholder="Enter username" />
+        </label>
+
+        <label class="field">
+          <span>Password</span>
+          <input type="password" formControlName="password" placeholder="Enter password" />
+        </label>
+
+        <div class="error-banner" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+        <button type="submit" [disabled]="isSubmitting">
+          {{ isSubmitting ? 'Signing In...' : 'Login' }}
+        </button>
+      </form>
+
+      <div class="login-note">Default account: `admin / admin@123`</div>
+    </article>
+  </div>
+</section>
