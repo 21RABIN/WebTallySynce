@@ -187,6 +187,42 @@ public class TallyCacheSnapshotRepository {
         );
     }
 
+    @Transactional
+    public void replaceGenericRows(Long snapshotId,
+                                   TallyCacheDataset dataset,
+                                   String snapshotKey,
+                                   List<String> payloadRowsJson,
+                                   String contentHash,
+                                   Instant completedAt) {
+        jdbcTemplate.update(
+                "UPDATE tally_dataset_snapshots SET is_current = false WHERE dataset_key = ? AND snapshot_key = ?",
+                dataset.getKey(),
+                snapshotKey
+        );
+        jdbcTemplate.update(
+                "DELETE FROM tally_generic_snapshot_rows WHERE snapshot_id = ?",
+                snapshotId
+        );
+        List<String> rows = payloadRowsJson == null ? Collections.<String>emptyList() : payloadRowsJson;
+        for (int i = 0; i < rows.size(); i++) {
+            jdbcTemplate.update(
+                    "INSERT INTO tally_generic_snapshot_rows (snapshot_id, row_index, payload_json) VALUES (?, ?, ?)",
+                    snapshotId,
+                    i,
+                    rows.get(i)
+            );
+        }
+        jdbcTemplate.update(
+                "UPDATE tally_dataset_snapshots SET status = ?, is_current = ?, row_count = ?, content_hash = ?, completed_at = ?, error_message = null WHERE id = ?",
+                "SUCCESS",
+                true,
+                rows.size(),
+                contentHash,
+                Timestamp.from(completedAt),
+                snapshotId
+        );
+    }
+
     public TallyDatasetSnapshot findCurrent(TallyCacheDataset dataset, String snapshotKey) {
         List<TallyDatasetSnapshot> items = jdbcTemplate.query(
                 "SELECT id, run_id, dataset_key, snapshot_key, status, is_current, connector_id, company, request_params_json, content_hash, range_start, range_end, row_count, stale_after_ms, error_message, fetched_at, completed_at " +

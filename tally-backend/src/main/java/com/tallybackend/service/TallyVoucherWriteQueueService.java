@@ -40,9 +40,11 @@ public class TallyVoucherWriteQueueService {
     private final WritePayloadTransformer writePayloadTransformer;
     private final TallyVoucherWriteQueueRepository repository;
     private final TallyQueueEntityMetadataService metadataService;
+    private final ConnectorRegistryService connectorRegistryService;
     private final ObjectProvider<TallyCacheSyncService> cacheSyncServiceProvider;
     private final boolean enabled;
     private final boolean autoProcessApproved;
+    private final boolean directReplayEnabled;
     private final long retryIntervalMs;
     private final long historyRetentionMinutes;
     private final int batchSize;
@@ -55,9 +57,11 @@ public class TallyVoucherWriteQueueService {
                                          WritePayloadTransformer writePayloadTransformer,
                                          TallyVoucherWriteQueueRepository repository,
                                          TallyQueueEntityMetadataService metadataService,
+                                         ConnectorRegistryService connectorRegistryService,
                                          ObjectProvider<TallyCacheSyncService> cacheSyncServiceProvider,
                                          @Value("${tally.write.queue.enabled:true}") boolean enabled,
                                          @Value("${tally.write.queue.auto-process-approved:true}") boolean autoProcessApproved,
+                                         @Value("${tally.write.queue.direct-replay-enabled:false}") boolean directReplayEnabled,
                                          @Value("${tally.write.queue.retry-interval-ms:60000}") long retryIntervalMs,
                                          @Value("${tally.write.queue.history-retention-minutes:180}") long historyRetentionMinutes,
                                          @Value("${tally.write.queue.batch-size:10}") int batchSize,
@@ -67,13 +71,45 @@ public class TallyVoucherWriteQueueService {
         this.writePayloadTransformer = writePayloadTransformer;
         this.repository = repository;
         this.metadataService = metadataService;
+        this.connectorRegistryService = connectorRegistryService;
         this.cacheSyncServiceProvider = cacheSyncServiceProvider;
         this.enabled = enabled;
         this.autoProcessApproved = autoProcessApproved;
+        this.directReplayEnabled = directReplayEnabled;
         this.retryIntervalMs = retryIntervalMs;
         this.historyRetentionMinutes = historyRetentionMinutes;
         this.batchSize = batchSize;
         this.maxAttempts = maxAttempts;
+    }
+
+    public TallyVoucherWriteQueueService(RestTemplate restTemplate,
+                                         ObjectMapper objectMapper,
+                                         WritePayloadTransformer writePayloadTransformer,
+                                         TallyVoucherWriteQueueRepository repository,
+                                         TallyQueueEntityMetadataService metadataService,
+                                         ObjectProvider<TallyCacheSyncService> cacheSyncServiceProvider,
+                                         boolean enabled,
+                                         boolean autoProcessApproved,
+                                         long retryIntervalMs,
+                                         long historyRetentionMinutes,
+                                         int batchSize,
+                                         int maxAttempts) {
+        this(
+                restTemplate,
+                objectMapper,
+                writePayloadTransformer,
+                repository,
+                metadataService,
+                null,
+                cacheSyncServiceProvider,
+                enabled,
+                autoProcessApproved,
+                false,
+                retryIntervalMs,
+                historyRetentionMinutes,
+                batchSize,
+                maxAttempts
+        );
     }
 
     public TallyVoucherWriteQueueService(RestTemplate restTemplate,
@@ -91,8 +127,10 @@ public class TallyVoucherWriteQueueService {
                 writePayloadTransformer,
                 repository,
                 new TallyQueueEntityMetadataService(objectMapper),
+                null,
                 cacheSyncServiceProvider,
                 enabled,
+                false,
                 false,
                 retryIntervalMs,
                 180,
@@ -368,6 +406,7 @@ public class TallyVoucherWriteQueueService {
         Map<String, Object> payload = new LinkedHashMap<String, Object>();
         payload.put("enabled", enabled);
         payload.put("auto_process_approved", autoProcessApproved);
+        payload.put("direct_replay_enabled", directReplayEnabled);
         payload.put("retry_interval_ms", retryIntervalMs);
         payload.put("batch_size", batchSize);
         payload.put("max_attempts", maxAttempts);
@@ -429,7 +468,7 @@ public class TallyVoucherWriteQueueService {
 
     @Scheduled(fixedDelayString = "${tally.write.queue.retry-interval-ms:60000}")
     public void scheduledProcess() {
-        if (!autoProcessApproved) {
+        if (!autoProcessApproved || !directReplayEnabled) {
             return;
         }
         processPendingQueue();
@@ -448,14 +487,14 @@ public class TallyVoucherWriteQueueService {
         if (enabled) {
             cleanupTerminalHistory(null, historyRetentionMinutes);
         }
-        if (!autoProcessApproved) {
+        if (!autoProcessApproved || !directReplayEnabled) {
             return;
         }
         processPendingQueue();
     }
 
     public int processPendingQueue() {
-        if (!enabled || !processing.compareAndSet(false, true)) {
+        if (!enabled || !directReplayEnabled || !processing.compareAndSet(false, true)) {
             return 0;
         }
         try {
@@ -502,10 +541,12 @@ public class TallyVoucherWriteQueueService {
                 return false;
             }
 
+            ResolvedConnectorTarget replayTarget = resolveReplayTarget(entry);
             HttpHeaders headers = new HttpHeaders();
             headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-            if (entry.getAgentKey() != null && !entry.getAgentKey().trim().isEmpty()) {
-                headers.set("X-AGENT-KEY", entry.getAgentKey().trim());
+            String replayAgentKey = replayTarget == null ? entry.getAgentKey() : replayTarget.getAgentKey();
+            if (replayAgentKey != null && !replayAgentKey.trim().isEmpty()) {
+                headers.set("X-AGENT-KEY", replayAgentKey.trim());
             }
             if (entry.getCompany() != null && !entry.getCompany().trim().isEmpty()) {
                 headers.set("X-Company", entry.getCompany().trim());
@@ -518,7 +559,7 @@ public class TallyVoucherWriteQueueService {
 
             String transformedBody = writePayloadTransformer.transform(entry.getConnectorPath(), method, entry.getRequestBody());
             HttpEntity<String> entity = transformedBody == null ? new HttpEntity<String>(headers) : new HttpEntity<String>(transformedBody, headers);
-            ResponseEntity<String> upstream = restTemplate.exchange(buildReplayUrl(entry), method, entity, String.class);
+            ResponseEntity<String> upstream = restTemplate.exchange(buildReplayUrl(entry, replayTarget), method, entity, String.class);
             String responseBody = upstream.getBody();
 
             if (upstream.getStatusCode().is2xxSuccessful()) {
@@ -638,9 +679,32 @@ public class TallyVoucherWriteQueueService {
         }
     }
 
-    private String buildReplayUrl(TallyVoucherWriteQueueEntry entry) {
+    private ResolvedConnectorTarget resolveReplayTarget(TallyVoucherWriteQueueEntry entry) {
+        if (connectorRegistryService == null || entry == null) {
+            return null;
+        }
+        try {
+            ResolvedConnectorTarget target = connectorRegistryService.resolveById(entry.getConnectorId());
+            if (target != null) {
+                return target;
+            }
+            target = connectorRegistryService.resolveByCompany(entry.getCompany());
+            if (target != null) {
+                return target;
+            }
+            return connectorRegistryService.defaultTarget();
+        } catch (Exception ignored) {
+            return connectorRegistryService.defaultTarget();
+        }
+    }
+
+    private String buildReplayUrl(TallyVoucherWriteQueueEntry entry, ResolvedConnectorTarget replayTarget) {
+        String baseUrl = replayTarget == null ? entry.getConnectorBaseUrl() : replayTarget.getBaseUrl();
+        if (baseUrl == null || baseUrl.trim().isEmpty()) {
+            throw new IllegalStateException("No connector base URL is configured for queued replay.");
+        }
         StringBuilder url = new StringBuilder();
-        url.append(entry.getConnectorBaseUrl());
+        url.append(baseUrl.trim());
         if (!entry.getConnectorPath().startsWith("/")) {
             url.append('/');
         }
@@ -960,7 +1024,14 @@ public class TallyVoucherWriteQueueService {
     }
 
     public boolean replayNow(TallyVoucherWriteQueueEntry entry) {
+        if (!enabled) {
+            return false;
+        }
         return replayEntry(entry);
+    }
+
+    public boolean isDirectReplayEnabled() {
+        return directReplayEnabled;
     }
 
     private List<String> parseCleanupStatuses(String statuses) {

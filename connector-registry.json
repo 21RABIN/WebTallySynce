@@ -1,7 +1,7 @@
 [ {
   "connectorId" : "default",
-  "baseUrl" : "http://127.0.0.1:8082",
-  "agentKey" : "local-dev-key",
+  "baseUrl" : "http://192.168.1.182:8082",
+  "agentKey" : "53867e0e4681d67a09d4a9d1ddc4d6c4be5d425b3bb11784794190d8dcce8f71",
   "company" : null,
   "branch" : null,
   "description" : "Default connector target from application.properties",

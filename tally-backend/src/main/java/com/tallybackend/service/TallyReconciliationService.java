@@ -205,12 +205,18 @@ public class TallyReconciliationService {
                 metadataService.enrichEntry(entry);
                 if ("USE_DB_AND_SYNC_TO_TALLY".equals(action)) {
                     queueRepository.updateReconciliationState(queueId, "NONE", entry.getConflictPayload(), "APPROVED_SYNC", reviewedBy, now);
-                    queueService.replayNow(entry);
-                    TallyVoucherWriteQueueEntry refreshed = first(queueRepository.findByIds(Collections.singletonList(queueId)));
-                    if (isApplied(refreshed)) {
-                        synced++;
+                    TallyVoucherWriteQueueEntry refreshed;
+                    if (queueService.isDirectReplayEnabled()) {
+                        queueService.replayNow(entry);
+                        refreshed = first(queueRepository.findByIds(Collections.singletonList(queueId)));
+                        if (isApplied(refreshed)) {
+                            synced++;
+                        }
+                        results.add(syncResult(refreshed == null ? entry : refreshed));
+                    } else {
+                        refreshed = first(queueRepository.findByIds(Collections.singletonList(queueId)));
+                        results.add(syncResult(refreshed == null ? entry : refreshed, "QUEUED_FOR_CONNECTOR_AGENT"));
                     }
-                    results.add(syncResult(refreshed == null ? entry : refreshed));
                 } else if ("MARK_AS_ALREADY_SYNCED".equals(action)) {
                     queueRepository.updateReconciliationState(queueId, "NONE", entry.getConflictPayload(), "SYNCED", reviewedBy, now);
                     queueRepository.markApplied(queueId, Math.max(1, entry.getAttempts()), "{\"reconciliation\":\"marked_as_already_synced\"}", now);

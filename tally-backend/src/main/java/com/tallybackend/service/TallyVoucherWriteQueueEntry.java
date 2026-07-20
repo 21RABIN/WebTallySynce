@@ -36,6 +36,8 @@ public class TallyVoucherWriteQueueEntry {
     private Instant reviewedAt;
     private String originalVoucherNumber;
     private String offlineVoucherNumber;
+    private String leasedBy;
+    private Instant leaseExpiresAt;
     private Map<String, Object> previewFields;
 
     public Long getId() {
@@ -292,6 +294,22 @@ public class TallyVoucherWriteQueueEntry {
 
     public void setOfflineVoucherNumber(String offlineVoucherNumber) {
         this.offlineVoucherNumber = offlineVoucherNumber;
+    }
+
+    public String getLeasedBy() {
+        return leasedBy;
+    }
+
+    public void setLeasedBy(String leasedBy) {
+        this.leasedBy = leasedBy;
+    }
+
+    public Instant getLeaseExpiresAt() {
+        return leaseExpiresAt;
+    }
+
+    public void setLeaseExpiresAt(Instant leaseExpiresAt) {
+        this.leaseExpiresAt = leaseExpiresAt;
     }
 
     public Map<String, Object> getPreviewFields() {

@@ -48,6 +48,20 @@ port_is_listening() {
   ss -ltn "( sport = :$port )" | grep -q ":$port"
 }
 
+launch_detached() {
+  local pid_file="$1"
+  shift
+  local pid
+  if command -v setsid >/dev/null 2>&1; then
+    setsid "$@" </dev/null &
+  else
+    nohup "$@" </dev/null &
+  fi
+  pid="$!"
+  disown "$pid" 2>/dev/null || true
+  write_pid "$pid_file" "$pid"
+}
+
 start_connector() {
   local pid
   pid="$(read_pid "$CONNECTOR_PID_FILE" || true)"
@@ -62,8 +76,7 @@ start_connector() {
   echo "Starting connector on 8082..."
   (
     cd "$CONNECTOR_DIR"
-    nohup env PYTHONPATH=src ./.venv/bin/uvicorn tally_connector.main:app --host 0.0.0.0 --port 8082 >>"$CONNECTOR_LOG" 2>&1 &
-    write_pid "$CONNECTOR_PID_FILE" "$!"
+    launch_detached "$CONNECTOR_PID_FILE" env PYTHONPATH=src ./.venv/bin/uvicorn tally_connector.main:app --host 0.0.0.0 --port 8082 >>"$CONNECTOR_LOG" 2>&1
   )
 }
 
@@ -92,8 +105,7 @@ start_backend() {
         source "$LOCAL_DB_ENV_FILE"
       fi
     fi
-    nohup mvn spring-boot:run >>"$BACKEND_LOG" 2>&1 &
-    write_pid "$BACKEND_PID_FILE" "$!"
+    launch_detached "$BACKEND_PID_FILE" mvn spring-boot:run >>"$BACKEND_LOG" 2>&1
   )
 }
 
@@ -111,8 +123,8 @@ start_ui() {
   echo "Starting UI on 4200..."
   (
     cd "$UI_DIR"
-    nohup npm start -- --host 0.0.0.0 --port 4200 >>"$UI_LOG" 2>&1 &
-    write_pid "$UI_PID_FILE" "$!"
+    unset NODE_OPTIONS
+    launch_detached "$UI_PID_FILE" env -u NODE_OPTIONS npm start -- --host 0.0.0.0 --port 4200 >>"$UI_LOG" 2>&1
   )
 }
 
@@ -173,7 +185,7 @@ start_all() {
   start_connector
   wait_for_health "Connector" "http://127.0.0.1:8082/health" 20 || true
   start_backend
-  wait_for_health "Backend" "http://127.0.0.1:9090/api/cache/status" 30 || true
+  wait_for_health "Backend" "http://127.0.0.1:9090/api/health" 60 || true
   start_ui
   echo
   status_all

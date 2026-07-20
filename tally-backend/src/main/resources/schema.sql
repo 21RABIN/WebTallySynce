@@ -111,6 +111,8 @@ ALTER TABLE tally_voucher_write_queue ADD COLUMN IF NOT EXISTS reviewed_by VARCH
 ALTER TABLE tally_voucher_write_queue ADD COLUMN IF NOT EXISTS reviewed_at TIMESTAMP;
 ALTER TABLE tally_voucher_write_queue ADD COLUMN IF NOT EXISTS original_voucher_number VARCHAR(255);
 ALTER TABLE tally_voucher_write_queue ADD COLUMN IF NOT EXISTS offline_voucher_number VARCHAR(255);
+ALTER TABLE tally_voucher_write_queue ADD COLUMN IF NOT EXISTS leased_by VARCHAR(255);
+ALTER TABLE tally_voucher_write_queue ADD COLUMN IF NOT EXISTS lease_expires_at TIMESTAMP;
 DELETE q1 FROM tally_voucher_write_queue q1
 INNER JOIN tally_voucher_write_queue q2
     ON COALESCE(q1.company, '') = COALESCE(q2.company, '')
@@ -121,6 +123,7 @@ WHERE q1.original_voucher_number IS NOT NULL
   AND TRIM(q1.original_voucher_number) <> '';
 ALTER TABLE tally_voucher_write_queue ADD UNIQUE INDEX uq_tally_voucher_write_queue_voucher_number (company, connector_path, original_voucher_number);
 CREATE INDEX IF NOT EXISTS idx_tally_voucher_write_queue_entity ON tally_voucher_write_queue(company, entity_type, status);
+CREATE INDEX IF NOT EXISTS idx_tally_voucher_write_queue_connector_lease ON tally_voucher_write_queue(connector_id, company, status, lease_expires_at);
 
 CREATE TABLE IF NOT EXISTS tally_dataset_snapshots (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,

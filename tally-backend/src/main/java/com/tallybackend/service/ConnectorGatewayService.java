@@ -37,6 +37,7 @@ public class ConnectorGatewayService {
     private final boolean autoRouteByClientIp;
     private final int autoRoutePort;
     private final boolean allowDirectBaseUrlOverride;
+    private final boolean forwardUserBearerToConnector;
 
     public ConnectorGatewayService(RestTemplate restTemplate,
                                    ObjectMapper objectMapper,
@@ -47,6 +48,7 @@ public class ConnectorGatewayService {
                                    @Value("${connector.auto-route.by-client-ip:true}") boolean autoRouteByClientIp,
                                    @Value("${connector.auto-route.port:8082}") int autoRoutePort,
                                    @Value("${connector.allow-direct-base-url-override:false}") boolean allowDirectBaseUrlOverride,
+                                   @Value("${connector.forward-user-bearer-to-connector:false}") boolean forwardUserBearerToConnector,
                                    @Value("${ingest.base-url:http://127.0.0.1:8082}") String connectorBaseUrl,
                                    @Value("${ingest.agent-key:local-dev-key}") String agentKey) {
         this.restTemplate = restTemplate;
@@ -59,6 +61,7 @@ public class ConnectorGatewayService {
         this.autoRouteByClientIp = autoRouteByClientIp;
         this.autoRoutePort = autoRoutePort;
         this.allowDirectBaseUrlOverride = allowDirectBaseUrlOverride;
+        this.forwardUserBearerToConnector = forwardUserBearerToConnector;
     }
 
     public ResponseEntity<String> forward(HttpMethod method,
@@ -280,11 +283,15 @@ public class ConnectorGatewayService {
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         String inboundAuthorization = resolveInboundAuthorization(request);
         boolean forwardedBearer = false;
-        if (inboundAuthorization != null && inboundAuthorization.toLowerCase().startsWith("bearer ")) {
+        boolean hasConnectorAgentKey = target.getAgentKey() != null && !target.getAgentKey().trim().isEmpty();
+        if (forwardUserBearerToConnector
+                && inboundAuthorization != null
+                && inboundAuthorization.toLowerCase().startsWith("bearer ")
+                && !hasConnectorAgentKey) {
             headers.set("Authorization", inboundAuthorization);
             forwardedBearer = true;
         }
-        if (!forwardedBearer && target.getAgentKey() != null && !target.getAgentKey().trim().isEmpty()) {
+        if (!forwardedBearer && hasConnectorAgentKey) {
             headers.set("X-AGENT-KEY", target.getAgentKey().trim());
         }
 

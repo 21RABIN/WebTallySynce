@@ -25,6 +25,11 @@ GST_SERVICE_BASE_URL=http://127.0.0.1:8081/api/gst/mi
 GST_SERVICE_TIMEOUT_SEC=60
 CONNECTOR_ANNOUNCE_ENABLED=true
 CONNECTOR_ANNOUNCE_INTERVAL_SEC=60
+CONNECTOR_AGENT_ENABLED=false
+CONNECTOR_AGENT_JOB_INTERVAL_SEC=10
+CONNECTOR_AGENT_SNAPSHOT_INTERVAL_SEC=300
+CONNECTOR_AGENT_JOB_BATCH_SIZE=10
+CONNECTOR_AGENT_JOB_LEASE_SEC=120
 SYNC_ENABLED=false
 SYNC_DIRECTION=both
 SYNC_INTERVAL_SEC=60
@@ -67,6 +72,11 @@ class Settings(BaseSettings):
     gst_service_timeout_sec: float = Field(60.0, env="GST_SERVICE_TIMEOUT_SEC")
     connector_announce_enabled: bool = Field(True, env="CONNECTOR_ANNOUNCE_ENABLED")
     connector_announce_interval_sec: int = Field(60, env="CONNECTOR_ANNOUNCE_INTERVAL_SEC")
+    connector_agent_enabled: bool = Field(False, env="CONNECTOR_AGENT_ENABLED")
+    connector_agent_job_interval_sec: int = Field(10, env="CONNECTOR_AGENT_JOB_INTERVAL_SEC")
+    connector_agent_snapshot_interval_sec: int = Field(300, env="CONNECTOR_AGENT_SNAPSHOT_INTERVAL_SEC")
+    connector_agent_job_batch_size: int = Field(10, env="CONNECTOR_AGENT_JOB_BATCH_SIZE")
+    connector_agent_job_lease_sec: int = Field(120, env="CONNECTOR_AGENT_JOB_LEASE_SEC")
     # Optional remote server (for two-way sync)
     server_base_url: Optional[AnyHttpUrl] = Field(None, env="SERVER_BASE_URL")
     server_agent_key: str = Field("", env="SERVER_AGENT_KEY")
@@ -153,8 +163,23 @@ class Settings(BaseSettings):
             )
         return warnings
 
+    def masked_agent_key(self) -> str:
+        value = (self.agent_key or "").strip()
+        if not value:
+            return ""
+        if len(value) <= 8:
+            return "*" * len(value)
+        return f"{value[:4]}...{value[-4:]}"
+
+    def auth_summary(self) -> dict:
+        return {
+            "accept_static_key": bool(self.auth_accept_static_key),
+            "client_id": (self.auth_client_id or "").strip(),
+            "agent_key": self.masked_agent_key(),
+        }
+
     def validate_runtime_requirements(self) -> None:
-        if not self.strict_startup_validation and not self.is_production_like():
+        if not self.strict_startup_validation:
             return
 
         missing = []
@@ -234,10 +259,10 @@ def get_env_file() -> Optional[Path]:
     if explicit:
         candidates.append(Path(explicit).expanduser())
     if getattr(sys, "frozen", False):
+        candidates.append(Path(sys.executable).resolve().parent / ".env")
         runtime_env = ensure_runtime_env_file()
         if runtime_env is not None:
             candidates.append(runtime_env)
-        candidates.append(Path(sys.executable).resolve().parent / ".env")
     candidates.append(Path.cwd() / ".env")
     candidates.append(Path(__file__).resolve().parents[2] / ".env")
 

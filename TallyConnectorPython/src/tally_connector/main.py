@@ -9,10 +9,11 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from .announce import continuous_announce
 from .routes import router
-from .config import get_settings
+from .config import get_env_file, get_settings
 from .auth import clear_token_claims, set_token_claims
 from .auth import verify_token
 from .sync import continuous_sync
+from .agent import continuous_agent
 
 app = FastAPI(title="Tally Connector (Python)", version="0.1.0")
 app.add_middleware(
@@ -50,9 +51,23 @@ async def auth_context_middleware(request: Request, call_next):
 async def start_background_tasks():
     settings = get_settings()
     settings.validate_runtime_requirements()
+    env_file = get_env_file()
+    log.info(
+        "connector startup env_file=%s env=%s listen=%s:%s auth=%s connector_id=%s company=%s",
+        str(env_file) if env_file else "<defaults>",
+        settings.normalized_app_env(),
+        settings.listen_addr,
+        settings.listen_port,
+        settings.auth_summary(),
+        settings.connector_id or "<auto>",
+        settings.company or "<active-company>",
+    )
     if settings.connector_announce_enabled and settings.server_base_url and settings.server_mode.lower() == "connector":
         log.info("starting connector announce task")
         asyncio.create_task(continuous_announce())
+    if settings.connector_agent_enabled:
+        log.info("starting connector agent task")
+        asyncio.create_task(continuous_agent())
     if settings.sync_enabled:
         log.info("starting background sync task")
         asyncio.create_task(continuous_sync())

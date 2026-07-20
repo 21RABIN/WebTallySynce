@@ -11,7 +11,7 @@ from datetime import date, datetime
 from decimal import Decimal, InvalidOperation
 from typing import Optional, Dict, Any, List
 
-from .config import get_settings, Settings
+from .config import get_env_file, get_settings, Settings
 from .auth import get_token_claims, get_token_error, issue_token
 from .tally_client import TallyClient
 from .xml_builder import (
@@ -10797,10 +10797,15 @@ async def _probe_http_endpoint(base_url: str, timeout_sec: float) -> Dict[str, A
 
 @router.get("/health")
 async def health(settings: Settings = Depends(get_settings)):
+    env_file = get_env_file()
     return {
         "status": "ok",
         "version": "0.1.0",
         "environment": settings.normalized_app_env(),
+        "env_file": str(env_file) if env_file else None,
+        "auth": settings.auth_summary(),
+        "connector_id": settings.connector_id or None,
+        "company": settings.company or None,
         "warnings": settings.insecure_runtime_warnings(),
     }
 
@@ -10811,7 +10816,6 @@ async def health_readiness(
     client: TallyClient = Depends(get_client),
     x_agent_key: Optional[str] = Header(default=None, convert_underscores=True),
 ):
-    await ensure_auth(x_agent_key, settings)
     capability_matrix = _connector_capability_matrix(settings)
     tally_status = await _probe_tally_reachability(client)
     gst_status = await _probe_http_endpoint(str(settings.gst_service_base_url), settings.gst_service_timeout_sec)

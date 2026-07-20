@@ -24,17 +24,46 @@ public class AuthFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        String path = request.getRequestURI();
+        String path = pathWithinApplication(request);
         return "OPTIONS".equalsIgnoreCase(request.getMethod())
                 || path == null
                 || path.startsWith("/api/health")
                 || path.startsWith("/api/auth/token")
+                || isConnectorAgentEndpoint(request, path)
                 || ("GET".equalsIgnoreCase(request.getMethod()) && path.startsWith("/api/cache/masters"))
                 || ("GET".equalsIgnoreCase(request.getMethod()) && path.startsWith("/api/cache/status"))
                 || ("GET".equalsIgnoreCase(request.getMethod()) && path.startsWith("/api/voucher-queue"))
                 || path.startsWith("/v3/api-docs")
+                || path.equals("/swagger")
+                || path.equals("/swagger/")
                 || path.startsWith("/swagger-ui")
                 || path.startsWith("/swagger-ui.html");
+    }
+
+    private boolean isConnectorAgentEndpoint(HttpServletRequest request, String path) {
+        if (path == null) {
+            return false;
+        }
+        String method = request.getMethod();
+        return ("POST".equalsIgnoreCase(method) && path.equals("/api/connectors/register"))
+                || ("POST".equalsIgnoreCase(method) && path.equals("/api/connectors/heartbeat"))
+                || ("GET".equalsIgnoreCase(method) && path.equals("/api/connector/jobs"))
+                || ("POST".equalsIgnoreCase(method) && path.startsWith("/api/connector/jobs/") && path.endsWith("/result"))
+                || ("POST".equalsIgnoreCase(method) && path.equals("/api/connector/snapshots"));
+    }
+
+    private String pathWithinApplication(HttpServletRequest request) {
+        String path = request.getRequestURI();
+        if (path == null) {
+            return null;
+        }
+
+        String contextPath = request.getContextPath();
+        if (contextPath != null && !contextPath.isEmpty() && path.startsWith(contextPath)) {
+            String trimmed = path.substring(contextPath.length());
+            return trimmed.isEmpty() ? "/" : trimmed;
+        }
+        return path;
     }
 
     @Override

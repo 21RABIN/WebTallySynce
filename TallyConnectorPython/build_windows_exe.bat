@@ -67,12 +67,19 @@ if errorlevel 1 exit /b 1
 if exist ".env" (
   copy /y ".env" "dist\.env" >nul
 )
-copy /y ".env.example" "dist\.env.example" >nul
+if exist ".env.windows-stability.example" (
+  copy /y ".env.windows-stability.example" "dist\.env.example" >nul
+) else (
+  copy /y ".env.example" "dist\.env.example" >nul
+)
 copy /y "README.md" "dist\README.md" >nul
 
 (
   echo @echo off
   echo cd /d %%~dp0
+  echo set "RUNTIME_DIR=%%APPDATA%%\TallyConnectorPython"
+  echo if not exist "%%RUNTIME_DIR%%" mkdir "%%RUNTIME_DIR%%"
+  echo if exist "%%~dp0.env" copy /Y "%%~dp0.env" "%%RUNTIME_DIR%%\.env" ^>nul
   echo TallyConnectorPython.exe
 ) > "dist\start_connector.bat"
 
@@ -91,4 +98,4 @@ if exist "dist\.env" (
 )
 echo The packaged app can auto-create its runtime config on first launch.
 echo Sample config is available as dist\.env.example.
-echo Run start_connector.bat or TallyConnectorPython.exe.
+echo Run start_connector.bat so the runtime %%APPDATA%% config stays in sync.

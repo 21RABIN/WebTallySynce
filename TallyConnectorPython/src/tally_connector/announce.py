@@ -73,7 +73,7 @@ async def announce_once() -> bool:
         log.info("connector announce skipped: SERVER_MODE=%s", settings.server_mode)
         return False
 
-    announce_url = f"{str(settings.server_base_url).rstrip('/')}/api/connectors"
+    announce_url = f"{str(settings.server_base_url).rstrip('/')}/api/connectors/register"
     payload = _build_payload()
     headers = {}
     if settings.server_agent_key:

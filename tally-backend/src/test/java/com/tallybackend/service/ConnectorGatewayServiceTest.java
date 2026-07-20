@@ -53,6 +53,7 @@ class ConnectorGatewayServiceTest {
                 false,
                 8082,
                 false,
+                false,
                 "http://127.0.0.1:8082",
                 "local-dev-key"
         );
@@ -94,6 +95,7 @@ class ConnectorGatewayServiceTest {
                 queueService,
                 false,
                 8082,
+                false,
                 false,
                 "http://127.0.0.1:8082",
                 "local-dev-key"

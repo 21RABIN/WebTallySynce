@@ -27,6 +27,7 @@ import { PaymentRemindersComponent } from './features/operations/payment-reminde
 import { VoucherCreateComponent } from './features/vouchers/voucher-create/voucher-create.component';
 import { AuthInterceptor } from './core/auth/auth.interceptor';
 import { CompanyContextInterceptor } from './core/auth/company-context.interceptor';
+import { ApiBaseUrlInterceptor } from './core/api/api-base-url.interceptor';
 import { ShellComponent } from './layout/shell/shell.component';
 
 @NgModule({
@@ -70,6 +71,11 @@ import { ShellComponent } from './layout/shell/shell.component';
     {
       provide: HTTP_INTERCEPTORS,
       useClass: CompanyContextInterceptor,
+      multi: true,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ApiBaseUrlInterceptor,
       multi: true,
     },
   ],

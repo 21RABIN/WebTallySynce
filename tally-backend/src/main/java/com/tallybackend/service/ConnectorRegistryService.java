@@ -203,12 +203,8 @@ public class ConnectorRegistryService {
             registrations.put("default", registration);
             return;
         }
-        if (isBlank(existing.getBaseUrl())) {
-            existing.setBaseUrl(trimToNull(defaultBaseUrl));
-        }
-        if (isBlank(existing.getAgentKey())) {
-            existing.setAgentKey(trimToNull(defaultAgentKey));
-        }
+        existing.setBaseUrl(trimToNull(defaultBaseUrl));
+        existing.setAgentKey(trimToNull(defaultAgentKey));
         if (existing.getDescription() == null) {
             existing.setDescription("Default connector target from application.properties");
         }

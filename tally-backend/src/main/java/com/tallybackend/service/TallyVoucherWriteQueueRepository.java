@@ -56,6 +56,8 @@ public class TallyVoucherWriteQueueRepository {
         entry.setReviewedAt(readInstant(rs, "reviewed_at"));
         entry.setOriginalVoucherNumber(rs.getString("original_voucher_number"));
         entry.setOfflineVoucherNumber(rs.getString("offline_voucher_number"));
+        entry.setLeasedBy(rs.getString("leased_by"));
+        entry.setLeaseExpiresAt(readInstant(rs, "lease_expires_at"));
         if ("QUEUED".equalsIgnoreCase(entry.getStatus()) && entry.getAttempts() <= 0) {
             entry.setLastAttemptAt(null);
             entry.setCompletedAt(null);
@@ -162,9 +164,52 @@ public class TallyVoucherWriteQueueRepository {
         );
     }
 
+    public List<TallyVoucherWriteQueueEntry> findDueConnectorEntries(String connectorId,
+                                                                     String company,
+                                                                     int limit,
+                                                                     Instant now) {
+        if (limit <= 0) {
+            return Collections.emptyList();
+        }
+        StringBuilder sql = new StringBuilder(
+                "SELECT * FROM tally_voucher_write_queue " +
+                        "WHERE status IN ('QUEUED', 'RETRY') " +
+                        "AND (next_attempt_at IS NULL OR next_attempt_at <= ?) " +
+                        "AND (lease_expires_at IS NULL OR lease_expires_at <= ?) " +
+                        "AND COALESCE(review_state, 'PENDING_REVIEW') = 'APPROVED_SYNC' " +
+                        "AND COALESCE(conflict_state, 'NONE') <> 'CONFLICT'"
+        );
+        List<Object> params = new ArrayList<Object>();
+        params.add(timestamp(now));
+        params.add(timestamp(now));
+        String normalizedConnectorId = trimToNull(connectorId);
+        if (normalizedConnectorId != null) {
+            sql.append(" AND (connector_id IS NULL OR connector_id = ? OR connector_id = 'default')");
+            params.add(normalizedConnectorId);
+        }
+        appendEqualsFilter(sql, params, "company", company);
+        sql.append(" ORDER BY created_at ASC, id ASC LIMIT ?");
+        params.add(limit);
+        return jdbcTemplate.query(sql.toString(), rowMapper, params.toArray());
+    }
+
+    public int leaseForConnector(Long id, String connectorId, Instant now, Instant leaseExpiresAt) {
+        return jdbcTemplate.update(
+                "UPDATE tally_voucher_write_queue SET status = ?, leased_by = ?, lease_expires_at = ?, updated_at = ?, last_attempt_at = ? " +
+                        "WHERE id = ? AND status IN ('QUEUED', 'RETRY') AND (lease_expires_at IS NULL OR lease_expires_at <= ?)",
+                "PROCESSING",
+                trimToNull(connectorId),
+                timestamp(leaseExpiresAt),
+                timestamp(now),
+                timestamp(now),
+                id,
+                timestamp(now)
+        );
+    }
+
     public int resetStaleProcessing(Instant staleBefore, Instant nextAttemptAt) {
         return jdbcTemplate.update(
-                "UPDATE tally_voucher_write_queue SET status = ?, last_error = ?, updated_at = ?, next_attempt_at = ? " +
+                "UPDATE tally_voucher_write_queue SET status = ?, last_error = ?, updated_at = ?, next_attempt_at = ?, leased_by = NULL, lease_expires_at = NULL " +
                         "WHERE status = ? AND (last_attempt_at IS NULL OR last_attempt_at <= ?)",
                 "RETRY",
                 "Recovered stale PROCESSING entry for automatic retry.",
@@ -274,7 +319,7 @@ public class TallyVoucherWriteQueueRepository {
 
     public void markApplied(Long id, int attempts, String responseBody, Instant now) {
         jdbcTemplate.update(
-                "UPDATE tally_voucher_write_queue SET status = ?, attempts = ?, response_body = ?, updated_at = ?, completed_at = ?, next_attempt_at = NULL, last_error = NULL, conflict_state = ?, review_state = ? WHERE id = ?",
+                "UPDATE tally_voucher_write_queue SET status = ?, attempts = ?, response_body = ?, updated_at = ?, completed_at = ?, next_attempt_at = NULL, last_error = NULL, conflict_state = ?, review_state = ?, leased_by = NULL, lease_expires_at = NULL WHERE id = ?",
                 "APPLIED",
                 attempts,
                 responseBody,
@@ -288,7 +333,7 @@ public class TallyVoucherWriteQueueRepository {
 
     public void markRetry(Long id, int attempts, String error, String responseBody, Instant now, Instant nextAttemptAt) {
         jdbcTemplate.update(
-                "UPDATE tally_voucher_write_queue SET status = ?, attempts = ?, last_error = ?, response_body = ?, updated_at = ?, next_attempt_at = ?, completed_at = NULL WHERE id = ?",
+                "UPDATE tally_voucher_write_queue SET status = ?, attempts = ?, last_error = ?, response_body = ?, updated_at = ?, next_attempt_at = ?, completed_at = NULL, leased_by = NULL, lease_expires_at = NULL WHERE id = ?",
                 "RETRY",
                 attempts,
                 error,
@@ -301,7 +346,7 @@ public class TallyVoucherWriteQueueRepository {
 
     public void markFailed(Long id, int attempts, String error, String responseBody, Instant now) {
         jdbcTemplate.update(
-                "UPDATE tally_voucher_write_queue SET status = ?, attempts = ?, last_error = ?, response_body = ?, updated_at = ?, completed_at = ?, next_attempt_at = NULL WHERE id = ?",
+                "UPDATE tally_voucher_write_queue SET status = ?, attempts = ?, last_error = ?, response_body = ?, updated_at = ?, completed_at = ?, next_attempt_at = NULL, leased_by = NULL, lease_expires_at = NULL WHERE id = ?",
                 "FAILED",
                 attempts,
                 error,
@@ -385,6 +430,22 @@ public class TallyVoucherWriteQueueRepository {
                                           String reviewState,
                                           String reviewedBy,
                                           Instant reviewedAt) {
+        if ("APPROVED_SYNC".equalsIgnoreCase(trimToNull(reviewState))) {
+            Instant now = reviewedAt == null ? Instant.now() : reviewedAt;
+            jdbcTemplate.update(
+                    "UPDATE tally_voucher_write_queue SET status = ?, conflict_state = ?, conflict_payload = ?, review_state = ?, reviewed_by = ?, reviewed_at = ?, updated_at = ?, next_attempt_at = ?, completed_at = NULL, leased_by = NULL, lease_expires_at = NULL WHERE id = ?",
+                    "RETRY",
+                    conflictState,
+                    conflictPayload,
+                    reviewState,
+                    reviewedBy,
+                    timestamp(reviewedAt),
+                    timestamp(now),
+                    timestamp(now),
+                    id
+            );
+            return;
+        }
         jdbcTemplate.update(
                 "UPDATE tally_voucher_write_queue SET conflict_state = ?, conflict_payload = ?, review_state = ?, reviewed_by = ?, reviewed_at = ?, updated_at = ? WHERE id = ?",
                 conflictState,
