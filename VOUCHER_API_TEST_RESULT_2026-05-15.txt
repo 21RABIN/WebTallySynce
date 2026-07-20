@@ -1,0 +1,151 @@
+Voucher API test result
+Date: 2026-05-15
+
+Swagger UI opened:
+http://127.0.0.1:9090/swagger-ui/index.html
+
+Summary
+- Tested voucher creation through backend voucher APIs.
+- Direct typed voucher create route failed:
+  - POST /api/vouchers/journal?action=Create
+  - Result: 502
+  - Tally error: "Voucher date is missing for: 'Journal' voucher 9015."
+- Working voucher route:
+  - POST /api/vouchers/import-xml
+  - Result: 200
+  - Tally import acknowledgement: CREATED=1
+
+Important finding
+- In this environment, the generic/type-specific JSON voucher create routes are still not reliable for create.
+- The voucher XML import route is the one that successfully created a voucher against Tally.
+- The successful create used the existing company accounting date 20260402 instead of 20260515.
+
+Working request
+Endpoint:
+POST http://127.0.0.1:9090/api/vouchers/import-xml
+
+Headers:
+- Authorization: Bearer <token>
+- Content-Type: application/xml
+
+Request body:
+<ENVELOPE>
+<HEADER>
+<VERSION>1</VERSION>
+<TALLYREQUEST>Import</TALLYREQUEST>
+<TYPE>Data</TYPE>
+<ID>Vouchers</ID>
+</HEADER>
+<BODY>
+<DESC>
+<STATICVARIABLES>
+<SVCURRENTCOMPANY>Software Development</SVCURRENTCOMPANY>
+</STATICVARIABLES>
+</DESC>
+<DATA>
+<TALLYMESSAGE>
+<VOUCHER VCHTYPE="Receipt" ACTION="Create">
+<DATE>20260402</DATE>
+<NARRATION>Receipt created from API test with known voucher date</NARRATION>
+<VOUCHERTYPENAME>Receipt</VOUCHERTYPENAME>
+<EFFECTIVEDATE>20260402</EFFECTIVEDATE>
+<ALLLEDGERENTRIES.LIST>
+<LEDGERNAME>BOB</LEDGERNAME>
+<AMOUNT>100.00</AMOUNT>
+</ALLLEDGERENTRIES.LIST>
+<ALLLEDGERENTRIES.LIST>
+<LEDGERNAME>Cash</LEDGERNAME>
+<ISDEEMEDPOSITIVE>Yes</ISDEEMEDPOSITIVE>
+<AMOUNT>-100.00</AMOUNT>
+</ALLLEDGERENTRIES.LIST>
+</VOUCHER>
+</TALLYMESSAGE>
+</DATA>
+</BODY>
+</ENVELOPE>
+
+Successful response
+{
+  "ENVELOPE": {
+    "HEADER": {
+      "VERSION": "1",
+      "STATUS": "1"
+    },
+    "BODY": {
+      "DATA": {
+        "IMPORTRESULT": {
+          "CREATED": "1",
+          "ALTERED": "0",
+          "DELETED": "0",
+          "LASTVCHID": "2",
+          "LASTMID": "0",
+          "COMBINED": "0",
+          "IGNORED": "0",
+          "ERRORS": "0",
+          "CANCELLED": "0",
+          "EXCEPTIONS": "0"
+        }
+      }
+    }
+  }
+}
+
+Failed test payload
+Endpoint:
+POST /api/vouchers/journal?action=Create
+
+JSON body:
+{
+  "DATE": "20260515",
+  "VOUCHERTYPENAME": "Journal",
+  "VOUCHERNUMBER": "9015",
+  "NARRATION": "Created from API voucher test",
+  "LEDGERENTRIES.LIST": [
+    {
+      "LEDGERNAME": "Cash",
+      "AMOUNT": "100.00",
+      "ISDEEMEDPOSITIVE": "No",
+      "ISLASTDEEMEDPOSITIVE": "No",
+      "LEDGERFROMITEM": "No",
+      "REMOVEZEROENTRIES": "No",
+      "ISPARTYLEDGER": "No"
+    },
+    {
+      "LEDGERNAME": "BOB",
+      "AMOUNT": "-100.00",
+      "ISDEEMEDPOSITIVE": "Yes",
+      "ISLASTDEEMEDPOSITIVE": "Yes",
+      "LEDGERFROMITEM": "No",
+      "REMOVEZEROENTRIES": "No",
+      "ISPARTYLEDGER": "No"
+    }
+  ]
+}
+
+Failed response
+{
+  "detail": {
+    "supported": true,
+    "fallback_applied": false,
+    "error_type": "tally_error",
+    "reason": "Voucher date is missing for: 'Journal' voucher 9015.  Verify the data, resolve errors (if any) and retry Split."
+  }
+}
+
+How to repeat in Swagger UI
+1. Open http://127.0.0.1:9090/swagger-ui/index.html
+2. Authorize with a bearer token from POST /api/auth/token using:
+   {
+     "username": "admin",
+     "password": "admin@123",
+     "include_token": true
+   }
+3. Open POST /api/vouchers/import-xml
+4. Set Content-Type to application/xml
+5. Paste the working XML request above
+6. Execute
+
+Conclusion
+- Voucher creation was successfully tested through the voucher API surface.
+- The currently working path is XML import.
+- The current JSON create route for typed vouchers still needs connector/backend fixes before it can be trusted for Swagger-based business use.

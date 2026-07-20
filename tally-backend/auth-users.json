@@ -1,0 +1,9 @@
+[ {
+  "username" : "admin",
+  "displayName" : "Administrator",
+  "passwordHash" : "$2a$10$UxzQ5Z8ucdXNrfADktPVTumf61pFSjB2pc8j.sDNM4pgH6EPnhFyS",
+  "roles" : [ "ADMIN" ],
+  "active" : true,
+  "firstSeenAt" : "2026-04-09T09:39:43.048011657Z",
+  "lastSeenAt" : "2026-04-09T09:39:43.048011657Z"
+} ]
